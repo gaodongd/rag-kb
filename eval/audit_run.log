@@ -1,0 +1,13 @@
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+AUDIT_SAMPLE_OK
+  samples          : 50
+  len_min          : 53
+  len_max          : 800
+  len_avg          : 291
+  dirty_by_machine : 0  (0.0%)
+  markdown         : E:\AI-learning\projects\rag-kb\eval\audit_sample.md
+  json             : E:\AI-learning\projects\rag-kb\eval\audit_sample.seed42.json
+成功: 已终止 PID 30400 (属于 PID 35804 子进程)的进程。
+成功: 已终止 PID 35804 (属于 PID 32168 子进程)的进程。
+成功: 已终止 PID 32168 (属于 PID 17168 子进程)的进程。

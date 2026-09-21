@@ -1,0 +1,736 @@
+{
+  "model": "master",
+  "tokenizer": "XLMRobertaTokenizer",
+  "special_tokens": 4,
+  "max_length": 512,
+  "per_query": {
+    "v1-04806f": {
+      "gold_truncated": true,
+      "q_tokens": 15,
+      "p_tokens": 499,
+      "pair_tokens": 518,
+      "kind": "easy"
+    },
+    "v1-09f297": {
+      "gold_truncated": false,
+      "q_tokens": 6,
+      "p_tokens": 206,
+      "pair_tokens": 216,
+      "kind": "easy"
+    },
+    "v1-1b9a93": {
+      "gold_truncated": false,
+      "q_tokens": 20,
+      "p_tokens": 331,
+      "pair_tokens": 355,
+      "kind": "easy"
+    },
+    "v1-1d42d8": {
+      "gold_truncated": false,
+      "q_tokens": 15,
+      "p_tokens": 355,
+      "pair_tokens": 374,
+      "kind": "easy"
+    },
+    "v1-1f1e6e": {
+      "gold_truncated": true,
+      "q_tokens": 18,
+      "p_tokens": 551,
+      "pair_tokens": 573,
+      "kind": "easy"
+    },
+    "v1-210c94": {
+      "gold_truncated": false,
+      "q_tokens": 19,
+      "p_tokens": 198,
+      "pair_tokens": 221,
+      "kind": "easy"
+    },
+    "v1-24ab0e": {
+      "gold_truncated": false,
+      "q_tokens": 16,
+      "p_tokens": 175,
+      "pair_tokens": 195,
+      "kind": "easy"
+    },
+    "v1-25d852": {
+      "gold_truncated": false,
+      "q_tokens": 18,
+      "p_tokens": 398,
+      "pair_tokens": 420,
+      "kind": "easy"
+    },
+    "v1-2ab66f": {
+      "gold_truncated": false,
+      "q_tokens": 13,
+      "p_tokens": 178,
+      "pair_tokens": 195,
+      "kind": "easy"
+    },
+    "v1-3dccab": {
+      "gold_truncated": false,
+      "q_tokens": 7,
+      "p_tokens": 240,
+      "pair_tokens": 251,
+      "kind": "easy"
+    },
+    "v1-401995": {
+      "gold_truncated": false,
+      "q_tokens": 12,
+      "p_tokens": 138,
+      "pair_tokens": 154,
+      "kind": "easy"
+    },
+    "v1-45c467": {
+      "gold_truncated": false,
+      "q_tokens": 14,
+      "p_tokens": 383,
+      "pair_tokens": 401,
+      "kind": "easy"
+    },
+    "v1-4b3250": {
+      "gold_truncated": false,
+      "q_tokens": 18,
+      "p_tokens": 334,
+      "pair_tokens": 356,
+      "kind": "easy"
+    },
+    "v1-50fb85": {
+      "gold_truncated": false,
+      "q_tokens": 12,
+      "p_tokens": 136,
+      "pair_tokens": 152,
+      "kind": "easy"
+    },
+    "v1-52aa3b": {
+      "gold_truncated": false,
+      "q_tokens": 15,
+      "p_tokens": 382,
+      "pair_tokens": 401,
+      "kind": "easy"
+    },
+    "v1-54fb34": {
+      "gold_truncated": false,
+      "q_tokens": 11,
+      "p_tokens": 157,
+      "pair_tokens": 172,
+      "kind": "easy"
+    },
+    "v1-56ff20": {
+      "gold_truncated": false,
+      "q_tokens": 13,
+      "p_tokens": 208,
+      "pair_tokens": 225,
+      "kind": "easy"
+    },
+    "v1-5ab67a": {
+      "gold_truncated": false,
+      "q_tokens": 11,
+      "p_tokens": 416,
+      "pair_tokens": 431,
+      "kind": "easy"
+    },
+    "v1-5d9bb0": {
+      "gold_truncated": false,
+      "q_tokens": 7,
+      "p_tokens": 221,
+      "pair_tokens": 232,
+      "kind": "easy"
+    },
+    "v1-5e6b32": {
+      "gold_truncated": false,
+      "q_tokens": 11,
+      "p_tokens": 170,
+      "pair_tokens": 185,
+      "kind": "easy"
+    },
+    "v1-6439f2": {
+      "gold_truncated": false,
+      "q_tokens": 14,
+      "p_tokens": 190,
+      "pair_tokens": 208,
+      "kind": "easy"
+    },
+    "v1-65a558": {
+      "gold_truncated": false,
+      "q_tokens": 11,
+      "p_tokens": 319,
+      "pair_tokens": 334,
+      "kind": "easy"
+    },
+    "v1-6c689a": {
+      "gold_truncated": false,
+      "q_tokens": 10,
+      "p_tokens": 154,
+      "pair_tokens": 168,
+      "kind": "easy"
+    },
+    "v1-79b11b": {
+      "gold_truncated": false,
+      "q_tokens": 22,
+      "p_tokens": 169,
+      "pair_tokens": 195,
+      "kind": "easy"
+    },
+    "v1-87119c": {
+      "gold_truncated": false,
+      "q_tokens": 13,
+      "p_tokens": 139,
+      "pair_tokens": 156,
+      "kind": "easy"
+    },
+    "v1-88549d": {
+      "gold_truncated": false,
+      "q_tokens": 15,
+      "p_tokens": 292,
+      "pair_tokens": 311,
+      "kind": "easy"
+    },
+    "v1-99340c": {
+      "gold_truncated": false,
+      "q_tokens": 8,
+      "p_tokens": 163,
+      "pair_tokens": 175,
+      "kind": "easy"
+    },
+    "v1-9d9b7b": {
+      "gold_truncated": false,
+      "q_tokens": 12,
+      "p_tokens": 242,
+      "pair_tokens": 258,
+      "kind": "easy"
+    },
+    "v1-acdbcb": {
+      "gold_truncated": false,
+      "q_tokens": 13,
+      "p_tokens": 130,
+      "pair_tokens": 147,
+      "kind": "easy"
+    },
+    "v1-adad89": {
+      "gold_truncated": false,
+      "q_tokens": 12,
+      "p_tokens": 426,
+      "pair_tokens": 442,
+      "kind": "easy"
+    },
+    "v1-ae8fd7": {
+      "gold_truncated": false,
+      "q_tokens": 14,
+      "p_tokens": 250,
+      "pair_tokens": 268,
+      "kind": "easy"
+    },
+    "v1-b250d2": {
+      "gold_truncated": false,
+      "q_tokens": 20,
+      "p_tokens": 192,
+      "pair_tokens": 216,
+      "kind": "easy"
+    },
+    "v1-b36dcd": {
+      "gold_truncated": true,
+      "q_tokens": 18,
+      "p_tokens": 522,
+      "pair_tokens": 544,
+      "kind": "easy"
+    },
+    "v1-b5a17c": {
+      "gold_truncated": false,
+      "q_tokens": 20,
+      "p_tokens": 235,
+      "pair_tokens": 259,
+      "kind": "easy"
+    },
+    "v1-b98811": {
+      "gold_truncated": false,
+      "q_tokens": 22,
+      "p_tokens": 405,
+      "pair_tokens": 431,
+      "kind": "easy"
+    },
+    "v1-bb37db": {
+      "gold_truncated": false,
+      "q_tokens": 22,
+      "p_tokens": 273,
+      "pair_tokens": 299,
+      "kind": "easy"
+    },
+    "v1-c60af3": {
+      "gold_truncated": true,
+      "q_tokens": 25,
+      "p_tokens": 548,
+      "pair_tokens": 577,
+      "kind": "easy"
+    },
+    "v1-c6d12b": {
+      "gold_truncated": false,
+      "q_tokens": 14,
+      "p_tokens": 308,
+      "pair_tokens": 326,
+      "kind": "easy"
+    },
+    "v1-c78662": {
+      "gold_truncated": true,
+      "q_tokens": 15,
+      "p_tokens": 534,
+      "pair_tokens": 553,
+      "kind": "easy"
+    },
+    "v1-cfe1ef": {
+      "gold_truncated": true,
+      "q_tokens": 10,
+      "p_tokens": 565,
+      "pair_tokens": 579,
+      "kind": "easy"
+    },
+    "v1-d3a543": {
+      "gold_truncated": false,
+      "q_tokens": 12,
+      "p_tokens": 192,
+      "pair_tokens": 208,
+      "kind": "easy"
+    },
+    "v1-d7fe42": {
+      "gold_truncated": false,
+      "q_tokens": 11,
+      "p_tokens": 96,
+      "pair_tokens": 111,
+      "kind": "easy"
+    },
+    "v1-f0d458": {
+      "gold_truncated": true,
+      "q_tokens": 13,
+      "p_tokens": 561,
+      "pair_tokens": 578,
+      "kind": "easy"
+    },
+    "v1-f2c036": {
+      "gold_truncated": false,
+      "q_tokens": 15,
+      "p_tokens": 458,
+      "pair_tokens": 477,
+      "kind": "easy"
+    },
+    "v1-f40546": {
+      "gold_truncated": false,
+      "q_tokens": 8,
+      "p_tokens": 93,
+      "pair_tokens": 105,
+      "kind": "easy"
+    },
+    "v1-0470cb": {
+      "gold_truncated": true,
+      "q_tokens": 32,
+      "p_tokens": 549,
+      "pair_tokens": 585,
+      "kind": "hard_anon"
+    },
+    "v1-0ad606": {
+      "gold_truncated": false,
+      "q_tokens": 33,
+      "p_tokens": 166,
+      "pair_tokens": 203,
+      "kind": "hard_anon"
+    },
+    "v1-0b16ea": {
+      "gold_truncated": false,
+      "q_tokens": 46,
+      "p_tokens": 137,
+      "pair_tokens": 187,
+      "kind": "hard_anon"
+    },
+    "v1-0dd0ad": {
+      "gold_truncated": false,
+      "q_tokens": 38,
+      "p_tokens": 178,
+      "pair_tokens": 220,
+      "kind": "hard_anon"
+    },
+    "v1-0fde78": {
+      "gold_truncated": false,
+      "q_tokens": 50,
+      "p_tokens": 191,
+      "pair_tokens": 245,
+      "kind": "hard_anon"
+    },
+    "v1-156de3": {
+      "gold_truncated": false,
+      "q_tokens": 29,
+      "p_tokens": 467,
+      "pair_tokens": 500,
+      "kind": "hard_anon"
+    },
+    "v1-157e46": {
+      "gold_truncated": false,
+      "q_tokens": 38,
+      "p_tokens": 335,
+      "pair_tokens": 377,
+      "kind": "hard_anon"
+    },
+    "v1-169831": {
+      "gold_truncated": false,
+      "q_tokens": 25,
+      "p_tokens": 123,
+      "pair_tokens": 152,
+      "kind": "hard_anon"
+    },
+    "v1-171770": {
+      "gold_truncated": true,
+      "q_tokens": 51,
+      "p_tokens": 634,
+      "pair_tokens": 689,
+      "kind": "hard_anon"
+    },
+    "v1-28002e": {
+      "gold_truncated": false,
+      "q_tokens": 59,
+      "p_tokens": 121,
+      "pair_tokens": 184,
+      "kind": "hard_anon"
+    },
+    "v1-338517": {
+      "gold_truncated": false,
+      "q_tokens": 26,
+      "p_tokens": 106,
+      "pair_tokens": 136,
+      "kind": "hard_anon"
+    },
+    "v1-49555c": {
+      "gold_truncated": false,
+      "q_tokens": 24,
+      "p_tokens": 315,
+      "pair_tokens": 343,
+      "kind": "hard_anon"
+    },
+    "v1-55fe6f": {
+      "gold_truncated": false,
+      "q_tokens": 38,
+      "p_tokens": 151,
+      "pair_tokens": 193,
+      "kind": "hard_anon"
+    },
+    "v1-6e47b3": {
+      "gold_truncated": true,
+      "q_tokens": 40,
+      "p_tokens": 492,
+      "pair_tokens": 536,
+      "kind": "hard_anon"
+    },
+    "v1-778faa": {
+      "gold_truncated": false,
+      "q_tokens": 36,
+      "p_tokens": 362,
+      "pair_tokens": 402,
+      "kind": "hard_anon"
+    },
+    "v1-7e9162": {
+      "gold_truncated": false,
+      "q_tokens": 62,
+      "p_tokens": 127,
+      "pair_tokens": 193,
+      "kind": "hard_anon"
+    },
+    "v1-7ede68": {
+      "gold_truncated": true,
+      "q_tokens": 23,
+      "p_tokens": 598,
+      "pair_tokens": 625,
+      "kind": "hard_anon"
+    },
+    "v1-8006ed": {
+      "gold_truncated": true,
+      "q_tokens": 49,
+      "p_tokens": 490,
+      "pair_tokens": 543,
+      "kind": "hard_anon"
+    },
+    "v1-822a67": {
+      "gold_truncated": false,
+      "q_tokens": 33,
+      "p_tokens": 147,
+      "pair_tokens": 184,
+      "kind": "hard_anon"
+    },
+    "v1-8bba55": {
+      "gold_truncated": false,
+      "q_tokens": 21,
+      "p_tokens": 394,
+      "pair_tokens": 419,
+      "kind": "hard_anon"
+    },
+    "v1-998ff4": {
+      "gold_truncated": false,
+      "q_tokens": 32,
+      "p_tokens": 191,
+      "pair_tokens": 227,
+      "kind": "hard_anon"
+    },
+    "v1-9a5cca": {
+      "gold_truncated": true,
+      "q_tokens": 43,
+      "p_tokens": 591,
+      "pair_tokens": 638,
+      "kind": "hard_anon"
+    },
+    "v1-a1d7bf": {
+      "gold_truncated": false,
+      "q_tokens": 38,
+      "p_tokens": 244,
+      "pair_tokens": 286,
+      "kind": "hard_anon"
+    },
+    "v1-a492e7": {
+      "gold_truncated": true,
+      "q_tokens": 49,
+      "p_tokens": 490,
+      "pair_tokens": 543,
+      "kind": "hard_anon"
+    },
+    "v1-b6aeea": {
+      "gold_truncated": true,
+      "q_tokens": 20,
+      "p_tokens": 533,
+      "pair_tokens": 557,
+      "kind": "hard_anon"
+    },
+    "v1-ba4d84": {
+      "gold_truncated": false,
+      "q_tokens": 66,
+      "p_tokens": 186,
+      "pair_tokens": 256,
+      "kind": "hard_anon"
+    },
+    "v1-c3581d": {
+      "gold_truncated": false,
+      "q_tokens": 50,
+      "p_tokens": 232,
+      "pair_tokens": 286,
+      "kind": "hard_anon"
+    },
+    "v1-d27c79": {
+      "gold_truncated": false,
+      "q_tokens": 25,
+      "p_tokens": 127,
+      "pair_tokens": 156,
+      "kind": "hard_anon"
+    },
+    "v1-e5aca5": {
+      "gold_truncated": false,
+      "q_tokens": 47,
+      "p_tokens": 195,
+      "pair_tokens": 246,
+      "kind": "hard_anon"
+    },
+    "v1-e6d5c5": {
+      "gold_truncated": false,
+      "q_tokens": 48,
+      "p_tokens": 376,
+      "pair_tokens": 428,
+      "kind": "hard_anon"
+    },
+    "v1-f124c6": {
+      "gold_truncated": false,
+      "q_tokens": 34,
+      "p_tokens": 169,
+      "pair_tokens": 207,
+      "kind": "hard_anon"
+    },
+    "v1-f70977": {
+      "gold_truncated": false,
+      "q_tokens": 61,
+      "p_tokens": 209,
+      "pair_tokens": 274,
+      "kind": "hard_anon"
+    },
+    "v1-017dc8": {
+      "gold_truncated": false,
+      "q_tokens": 12,
+      "p_tokens": 152,
+      "pair_tokens": 168,
+      "kind": "hard_para"
+    },
+    "v1-03ef27": {
+      "gold_truncated": false,
+      "q_tokens": 20,
+      "p_tokens": 224,
+      "pair_tokens": 248,
+      "kind": "hard_para"
+    },
+    "v1-04e95e": {
+      "gold_truncated": false,
+      "q_tokens": 15,
+      "p_tokens": 461,
+      "pair_tokens": 480,
+      "kind": "hard_para"
+    },
+    "v1-07585c": {
+      "gold_truncated": false,
+      "q_tokens": 17,
+      "p_tokens": 331,
+      "pair_tokens": 352,
+      "kind": "hard_para"
+    },
+    "v1-373590": {
+      "gold_truncated": false,
+      "q_tokens": 13,
+      "p_tokens": 284,
+      "pair_tokens": 301,
+      "kind": "hard_para"
+    },
+    "v1-42b55f": {
+      "gold_truncated": false,
+      "q_tokens": 16,
+      "p_tokens": 308,
+      "pair_tokens": 328,
+      "kind": "hard_para"
+    },
+    "v1-4b5cb2": {
+      "gold_truncated": false,
+      "q_tokens": 10,
+      "p_tokens": 463,
+      "pair_tokens": 477,
+      "kind": "hard_para"
+    },
+    "v1-5bbba3": {
+      "gold_truncated": false,
+      "q_tokens": 22,
+      "p_tokens": 126,
+      "pair_tokens": 152,
+      "kind": "hard_para"
+    },
+    "v1-7f7ff2": {
+      "gold_truncated": false,
+      "q_tokens": 13,
+      "p_tokens": 137,
+      "pair_tokens": 154,
+      "kind": "hard_para"
+    },
+    "v1-881821": {
+      "gold_truncated": true,
+      "q_tokens": 28,
+      "p_tokens": 543,
+      "pair_tokens": 575,
+      "kind": "hard_para"
+    },
+    "v1-c57ba9": {
+      "gold_truncated": true,
+      "q_tokens": 24,
+      "p_tokens": 544,
+      "pair_tokens": 572,
+      "kind": "hard_para"
+    },
+    "v1-ed9e54": {
+      "gold_truncated": true,
+      "q_tokens": 15,
+      "p_tokens": 648,
+      "pair_tokens": 667,
+      "kind": "hard_para"
+    },
+    "v1-f23a18": {
+      "gold_truncated": false,
+      "q_tokens": 32,
+      "p_tokens": 111,
+      "pair_tokens": 147,
+      "kind": "hard_para"
+    },
+    "v1-f4e8ca": {
+      "gold_truncated": false,
+      "q_tokens": 12,
+      "p_tokens": 158,
+      "pair_tokens": 174,
+      "kind": "hard_para"
+    },
+    "v1-54b0cd": {
+      "gold_truncated": true,
+      "q_tokens": 18,
+      "p_tokens": 509,
+      "pair_tokens": 531,
+      "kind": "t2s"
+    },
+    "v1-713aff": {
+      "gold_truncated": false,
+      "q_tokens": 11,
+      "p_tokens": 248,
+      "pair_tokens": 263,
+      "kind": "t2s"
+    },
+    "v1-73ac56": {
+      "gold_truncated": false,
+      "q_tokens": 9,
+      "p_tokens": 293,
+      "pair_tokens": 306,
+      "kind": "t2s"
+    },
+    "v1-ab1c0c": {
+      "gold_truncated": false,
+      "q_tokens": 17,
+      "p_tokens": 204,
+      "pair_tokens": 225,
+      "kind": "t2s"
+    },
+    "v1-b71162": {
+      "gold_truncated": false,
+      "q_tokens": 11,
+      "p_tokens": 185,
+      "pair_tokens": 200,
+      "kind": "t2s"
+    },
+    "v1-c612da": {
+      "gold_truncated": false,
+      "q_tokens": 12,
+      "p_tokens": 129,
+      "pair_tokens": 145,
+      "kind": "t2s"
+    },
+    "v1-13374a": {
+      "gold_truncated": true,
+      "q_tokens": 10,
+      "p_tokens": 548,
+      "pair_tokens": 562,
+      "kind": "s2t"
+    },
+    "v1-4c776f": {
+      "gold_truncated": false,
+      "q_tokens": 13,
+      "p_tokens": 345,
+      "pair_tokens": 362,
+      "kind": "s2t"
+    },
+    "v1-70b8b7": {
+      "gold_truncated": false,
+      "q_tokens": 11,
+      "p_tokens": 198,
+      "pair_tokens": 213,
+      "kind": "s2t"
+    },
+    "v1-9589f1": {
+      "gold_truncated": false,
+      "q_tokens": 11,
+      "p_tokens": 131,
+      "pair_tokens": 146,
+      "kind": "s2t"
+    },
+    "v1-a4e938": {
+      "gold_truncated": true,
+      "q_tokens": 17,
+      "p_tokens": 532,
+      "pair_tokens": 553,
+      "kind": "s2t"
+    },
+    "v1-ef3d05": {
+      "gold_truncated": false,
+      "q_tokens": 14,
+      "p_tokens": 393,
+      "pair_tokens": 411,
+      "kind": "s2t"
+    },
+    "v1-f9c146": {
+      "gold_truncated": false,
+      "q_tokens": 19,
+      "p_tokens": 229,
+      "pair_tokens": 252,
+      "kind": "s2t"
+    }
+  }
+}

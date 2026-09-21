@@ -1,0 +1,3813 @@
+{
+  "meta": {
+    "testset": "qa_testset_v1.jsonl",
+    "tag": "v1_final",
+    "n_queries": 104,
+    "pool": 100,
+    "nprobe": 512,
+    "rrf_k": 10,
+    "rerank": true,
+    "configs": [
+      "vector",
+      "bm25",
+      "hybrid",
+      "hybrid_rerank"
+    ],
+    "no_norm": false,
+    "bm25_index": "bm25",
+    "elapsed_seconds": 429.7
+  },
+  "summary": {
+    "vector": {
+      "n": 104,
+      "strict": {
+        "recall@1": 0.4808,
+        "recall@5": 0.6827,
+        "recall@10": 0.7596,
+        "mrr@10": 0.5681
+      },
+      "relaxed": {
+        "recall@1": 0.5865,
+        "recall@5": 0.7212,
+        "recall@10": 0.7788,
+        "mrr@10": 0.6505
+      },
+      "hit_rate@5": 0.6827
+    },
+    "bm25": {
+      "n": 104,
+      "strict": {
+        "recall@1": 0.5769,
+        "recall@5": 0.7885,
+        "recall@10": 0.8462,
+        "mrr@10": 0.656
+      },
+      "relaxed": {
+        "recall@1": 0.6827,
+        "recall@5": 0.8269,
+        "recall@10": 0.8846,
+        "mrr@10": 0.7398
+      },
+      "hit_rate@5": 0.7885
+    },
+    "hybrid": {
+      "n": 104,
+      "strict": {
+        "recall@1": 0.6058,
+        "recall@5": 0.875,
+        "recall@10": 0.9231,
+        "mrr@10": 0.7263
+      },
+      "relaxed": {
+        "recall@1": 0.7212,
+        "recall@5": 0.875,
+        "recall@10": 0.9423,
+        "mrr@10": 0.7918
+      },
+      "hit_rate@5": 0.875
+    },
+    "hybrid_rerank": {
+      "n": 104,
+      "strict": {
+        "recall@1": 0.8846,
+        "recall@5": 0.9615,
+        "recall@10": 0.9808,
+        "mrr@10": 0.9242
+      },
+      "relaxed": {
+        "recall@1": 0.9519,
+        "recall@5": 0.9615,
+        "recall@10": 0.9904,
+        "mrr@10": 0.9604
+      },
+      "hit_rate@5": 0.9615
+    }
+  },
+  "by_kind": {
+    "easy": {
+      "vector": {
+        "n": 45,
+        "strict": {
+          "recall@1": 0.5778,
+          "recall@5": 0.8222,
+          "recall@10": 0.9111,
+          "mrr@10": 0.6819
+        },
+        "relaxed": {
+          "recall@1": 0.8,
+          "recall@5": 0.8889,
+          "recall@10": 0.9333,
+          "mrr@10": 0.8433
+        },
+        "hit_rate@5": 0.8222
+      },
+      "bm25": {
+        "n": 45,
+        "strict": {
+          "recall@1": 0.4889,
+          "recall@5": 0.7778,
+          "recall@10": 0.8667,
+          "mrr@10": 0.6079
+        },
+        "relaxed": {
+          "recall@1": 0.6889,
+          "recall@5": 0.8444,
+          "recall@10": 0.9333,
+          "mrr@10": 0.7571
+        },
+        "hit_rate@5": 0.7778
+      },
+      "hybrid": {
+        "n": 45,
+        "strict": {
+          "recall@1": 0.5556,
+          "recall@5": 0.9556,
+          "recall@10": 0.9778,
+          "mrr@10": 0.7311
+        },
+        "relaxed": {
+          "recall@1": 0.8,
+          "recall@5": 0.9556,
+          "recall@10": 0.9778,
+          "mrr@10": 0.8656
+        },
+        "hit_rate@5": 0.9556
+      },
+      "hybrid_rerank": {
+        "n": 45,
+        "strict": {
+          "recall@1": 0.8667,
+          "recall@5": 0.9778,
+          "recall@10": 1.0,
+          "mrr@10": 0.9254
+        },
+        "relaxed": {
+          "recall@1": 0.9778,
+          "recall@5": 0.9778,
+          "recall@10": 1.0,
+          "mrr@10": 0.981
+        },
+        "hit_rate@5": 0.9778
+      }
+    },
+    "hard_anon": {
+      "vector": {
+        "n": 32,
+        "strict": {
+          "recall@1": 0.2812,
+          "recall@5": 0.375,
+          "recall@10": 0.4688,
+          "mrr@10": 0.3357
+        },
+        "relaxed": {
+          "recall@1": 0.2812,
+          "recall@5": 0.375,
+          "recall@10": 0.4688,
+          "mrr@10": 0.3357
+        },
+        "hit_rate@5": 0.375
+      },
+      "bm25": {
+        "n": 32,
+        "strict": {
+          "recall@1": 0.6875,
+          "recall@5": 0.8125,
+          "recall@10": 0.875,
+          "mrr@10": 0.7302
+        },
+        "relaxed": {
+          "recall@1": 0.6875,
+          "recall@5": 0.8125,
+          "recall@10": 0.875,
+          "mrr@10": 0.7302
+        },
+        "hit_rate@5": 0.8125
+      },
+      "hybrid": {
+        "n": 32,
+        "strict": {
+          "recall@1": 0.5312,
+          "recall@5": 0.7812,
+          "recall@10": 0.875,
+          "mrr@10": 0.6403
+        },
+        "relaxed": {
+          "recall@1": 0.5312,
+          "recall@5": 0.7812,
+          "recall@10": 0.875,
+          "mrr@10": 0.6403
+        },
+        "hit_rate@5": 0.7812
+      },
+      "hybrid_rerank": {
+        "n": 32,
+        "strict": {
+          "recall@1": 0.9375,
+          "recall@5": 0.9375,
+          "recall@10": 0.9375,
+          "mrr@10": 0.9375
+        },
+        "relaxed": {
+          "recall@1": 0.9375,
+          "recall@5": 0.9375,
+          "recall@10": 0.9688,
+          "mrr@10": 0.9406
+        },
+        "hit_rate@5": 0.9375
+      }
+    },
+    "hard_para": {
+      "vector": {
+        "n": 14,
+        "strict": {
+          "recall@1": 0.5,
+          "recall@5": 0.7143,
+          "recall@10": 0.7857,
+          "mrr@10": 0.5827
+        },
+        "relaxed": {
+          "recall@1": 0.5714,
+          "recall@5": 0.7857,
+          "recall@10": 0.8571,
+          "mrr@10": 0.6756
+        },
+        "hit_rate@5": 0.7143
+      },
+      "bm25": {
+        "n": 14,
+        "strict": {
+          "recall@1": 0.5714,
+          "recall@5": 0.7857,
+          "recall@10": 0.7857,
+          "mrr@10": 0.6369
+        },
+        "relaxed": {
+          "recall@1": 0.6429,
+          "recall@5": 0.7857,
+          "recall@10": 0.7857,
+          "mrr@10": 0.6905
+        },
+        "hit_rate@5": 0.7857
+      },
+      "hybrid": {
+        "n": 14,
+        "strict": {
+          "recall@1": 0.7143,
+          "recall@5": 0.7857,
+          "recall@10": 0.7857,
+          "mrr@10": 0.75
+        },
+        "relaxed": {
+          "recall@1": 0.7143,
+          "recall@5": 0.7857,
+          "recall@10": 0.9286,
+          "mrr@10": 0.7691
+        },
+        "hit_rate@5": 0.7857
+      },
+      "hybrid_rerank": {
+        "n": 14,
+        "strict": {
+          "recall@1": 0.7857,
+          "recall@5": 0.9286,
+          "recall@10": 1.0,
+          "mrr@10": 0.8554
+        },
+        "relaxed": {
+          "recall@1": 0.8571,
+          "recall@5": 0.9286,
+          "recall@10": 1.0,
+          "mrr@10": 0.9031
+        },
+        "hit_rate@5": 0.9286
+      }
+    },
+    "s2t": {
+      "vector": {
+        "n": 7,
+        "strict": {
+          "recall@1": 0.7143,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr@10": 0.8214
+        },
+        "relaxed": {
+          "recall@1": 0.7143,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr@10": 0.8214
+        },
+        "hit_rate@5": 1.0
+      },
+      "bm25": {
+        "n": 7,
+        "strict": {
+          "recall@1": 0.5714,
+          "recall@5": 0.7143,
+          "recall@10": 0.7143,
+          "mrr@10": 0.6071
+        },
+        "relaxed": {
+          "recall@1": 0.7143,
+          "recall@5": 0.8571,
+          "recall@10": 0.8571,
+          "mrr@10": 0.7857
+        },
+        "hit_rate@5": 0.7143
+      },
+      "hybrid": {
+        "n": 7,
+        "strict": {
+          "recall@1": 0.8571,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr@10": 0.9286
+        },
+        "relaxed": {
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr@10": 1.0
+        },
+        "hit_rate@5": 1.0
+      },
+      "hybrid_rerank": {
+        "n": 7,
+        "strict": {
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr@10": 1.0
+        },
+        "relaxed": {
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr@10": 1.0
+        },
+        "hit_rate@5": 1.0
+      }
+    },
+    "t2s": {
+      "vector": {
+        "n": 6,
+        "strict": {
+          "recall@1": 0.5,
+          "recall@5": 0.8333,
+          "recall@10": 0.8333,
+          "mrr@10": 0.625
+        },
+        "relaxed": {
+          "recall@1": 0.5,
+          "recall@5": 0.8333,
+          "recall@10": 0.8333,
+          "mrr@10": 0.625
+        },
+        "hit_rate@5": 0.8333
+      },
+      "bm25": {
+        "n": 6,
+        "strict": {
+          "recall@1": 0.6667,
+          "recall@5": 0.8333,
+          "recall@10": 0.8333,
+          "mrr@10": 0.7222
+        },
+        "relaxed": {
+          "recall@1": 0.6667,
+          "recall@5": 0.8333,
+          "recall@10": 0.8333,
+          "mrr@10": 0.7222
+        },
+        "hit_rate@5": 0.8333
+      },
+      "hybrid": {
+        "n": 6,
+        "strict": {
+          "recall@1": 0.8333,
+          "recall@5": 0.8333,
+          "recall@10": 1.0,
+          "mrr@10": 0.8571
+        },
+        "relaxed": {
+          "recall@1": 0.8333,
+          "recall@5": 0.8333,
+          "recall@10": 1.0,
+          "mrr@10": 0.8571
+        },
+        "hit_rate@5": 0.8333
+      },
+      "hybrid_rerank": {
+        "n": 6,
+        "strict": {
+          "recall@1": 0.8333,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr@10": 0.9167
+        },
+        "relaxed": {
+          "recall@1": 1.0,
+          "recall@5": 1.0,
+          "recall@10": 1.0,
+          "mrr@10": 1.0
+        },
+        "hit_rate@5": 1.0
+      }
+    }
+  },
+  "by_script": {
+    "same": {
+      "vector": {
+        "n": 54,
+        "strict": {
+          "recall@1": 0.5556,
+          "recall@5": 0.7037,
+          "recall@10": 0.7963,
+          "mrr@10": 0.621
+        },
+        "relaxed": {
+          "recall@1": 0.6481,
+          "recall@5": 0.7407,
+          "recall@10": 0.7963,
+          "mrr@10": 0.6892
+        },
+        "hit_rate@5": 0.7037
+      },
+      "bm25": {
+        "n": 54,
+        "strict": {
+          "recall@1": 0.5741,
+          "recall@5": 0.7778,
+          "recall@10": 0.8333,
+          "mrr@10": 0.6505
+        },
+        "relaxed": {
+          "recall@1": 0.6852,
+          "recall@5": 0.7963,
+          "recall@10": 0.8704,
+          "mrr@10": 0.7337
+        },
+        "hit_rate@5": 0.7778
+      },
+      "hybrid": {
+        "n": 54,
+        "strict": {
+          "recall@1": 0.6111,
+          "recall@5": 0.8704,
+          "recall@10": 0.9074,
+          "mrr@10": 0.7342
+        },
+        "relaxed": {
+          "recall@1": 0.7222,
+          "recall@5": 0.8704,
+          "recall@10": 0.9074,
+          "mrr@10": 0.7897
+        },
+        "hit_rate@5": 0.8704
+      },
+      "hybrid_rerank": {
+        "n": 54,
+        "strict": {
+          "recall@1": 0.9444,
+          "recall@5": 0.9444,
+          "recall@10": 0.9815,
+          "mrr@10": 0.9497
+        },
+        "relaxed": {
+          "recall@1": 0.9444,
+          "recall@5": 0.9444,
+          "recall@10": 0.9815,
+          "mrr@10": 0.9497
+        },
+        "hit_rate@5": 0.9444
+      }
+    },
+    "cross": {
+      "vector": {
+        "n": 50,
+        "strict": {
+          "recall@1": 0.4,
+          "recall@5": 0.66,
+          "recall@10": 0.72,
+          "mrr@10": 0.511
+        },
+        "relaxed": {
+          "recall@1": 0.52,
+          "recall@5": 0.7,
+          "recall@10": 0.76,
+          "mrr@10": 0.6087
+        },
+        "hit_rate@5": 0.66
+      },
+      "bm25": {
+        "n": 50,
+        "strict": {
+          "recall@1": 0.58,
+          "recall@5": 0.8,
+          "recall@10": 0.86,
+          "mrr@10": 0.6619
+        },
+        "relaxed": {
+          "recall@1": 0.68,
+          "recall@5": 0.86,
+          "recall@10": 0.9,
+          "mrr@10": 0.7463
+        },
+        "hit_rate@5": 0.8
+      },
+      "hybrid": {
+        "n": 50,
+        "strict": {
+          "recall@1": 0.6,
+          "recall@5": 0.88,
+          "recall@10": 0.94,
+          "mrr@10": 0.7177
+        },
+        "relaxed": {
+          "recall@1": 0.72,
+          "recall@5": 0.88,
+          "recall@10": 0.98,
+          "mrr@10": 0.7941
+        },
+        "hit_rate@5": 0.88
+      },
+      "hybrid_rerank": {
+        "n": 50,
+        "strict": {
+          "recall@1": 0.82,
+          "recall@5": 0.98,
+          "recall@10": 0.98,
+          "mrr@10": 0.8967
+        },
+        "relaxed": {
+          "recall@1": 0.96,
+          "recall@5": 0.98,
+          "recall@10": 1.0,
+          "mrr@10": 0.972
+        },
+        "hit_rate@5": 0.98
+      }
+    }
+  },
+  "latency_ms": {
+    "encode": {
+      "mean": 250.5,
+      "p50": 50.5
+    },
+    "vec(searcher内)": {
+      "mean": 221.6,
+      "p50": 220.5
+    },
+    "bm25(searcher内)": {
+      "mean": 57.9,
+      "p50": 46.5
+    },
+    "fuse": {
+      "mean": 0.2,
+      "p50": 0.2
+    },
+    "取原文": {
+      "mean": 1960.8,
+      "p50": 1912.3
+    },
+    "重排": {
+      "mean": 1640.1,
+      "p50": 1560.8
+    }
+  },
+  "reranker_stats": {
+    "model": "master",
+    "fp16": true,
+    "load_seconds": 6.14,
+    "n_calls": 104,
+    "total_pairs": 10400,
+    "total_seconds": 164.42,
+    "ms_per_pair": 15.81
+  },
+  "per_query": [
+    {
+      "qid": "v1-04806f",
+      "kind": "easy",
+      "question": "流亡黯道里永恆帝國的建立者是谁？",
+      "gold_title": "流亡黯道",
+      "gold_chunk_id": "b534134734df4a711535059fce4a87c4",
+      "script_cross": false,
+      "leak_ratio": 0.077,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "流亡黯道"
+        },
+        "bm25": {
+          "strict": 96,
+          "relaxed": 1,
+          "top1_title": "流亡黯道"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "流亡黯道"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "流亡黯道"
+        }
+      }
+    },
+    {
+      "qid": "v1-09f297",
+      "kind": "easy",
+      "question": "这本书的评价怎么样？",
+      "gold_title": "还有一件事……",
+      "gold_chunk_id": "2fb883cace9daab6f2f3a07d9f9816bf",
+      "script_cross": false,
+      "leak_ratio": 0.0,
+      "ranks": {
+        "vector": {
+          "strict": 16,
+          "relaxed": 16,
+          "top1_title": "書評"
+        },
+        "bm25": {
+          "strict": null,
+          "relaxed": null,
+          "top1_title": "随机漫步的傻瓜"
+        },
+        "hybrid": {
+          "strict": 33,
+          "relaxed": 33,
+          "top1_title": "書評"
+        },
+        "hybrid_rerank": {
+          "strict": 7,
+          "relaxed": 7,
+          "top1_title": "随机漫步的傻瓜"
+        }
+      }
+    },
+    {
+      "qid": "v1-1b9a93",
+      "kind": "easy",
+      "question": "增乘开平方法算出的七万一千八百二十四的平方根是多少",
+      "gold_title": "增乘开平方法",
+      "gold_chunk_id": "5961b95c48041944e332503763c147ce",
+      "script_cross": false,
+      "leak_ratio": 0.636,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "增乘开平方法"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "增乘开平方法"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "增乘开平方法"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "增乘开平方法"
+        }
+      }
+    },
+    {
+      "qid": "v1-1d42d8",
+      "kind": "easy",
+      "question": "T21/22次列车是什么时候改为Z21/22次的？",
+      "gold_title": "T21/22次列车",
+      "gold_chunk_id": "db2a533c88241c2f539d7ab129330efe",
+      "script_cross": false,
+      "leak_ratio": 0.545,
+      "ranks": {
+        "vector": {
+          "strict": 9,
+          "relaxed": 1,
+          "top1_title": "T21/22次列车"
+        },
+        "bm25": {
+          "strict": 7,
+          "relaxed": 7,
+          "top1_title": "Z21/22次列车"
+        },
+        "hybrid": {
+          "strict": 5,
+          "relaxed": 5,
+          "top1_title": "T26/27、T28/25次列车"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "T21/22次列车"
+        }
+      }
+    },
+    {
+      "qid": "v1-1f1e6e",
+      "kind": "easy",
+      "question": "邓小平在哪一年会见撒切尔夫人时谈到一国两制？",
+      "gold_title": "一国两制",
+      "gold_chunk_id": "d3b6c7f21eab80d959e6b957f6b160eb",
+      "script_cross": true,
+      "leak_ratio": 0.474,
+      "ranks": {
+        "vector": {
+          "strict": 4,
+          "relaxed": 2,
+          "top1_title": "邓小平"
+        },
+        "bm25": {
+          "strict": 16,
+          "relaxed": 2,
+          "top1_title": "香港大事記"
+        },
+        "hybrid": {
+          "strict": 5,
+          "relaxed": 1,
+          "top1_title": "一国两制"
+        },
+        "hybrid_rerank": {
+          "strict": 2,
+          "relaxed": 1,
+          "top1_title": "一国两制"
+        }
+      }
+    },
+    {
+      "qid": "v1-210c94",
+      "kind": "easy",
+      "question": "阿尔弗雷德·阿斯顿最后一次代表法国队出场是什么时候？",
+      "gold_title": "阿尔弗雷德·阿斯顿",
+      "gold_chunk_id": "aa58492cf77cec2275bc62da9acb4ac8",
+      "script_cross": false,
+      "leak_ratio": 0.087,
+      "ranks": {
+        "vector": {
+          "strict": 4,
+          "relaxed": 1,
+          "top1_title": "阿尔弗雷德·阿斯顿"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "阿尔弗雷德·阿斯顿"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "阿尔弗雷德·阿斯顿"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "阿尔弗雷德·阿斯顿"
+        }
+      }
+    },
+    {
+      "qid": "v1-24ab0e",
+      "kind": "easy",
+      "question": "美麗荒境在Metacritic上PC版的评价怎么样？",
+      "gold_title": "美麗荒境",
+      "gold_chunk_id": "1d54cffa3448bc79eba4e2fcad4bcbc6",
+      "script_cross": false,
+      "leak_ratio": 0.348,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "美麗荒境"
+        },
+        "bm25": {
+          "strict": null,
+          "relaxed": null,
+          "top1_title": "捉鬼敢死队 (2016年游戏)"
+        },
+        "hybrid": {
+          "strict": 3,
+          "relaxed": 3,
+          "top1_title": "絕地求生"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "美麗荒境"
+        }
+      }
+    },
+    {
+      "qid": "v1-25d852",
+      "kind": "easy",
+      "question": "被動語態的主語通常指的是行動的受事還是主事？",
+      "gold_title": "被動語態",
+      "gold_chunk_id": "083d3472b35f387bd0c12745751fc1bb",
+      "script_cross": false,
+      "leak_ratio": 0.368,
+      "ranks": {
+        "vector": {
+          "strict": 8,
+          "relaxed": 8,
+          "top1_title": "主語"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "被動語態"
+        },
+        "hybrid": {
+          "strict": 2,
+          "relaxed": 2,
+          "top1_title": "主動語態"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "被動語態"
+        }
+      }
+    },
+    {
+      "qid": "v1-2ab66f",
+      "kind": "easy",
+      "question": "天目山主峰清凉峰海拔多少米？",
+      "gold_title": "天目山",
+      "gold_chunk_id": "45f8a25f6ae5295555e83fde87082818",
+      "script_cross": false,
+      "leak_ratio": 0.182,
+      "ranks": {
+        "vector": {
+          "strict": 5,
+          "relaxed": 5,
+          "top1_title": "清凉峰"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "天目山"
+        },
+        "hybrid": {
+          "strict": 2,
+          "relaxed": 2,
+          "top1_title": "清凉峰"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "天目山"
+        }
+      }
+    },
+    {
+      "qid": "v1-3dccab",
+      "kind": "easy",
+      "question": "刘烨是哪个城市的？",
+      "gold_title": "刘烨 (演员)",
+      "gold_chunk_id": "0b61d1cc8465cfe40f66ca2e5021b2bd",
+      "script_cross": true,
+      "leak_ratio": 0.0,
+      "ranks": {
+        "vector": {
+          "strict": 3,
+          "relaxed": 1,
+          "top1_title": "刘烨 (演员)"
+        },
+        "bm25": {
+          "strict": 9,
+          "relaxed": 3,
+          "top1_title": "日本友好城市或姊妹城市列表"
+        },
+        "hybrid": {
+          "strict": 2,
+          "relaxed": 1,
+          "top1_title": "刘烨 (演员)"
+        },
+        "hybrid_rerank": {
+          "strict": 2,
+          "relaxed": 1,
+          "top1_title": "刘烨 (演员)"
+        }
+      }
+    },
+    {
+      "qid": "v1-401995",
+      "kind": "easy",
+      "question": "中村美冶的继母叫什么名字？",
+      "gold_title": "不虐待我的繼母與繼姐",
+      "gold_chunk_id": "c93caa709ecae75bf9f9a50ac46e71c3",
+      "script_cross": true,
+      "leak_ratio": 0.1,
+      "ranks": {
+        "vector": {
+          "strict": 44,
+          "relaxed": 1,
+          "top1_title": "不虐待我的繼母與繼姐"
+        },
+        "bm25": {
+          "strict": 4,
+          "relaxed": 1,
+          "top1_title": "不虐待我的繼母與繼姐"
+        },
+        "hybrid": {
+          "strict": 4,
+          "relaxed": 1,
+          "top1_title": "不虐待我的繼母與繼姐"
+        },
+        "hybrid_rerank": {
+          "strict": 2,
+          "relaxed": 1,
+          "top1_title": "不虐待我的繼母與繼姐"
+        }
+      }
+    },
+    {
+      "qid": "v1-45c467",
+      "kind": "easy",
+      "question": "伊利亚·普里高津出生在哪座城市？",
+      "gold_title": "伊利亚·普里高津",
+      "gold_chunk_id": "db3900361aa9736f92157ccbc019af89",
+      "script_cross": false,
+      "leak_ratio": 0.385,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "伊利亚·普里高津"
+        },
+        "bm25": {
+          "strict": 5,
+          "relaxed": 3,
+          "top1_title": "普里戈任"
+        },
+        "hybrid": {
+          "strict": 2,
+          "relaxed": 1,
+          "top1_title": "伊利亚·普里高津"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "伊利亚·普里高津"
+        }
+      }
+    },
+    {
+      "qid": "v1-4b3250",
+      "kind": "easy",
+      "question": "西汉彩绘陶院落明器的院落是什么式样的？",
+      "gold_title": "居室明器",
+      "gold_chunk_id": "7719666d7b8c9c9a79496c158e302b86",
+      "script_cross": true,
+      "leak_ratio": 0.25,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "居室明器"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "居室明器"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "居室明器"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "居室明器"
+        }
+      }
+    },
+    {
+      "qid": "v1-50fb85",
+      "kind": "easy",
+      "question": "香港郵輪業諮詢委員會是哪一年成立的？",
+      "gold_title": "郵輪業諮詢委員會",
+      "gold_chunk_id": "a7c05ec88d99f1408ca0799baab5a498",
+      "script_cross": false,
+      "leak_ratio": 0.467,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "郵輪業諮詢委員會"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "郵輪業諮詢委員會"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "郵輪業諮詢委員會"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "郵輪業諮詢委員會"
+        }
+      }
+    },
+    {
+      "qid": "v1-52aa3b",
+      "kind": "easy",
+      "question": "布姜加·马尼克这部叙事诗的主角是谁？",
+      "gold_title": "布姜加·马尼克",
+      "gold_chunk_id": "ad191ab9178c549a5f4d4064e2294f58",
+      "script_cross": false,
+      "leak_ratio": 0.667,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "布姜加·马尼克"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "布姜加·马尼克"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "布姜加·马尼克"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "布姜加·马尼克"
+        }
+      }
+    },
+    {
+      "qid": "v1-54fb34",
+      "kind": "easy",
+      "question": "關山嶺山的海拔是多少公尺？",
+      "gold_title": "關山嶺山",
+      "gold_chunk_id": "05a0bd484fc3f3c9a0d628d5dc3bd8a8",
+      "script_cross": false,
+      "leak_ratio": 0.111,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "關山嶺山"
+        },
+        "bm25": {
+          "strict": 19,
+          "relaxed": 19,
+          "top1_title": "南雄市"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "關山嶺山"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "關山嶺山"
+        }
+      }
+    },
+    {
+      "qid": "v1-56ff20",
+      "kind": "easy",
+      "question": "长柄逆刃刀的刀刃是什么材质做的",
+      "gold_title": "长柄逆刃刀",
+      "gold_chunk_id": "2ef9d05d2e0f9fe48d5cbc7d2ae0c190",
+      "script_cross": true,
+      "leak_ratio": 0.167,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "长柄逆刃刀"
+        },
+        "bm25": {
+          "strict": 3,
+          "relaxed": 3,
+          "top1_title": "戰鐮"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "长柄逆刃刀"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "长柄逆刃刀"
+        }
+      }
+    },
+    {
+      "qid": "v1-5ab67a",
+      "kind": "easy",
+      "question": "康托尔用什么字母表示序数？",
+      "gold_title": "格奥尔格·康托尔",
+      "gold_chunk_id": "5d64e939a92b977f5ce0219358deca9b",
+      "script_cross": true,
+      "leak_ratio": 0.0,
+      "ranks": {
+        "vector": {
+          "strict": 2,
+          "relaxed": 2,
+          "top1_title": "序数"
+        },
+        "bm25": {
+          "strict": 5,
+          "relaxed": 5,
+          "top1_title": "序数"
+        },
+        "hybrid": {
+          "strict": 2,
+          "relaxed": 2,
+          "top1_title": "序数"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "格奥尔格·康托尔"
+        }
+      }
+    },
+    {
+      "qid": "v1-5d9bb0",
+      "kind": "easy",
+      "question": "监听模式是什么意思？",
+      "gold_title": "监听模式",
+      "gold_chunk_id": "67045030a4815ead90a403949b1add94",
+      "script_cross": false,
+      "leak_ratio": 0.286,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "监听模式"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "监听模式"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "监听模式"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "监听模式"
+        }
+      }
+    },
+    {
+      "qid": "v1-5e6b32",
+      "kind": "easy",
+      "question": "王娟萍现在担任什么党派的副主席？",
+      "gold_title": "王娟萍",
+      "gold_chunk_id": "a8ae8efbf0042ee7036a99ff0015ed63",
+      "script_cross": false,
+      "leak_ratio": 0.0,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "王娟萍"
+        },
+        "bm25": {
+          "strict": 8,
+          "relaxed": 8,
+          "top1_title": "勞動黨 (臺灣)"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "王娟萍"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "王娟萍"
+        }
+      }
+    },
+    {
+      "qid": "v1-6439f2",
+      "kind": "easy",
+      "question": "圃田县在唐朝贞观三年发生了什么变化？",
+      "gold_title": "圃田县",
+      "gold_chunk_id": "6aa9b7a83bbb0a1b3540b14abb9131e3",
+      "script_cross": false,
+      "leak_ratio": 0.067,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "圃田县"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "圃田县"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "圃田县"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "圃田县"
+        }
+      }
+    },
+    {
+      "qid": "v1-65a558",
+      "kind": "easy",
+      "question": "尹弘是什么时候正式当选河南省省长的？",
+      "gold_title": "尹弘",
+      "gold_chunk_id": "2e188bfcd5eca86f9641cb43a59aa8dd",
+      "script_cross": false,
+      "leak_ratio": 0.4,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "尹弘"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "尹弘"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "尹弘"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "尹弘"
+        }
+      }
+    },
+    {
+      "qid": "v1-6c689a",
+      "kind": "easy",
+      "question": "无限飞行游戏支持哪些操作系统平台？",
+      "gold_title": "無限飛行",
+      "gold_chunk_id": "4d140691e4cd2269a42eeb154c3daf95",
+      "script_cross": true,
+      "leak_ratio": 0.071,
+      "ranks": {
+        "vector": {
+          "strict": 8,
+          "relaxed": 8,
+          "top1_title": "无限飞行II"
+        },
+        "bm25": {
+          "strict": 8,
+          "relaxed": 8,
+          "top1_title": "美少女遊戲"
+        },
+        "hybrid": {
+          "strict": 4,
+          "relaxed": 4,
+          "top1_title": "无限飞行II"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "無限飛行"
+        }
+      }
+    },
+    {
+      "qid": "v1-79b11b",
+      "kind": "easy",
+      "question": "賴因哈德·比蒂科費爾在歐洲議會擔任過哪些委員會的職務？",
+      "gold_title": "賴因哈德·比蒂科費爾",
+      "gold_chunk_id": "a022b36e7d6e771f11b30228de71d3e6",
+      "script_cross": false,
+      "leak_ratio": 0.167,
+      "ranks": {
+        "vector": {
+          "strict": 2,
+          "relaxed": 1,
+          "top1_title": "賴因哈德·比蒂科費爾"
+        },
+        "bm25": {
+          "strict": 2,
+          "relaxed": 1,
+          "top1_title": "賴因哈德·比蒂科費爾"
+        },
+        "hybrid": {
+          "strict": 2,
+          "relaxed": 1,
+          "top1_title": "賴因哈德·比蒂科費爾"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "賴因哈德·比蒂科費爾"
+        }
+      }
+    },
+    {
+      "qid": "v1-87119c",
+      "kind": "easy",
+      "question": "郎溪县的唯一星级景区叫什么名字？",
+      "gold_title": "郎溪县",
+      "gold_chunk_id": "ad1bd05bbcdee51bcf9e32efbdd13ac2",
+      "script_cross": false,
+      "leak_ratio": 0.231,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "郎溪县"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "郎溪县"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "郎溪县"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "郎溪县"
+        }
+      }
+    },
+    {
+      "qid": "v1-88549d",
+      "kind": "easy",
+      "question": "广州市执信中学的文物建筑是什么级别的文物保护单位？",
+      "gold_title": "广州市执信中学",
+      "gold_chunk_id": "ece112576669130e1253f775f18eb5e4",
+      "script_cross": false,
+      "leak_ratio": 0.227,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "广州市执信中学"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "广州市执信中学"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "广州市执信中学"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "广州市执信中学"
+        }
+      }
+    },
+    {
+      "qid": "v1-99340c",
+      "kind": "easy",
+      "question": "嚴繩孫幾歲去世？",
+      "gold_title": "嚴繩孫",
+      "gold_chunk_id": "f363c8dcb88ee747a37b997340d3a71a",
+      "script_cross": false,
+      "leak_ratio": 0.0,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "嚴繩孫"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "嚴繩孫"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "嚴繩孫"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "嚴繩孫"
+        }
+      }
+    },
+    {
+      "qid": "v1-9d9b7b",
+      "kind": "easy",
+      "question": "花广联络线的下行线有多长？",
+      "gold_title": "花广联络线",
+      "gold_chunk_id": "51d23dae8e2dadbf1fe0400fb44ccc2e",
+      "script_cross": false,
+      "leak_ratio": 0.0,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "花广联络线"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "花广联络线"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "花广联络线"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "花广联络线"
+        }
+      }
+    },
+    {
+      "qid": "v1-acdbcb",
+      "kind": "easy",
+      "question": "大法螺属的物种螺壳通常是什么颜色？",
+      "gold_title": "大法螺属",
+      "gold_chunk_id": "e36fa39175507272dccf63c8a2de6a5f",
+      "script_cross": true,
+      "leak_ratio": 0.286,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "大法螺属"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "大法螺属"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "大法螺属"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "大法螺属"
+        }
+      }
+    },
+    {
+      "qid": "v1-adad89",
+      "kind": "easy",
+      "question": "墨西哥国际航空229号航班事故发生在哪一年？",
+      "gold_title": "墨西哥航空",
+      "gold_chunk_id": "255b343adcadb35dc5a3610e08924001",
+      "script_cross": true,
+      "leak_ratio": 0.421,
+      "ranks": {
+        "vector": {
+          "strict": 15,
+          "relaxed": 15,
+          "top1_title": "墨西哥航空940號班機空難"
+        },
+        "bm25": {
+          "strict": 3,
+          "relaxed": 3,
+          "top1_title": "墨西哥國際航空498號班機空難"
+        },
+        "hybrid": {
+          "strict": 2,
+          "relaxed": 2,
+          "top1_title": "墨西哥國際航空498號班機空難"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "墨西哥航空"
+        }
+      }
+    },
+    {
+      "qid": "v1-ae8fd7",
+      "kind": "easy",
+      "question": "欧麦尔清真寺在沙特阿拉伯的哪个地区？",
+      "gold_title": "欧麦尔清真寺",
+      "gold_chunk_id": "17fecb27592f23652e9aeef53a5f29ef",
+      "script_cross": false,
+      "leak_ratio": 0.4,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "欧麦尔清真寺"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "欧麦尔清真寺"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "欧麦尔清真寺"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "欧麦尔清真寺"
+        }
+      }
+    },
+    {
+      "qid": "v1-b250d2",
+      "kind": "easy",
+      "question": "猛烈宇宙交響曲·第七樂章「無限的愛」最初的名字是什么？",
+      "gold_title": "猛烈宇宙交響曲·第七樂章「無限的愛」",
+      "gold_chunk_id": "5d945866d5bd7df32149040f399ab183",
+      "script_cross": false,
+      "leak_ratio": 0.625,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "猛烈宇宙交響曲·第七樂章「無限的愛」"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "猛烈宇宙交響曲·第七樂章「無限的愛」"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "猛烈宇宙交響曲·第七樂章「無限的愛」"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "猛烈宇宙交響曲·第七樂章「無限的愛」"
+        }
+      }
+    },
+    {
+      "qid": "v1-b36dcd",
+      "kind": "easy",
+      "question": "孤岛危机2在GameRankings上PC版的评分是多少",
+      "gold_title": "末日之戰2",
+      "gold_chunk_id": "24e92fb3e46b22080f8a3109aee39db2",
+      "script_cross": false,
+      "leak_ratio": 0.48,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "末日之戰2"
+        },
+        "bm25": {
+          "strict": 3,
+          "relaxed": 1,
+          "top1_title": "末日之戰2"
+        },
+        "hybrid": {
+          "strict": 2,
+          "relaxed": 1,
+          "top1_title": "末日之戰2"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "末日之戰2"
+        }
+      }
+    },
+    {
+      "qid": "v1-b5a17c",
+      "kind": "easy",
+      "question": "布兰登·泰勒2022年9月28日签约的球队是哪支？",
+      "gold_title": "布兰登·泰勒 (1994年1月)",
+      "gold_chunk_id": "29e4aa76916e0114ad8ba9cc2841be40",
+      "script_cross": true,
+      "leak_ratio": 0.364,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "布兰登·泰勒 (1994年1月)"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "布兰登·泰勒 (1994年1月)"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "布兰登·泰勒 (1994年1月)"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "布兰登·泰勒 (1994年1月)"
+        }
+      }
+    },
+    {
+      "qid": "v1-b98811",
+      "kind": "easy",
+      "question": "广东省宪法草案是在哪一年的12月19日由省议会正式通过二读程序的？",
+      "gold_title": "广东省宪法草案",
+      "gold_chunk_id": "56f87db29d54a5a48ad98f059f51a2fd",
+      "script_cross": false,
+      "leak_ratio": 0.4,
+      "ranks": {
+        "vector": {
+          "strict": 8,
+          "relaxed": 2,
+          "top1_title": "廣東省議會"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "广东省宪法草案"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "广东省宪法草案"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "广东省宪法草案"
+        }
+      }
+    },
+    {
+      "qid": "v1-bb37db",
+      "kind": "easy",
+      "question": "阿溫德·克里希納是哪一年被任命為IBM執行長的？",
+      "gold_title": "阿溫德·克里希納",
+      "gold_chunk_id": "53f886812ca20967a4457a46f61998b4",
+      "script_cross": true,
+      "leak_ratio": 0.286,
+      "ranks": {
+        "vector": {
+          "strict": 2,
+          "relaxed": 1,
+          "top1_title": "阿溫德·克里希納"
+        },
+        "bm25": {
+          "strict": 2,
+          "relaxed": 1,
+          "top1_title": "阿溫德·克里希納"
+        },
+        "hybrid": {
+          "strict": 2,
+          "relaxed": 1,
+          "top1_title": "阿溫德·克里希納"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "阿溫德·克里希納"
+        }
+      }
+    },
+    {
+      "qid": "v1-c60af3",
+      "kind": "easy",
+      "question": "南卡罗来纳州脱离联邦宣言里主要指责北方各州没履行宪法哪一条款规定的义务？",
+      "gold_title": "南卡羅來納州脫離聯邦宣言",
+      "gold_chunk_id": "e446b9dc56622ed65a06579d6f4a8017",
+      "script_cross": true,
+      "leak_ratio": 0.273,
+      "ranks": {
+        "vector": {
+          "strict": 3,
+          "relaxed": 1,
+          "top1_title": "南卡羅來納州脫離聯邦宣言"
+        },
+        "bm25": {
+          "strict": 2,
+          "relaxed": 1,
+          "top1_title": "南卡羅來納州脫離聯邦宣言"
+        },
+        "hybrid": {
+          "strict": 2,
+          "relaxed": 1,
+          "top1_title": "南卡羅來納州脫離聯邦宣言"
+        },
+        "hybrid_rerank": {
+          "strict": 2,
+          "relaxed": 1,
+          "top1_title": "南卡羅來納州脫離聯邦宣言"
+        }
+      }
+    },
+    {
+      "qid": "v1-c6d12b",
+      "kind": "easy",
+      "question": "子母牌牛奶马来西亚公司最初成立时叫什么名字？",
+      "gold_title": "子母牌牛奶馬來西亞公司",
+      "gold_chunk_id": "d51bf02f07ae5863cd1fec4f7184c419",
+      "script_cross": true,
+      "leak_ratio": 0.421,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "子母牌牛奶馬來西亞公司"
+        },
+        "bm25": {
+          "strict": 2,
+          "relaxed": 1,
+          "top1_title": "子母牌牛奶馬來西亞公司"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "子母牌牛奶馬來西亞公司"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "子母牌牛奶馬來西亞公司"
+        }
+      }
+    },
+    {
+      "qid": "v1-c78662",
+      "kind": "easy",
+      "question": "貝比·赫曼1929年的長打率是多少？",
+      "gold_title": "貝比·赫曼",
+      "gold_chunk_id": "594e4c2e92230c417e81930b0f561680",
+      "script_cross": false,
+      "leak_ratio": 0.2,
+      "ranks": {
+        "vector": {
+          "strict": 3,
+          "relaxed": 1,
+          "top1_title": "貝比·赫曼"
+        },
+        "bm25": {
+          "strict": 5,
+          "relaxed": 1,
+          "top1_title": "貝比·赫曼"
+        },
+        "hybrid": {
+          "strict": 2,
+          "relaxed": 1,
+          "top1_title": "貝比·赫曼"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "貝比·赫曼"
+        }
+      }
+    },
+    {
+      "qid": "v1-cfe1ef",
+      "kind": "easy",
+      "question": "明信女子学校1938年改名叫什么",
+      "gold_title": "明信女子学校",
+      "gold_chunk_id": "254df30c606c38343bd24657927af358",
+      "script_cross": false,
+      "leak_ratio": 0.385,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "明信女子学校"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "明信女子学校"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "明信女子学校"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "明信女子学校"
+        }
+      }
+    },
+    {
+      "qid": "v1-d3a543",
+      "kind": "easy",
+      "question": "坦迪中心地铁是哪一年停止运营的？",
+      "gold_title": "坦迪中心地铁",
+      "gold_chunk_id": "f782842c6e3353a50d8d0dfce298e150",
+      "script_cross": false,
+      "leak_ratio": 0.154,
+      "ranks": {
+        "vector": {
+          "strict": 2,
+          "relaxed": 1,
+          "top1_title": "坦迪中心地铁"
+        },
+        "bm25": {
+          "strict": 2,
+          "relaxed": 1,
+          "top1_title": "坦迪中心地铁"
+        },
+        "hybrid": {
+          "strict": 2,
+          "relaxed": 1,
+          "top1_title": "坦迪中心地铁"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "坦迪中心地铁"
+        }
+      }
+    },
+    {
+      "qid": "v1-d7fe42",
+      "kind": "easy",
+      "question": "马来西亚联邦政府宪报是由哪个机构发布的？",
+      "gold_title": "马来西亚联邦政府宪报",
+      "gold_chunk_id": "50d6b400aba1f41e906f7761a594e8f9",
+      "script_cross": false,
+      "leak_ratio": 0.412,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "马来西亚联邦政府宪报"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "马来西亚联邦政府宪报"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "马来西亚联邦政府宪报"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "马来西亚联邦政府宪报"
+        }
+      }
+    },
+    {
+      "qid": "v1-f0d458",
+      "kind": "easy",
+      "question": "卡利斯托被赫拉变成什么动物了？",
+      "gold_title": "卡利斯托",
+      "gold_chunk_id": "21648784927bceb258eb6cb136d96dff",
+      "script_cross": true,
+      "leak_ratio": 0.083,
+      "ranks": {
+        "vector": {
+          "strict": 2,
+          "relaxed": 1,
+          "top1_title": "卡利斯托"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "卡利斯托"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "卡利斯托"
+        },
+        "hybrid_rerank": {
+          "strict": 2,
+          "relaxed": 1,
+          "top1_title": "卡利斯托"
+        }
+      }
+    },
+    {
+      "qid": "v1-f2c036",
+      "kind": "easy",
+      "question": "宇航员在失重状态下会增高多少厘米？",
+      "gold_title": "人類身高",
+      "gold_chunk_id": "fc02ebb1f190dfe85ef5ebdb909e6c9f",
+      "script_cross": false,
+      "leak_ratio": 0.214,
+      "ranks": {
+        "vector": {
+          "strict": 35,
+          "relaxed": 35,
+          "top1_title": "太空移民"
+        },
+        "bm25": {
+          "strict": 2,
+          "relaxed": 2,
+          "top1_title": "失重"
+        },
+        "hybrid": {
+          "strict": 6,
+          "relaxed": 6,
+          "top1_title": "失重"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "人類身高"
+        }
+      }
+    },
+    {
+      "qid": "v1-f40546",
+      "kind": "easy",
+      "question": "福建省人大常委会是哪一年设立的",
+      "gold_title": "福建省人民代表大会常务委员会",
+      "gold_chunk_id": "0a0bc98a3ef8a63c26bcc42b095b7594",
+      "script_cross": false,
+      "leak_ratio": 0.0,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "福建省人民代表大会常务委员会"
+        },
+        "bm25": {
+          "strict": null,
+          "relaxed": 7,
+          "top1_title": "张广敏"
+        },
+        "hybrid": {
+          "strict": 2,
+          "relaxed": 1,
+          "top1_title": "福建省人民代表大会常务委员会"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "福建省人民代表大会常务委员会"
+        }
+      }
+    },
+    {
+      "qid": "v1-0470cb",
+      "kind": "hard_anon",
+      "question": "有位在西北部一个村庄检查点被部队打死的15岁男孩，他和哥哥遭遇了什么类型的射击后受伤",
+      "gold_title": "叙利亚内战年表 (2011年9月—2011年12月)",
+      "gold_chunk_id": "8a7bb4ff0965f44cc9d19117aa32c167",
+      "script_cross": false,
+      "leak_ratio": 0.128,
+      "ranks": {
+        "vector": {
+          "strict": null,
+          "relaxed": null,
+          "top1_title": "李如富"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "叙利亚内战年表 (2011年9月—2011年12月)"
+        },
+        "hybrid": {
+          "strict": 2,
+          "relaxed": 2,
+          "top1_title": "李如富"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "叙利亚内战年表 (2011年9月—2011年12月)"
+        }
+      }
+    },
+    {
+      "qid": "v1-0ad606",
+      "kind": "hard_anon",
+      "question": "这位1907年接受按立并被派往中国传教的英国圣公会神职人员，1936年后担任哪个教区的主教",
+      "gold_title": "侯礼敦",
+      "gold_chunk_id": "3d74cfc16c4c8b23c75788904b32a61d",
+      "script_cross": false,
+      "leak_ratio": 0.286,
+      "ranks": {
+        "vector": {
+          "strict": 18,
+          "relaxed": 11,
+          "top1_title": "中國傳教會"
+        },
+        "bm25": {
+          "strict": 3,
+          "relaxed": 3,
+          "top1_title": "史多马"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "侯礼敦"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "侯礼敦"
+        }
+      }
+    },
+    {
+      "qid": "v1-0b16ea",
+      "kind": "hard_anon",
+      "question": "有一座市立博物馆，位于海滨百道开发区中央，西边是福冈塔，北边是福冈巨蛋，还收藏着著名的汉倭奴国王印，它是什么时候正式开馆的",
+      "gold_title": "福岡市博物館",
+      "gold_chunk_id": "6f76f9d7721bef838a41fce626979d41",
+      "script_cross": true,
+      "leak_ratio": 0.345,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "福岡市博物館"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "福岡市博物館"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "福岡市博物館"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "福岡市博物館"
+        }
+      }
+    },
+    {
+      "qid": "v1-0dd0ad",
+      "kind": "hard_anon",
+      "question": "一种株高不到30厘米、叶子厚而肉质、花有单瓣和复瓣、颜色多样还分单色复色的植物，它俗称什么？",
+      "gold_title": "大花马齿苋",
+      "gold_chunk_id": "021e2f5e1e97075fc7a8a06ed56c36e5",
+      "script_cross": true,
+      "leak_ratio": 0.047,
+      "ranks": {
+        "vector": {
+          "strict": null,
+          "relaxed": null,
+          "top1_title": "芸香属"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "大花马齿苋"
+        },
+        "hybrid": {
+          "strict": 4,
+          "relaxed": 4,
+          "top1_title": "肉锥花属"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "大花马齿苋"
+        }
+      }
+    },
+    {
+      "qid": "v1-0fde78",
+      "kind": "hard_anon",
+      "question": "有位在隆庆五年考中二甲第五十七名进士、后来担任过凤阳府知府和陕西按察司副使的官员，他在万历二十九年正月因何事被降职？",
+      "gold_title": "張登雲",
+      "gold_chunk_id": "ac38adb3590c494cb7f2f7aa5f0289b2",
+      "script_cross": true,
+      "leak_ratio": 0.309,
+      "ranks": {
+        "vector": {
+          "strict": 7,
+          "relaxed": 7,
+          "top1_title": "邢有忭"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "張登雲"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "張登雲"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "張登雲"
+        }
+      }
+    },
+    {
+      "qid": "v1-156de3",
+      "kind": "hard_anon",
+      "question": "哪个东南亚国家在1963年9月因为反对北婆罗洲并入新成立的联邦国家而宣布断绝外交关系？",
+      "gold_title": "马来西亚—菲律宾关系",
+      "gold_chunk_id": "0a23fd07974fe6f87981ff2b0ef97f5e",
+      "script_cross": false,
+      "leak_ratio": 0.475,
+      "ranks": {
+        "vector": {
+          "strict": 14,
+          "relaxed": 14,
+          "top1_title": "1965年新加坡独立协议"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "马来西亚—菲律宾关系"
+        },
+        "hybrid": {
+          "strict": 2,
+          "relaxed": 2,
+          "top1_title": "北婆羅洲聯邦"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "马来西亚—菲律宾关系"
+        }
+      }
+    },
+    {
+      "qid": "v1-157e46",
+      "kind": "hard_anon",
+      "question": "有位禅宗祖师曾对一位推崇建寺抄经的皇帝说，这些行为只是有为之事，并非实在的功德，这位祖师是谁",
+      "gold_title": "福德 (佛教)",
+      "gold_chunk_id": "a964862671325a0b364a468d0f433a86",
+      "script_cross": true,
+      "leak_ratio": 0.116,
+      "ranks": {
+        "vector": {
+          "strict": null,
+          "relaxed": null,
+          "top1_title": "笑岩德宝"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "福德 (佛教)"
+        },
+        "hybrid": {
+          "strict": 4,
+          "relaxed": 4,
+          "top1_title": "祖師禪"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "福德 (佛教)"
+        }
+      }
+    },
+    {
+      "qid": "v1-169831",
+      "kind": "hard_anon",
+      "question": "列出了实际管辖地区所有公私立普通型高中的那份名单，是按什么时间来排序的",
+      "gold_title": "中華民國普通型高級中等學校列表",
+      "gold_chunk_id": "e9c8ef815cecb5cb546837d4a1aa9269",
+      "script_cross": true,
+      "leak_ratio": 0.375,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "中華民國普通型高級中等學校列表"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "中華民國普通型高級中等學校列表"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "中華民國普通型高級中等學校列表"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "中華民國普通型高級中等學校列表"
+        }
+      }
+    },
+    {
+      "qid": "v1-171770",
+      "kind": "hard_anon",
+      "question": "有位在清初倡导经世致用、力行实学并大搞考据的学者，他认为明代学风空疏，他的观点被一位历史学博士用来说明文字狱的影响被夸大，这位学者是谁",
+      "gold_title": "康乾盛世",
+      "gold_chunk_id": "1203c3a15f8cb5240d137c3954d4bbf6",
+      "script_cross": true,
+      "leak_ratio": 0.344,
+      "ranks": {
+        "vector": {
+          "strict": null,
+          "relaxed": null,
+          "top1_title": "崔適"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "康乾盛世"
+        },
+        "hybrid": {
+          "strict": 2,
+          "relaxed": 2,
+          "top1_title": "實學"
+        },
+        "hybrid_rerank": {
+          "strict": 21,
+          "relaxed": 10,
+          "top1_title": "顾炎武"
+        }
+      }
+    },
+    {
+      "qid": "v1-28002e",
+      "kind": "hard_anon",
+      "question": "有一种二元酸，电导实验能证明它的性质，但至今没发现它的酸式盐，这种物质的盐类都易溶于水，而且它的阴离子结构跟乙烷类似，只是构象不同，它的两个硫原子之间的距离是多少",
+      "gold_title": "连二硫酸",
+      "gold_chunk_id": "1a09fa846ed03c714f8e7b5ff09aabf2",
+      "script_cross": false,
+      "leak_ratio": 0.167,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "连二硫酸"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "连二硫酸"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "连二硫酸"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "连二硫酸"
+        }
+      }
+    },
+    {
+      "qid": "v1-338517",
+      "kind": "hard_anon",
+      "question": "这位曾与加拿大出生的立陶宛和爱尔兰后裔女星结婚的男演员，他的第二任妻子是谁",
+      "gold_title": "西德尼·波蒂埃",
+      "gold_chunk_id": "d90aed4ffd7001a06da77c867a46ef7c",
+      "script_cross": false,
+      "leak_ratio": 0.529,
+      "ranks": {
+        "vector": {
+          "strict": 10,
+          "relaxed": 10,
+          "top1_title": "史蒂芬·艾梅爾"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "西德尼·波蒂埃"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "西德尼·波蒂埃"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "西德尼·波蒂埃"
+        }
+      }
+    },
+    {
+      "qid": "v1-49555c",
+      "kind": "hard_anon",
+      "question": "因为疫情导致无法正常往返两地读书的学生，最早在什么时候开始分阶段恢复面授课堂？",
+      "gold_title": "深港學生跨境上學問題",
+      "gold_chunk_id": "9805021b53d4165f7051bc186a750bb8",
+      "script_cross": true,
+      "leak_ratio": 0.028,
+      "ranks": {
+        "vector": {
+          "strict": 20,
+          "relaxed": 20,
+          "top1_title": "2019冠狀病毒病香港反應與影響"
+        },
+        "bm25": {
+          "strict": 12,
+          "relaxed": 12,
+          "top1_title": "2019冠狀病毒病香港疫情相關安排"
+        },
+        "hybrid": {
+          "strict": 9,
+          "relaxed": 9,
+          "top1_title": "2019冠狀病毒病香港反應與影響"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "深港學生跨境上學問題"
+        }
+      }
+    },
+    {
+      "qid": "v1-55fe6f",
+      "kind": "hard_anon",
+      "question": "在德国柏林博物馆岛上，位于重建后的某座博物馆和施普雷河之间的那座2019年开放的艺术场馆，它的名字是为了纪念哪位捐赠者？",
+      "gold_title": "詹姆斯·西蒙畫廊",
+      "gold_chunk_id": "cea79e56139444ac82704bf23405403e",
+      "script_cross": true,
+      "leak_ratio": 0.263,
+      "ranks": {
+        "vector": {
+          "strict": 2,
+          "relaxed": 2,
+          "top1_title": "德意志博物馆"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "詹姆斯·西蒙畫廊"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "詹姆斯·西蒙畫廊"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "詹姆斯·西蒙畫廊"
+        }
+      }
+    },
+    {
+      "qid": "v1-6e47b3",
+      "kind": "hard_anon",
+      "question": "有位女子网球运动员，她和固定搭档在2020年澳网双打打进第三轮，还在同年的列克星敦公开赛夺冠，她的搭档是谁",
+      "gold_title": "海莉·卡特",
+      "gold_chunk_id": "50d0a08199058b1f54855803117e8c97",
+      "script_cross": false,
+      "leak_ratio": 0.14,
+      "ranks": {
+        "vector": {
+          "strict": null,
+          "relaxed": null,
+          "top1_title": "2024年澳大利亚网球公开赛女子双打比赛"
+        },
+        "bm25": {
+          "strict": 8,
+          "relaxed": 8,
+          "top1_title": "埃丝特勒·卡希诺"
+        },
+        "hybrid": {
+          "strict": 17,
+          "relaxed": 17,
+          "top1_title": "米丽娅姆·什科赫"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "海莉·卡特"
+        }
+      }
+    },
+    {
+      "qid": "v1-778faa",
+      "kind": "hard_anon",
+      "question": "有位在2018年3月被提名为国务委员及国务院秘书长、后来成为副国级领导人的官员，他在2023年3月当选为什么职务",
+      "gold_title": "肖捷",
+      "gold_chunk_id": "1db2835f305b4d6c516b8cda14e84edb",
+      "script_cross": false,
+      "leak_ratio": 0.453,
+      "ranks": {
+        "vector": {
+          "strict": null,
+          "relaxed": null,
+          "top1_title": "全国人民代表大会常务委员会副委员长"
+        },
+        "bm25": {
+          "strict": 4,
+          "relaxed": 4,
+          "top1_title": "赵克志"
+        },
+        "hybrid": {
+          "strict": 9,
+          "relaxed": 9,
+          "top1_title": "刘国中"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "肖捷"
+        }
+      }
+    },
+    {
+      "qid": "v1-7e9162",
+      "kind": "hard_anon",
+      "question": "有位参加2007年一个歌唱比赛获得亚军后被娱乐公司发掘的香港男歌手，他和另一位新人组成情侣档并靠一首合唱歌走红，这首歌的网上点击率超过925万，这位男歌手出道年份是哪一年？",
+      "gold_title": "鍾一憲",
+      "gold_chunk_id": "c68ac714131b7b4d36da64ee0e005f17",
+      "script_cross": true,
+      "leak_ratio": 0.169,
+      "ranks": {
+        "vector": {
+          "strict": null,
+          "relaxed": null,
+          "top1_title": "唐卓霆"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "鍾一憲"
+        },
+        "hybrid": {
+          "strict": 3,
+          "relaxed": 3,
+          "top1_title": "洪卓立"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "鍾一憲"
+        }
+      }
+    },
+    {
+      "qid": "v1-7ede68",
+      "kind": "hard_anon",
+      "question": "那位继承了爵位后管理家族祖宅阿尼克城堡的人，是在哪一年继承爵位的",
+      "gold_title": "第十二代諾森伯蘭公爵拉爾夫·珀西",
+      "gold_chunk_id": "f6518449dd1509a2dbeb743f8588c993",
+      "script_cross": true,
+      "leak_ratio": 0.241,
+      "ranks": {
+        "vector": {
+          "strict": null,
+          "relaxed": null,
+          "top1_title": "阿萊克修斯·腓特烈·克里斯蒂安"
+        },
+        "bm25": {
+          "strict": 5,
+          "relaxed": 5,
+          "top1_title": "馬爾博羅公爵"
+        },
+        "hybrid": {
+          "strict": 10,
+          "relaxed": 10,
+          "top1_title": "馬爾博羅公爵"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "第十二代諾森伯蘭公爵拉爾夫·珀西"
+        }
+      }
+    },
+    {
+      "qid": "v1-8006ed",
+      "kind": "hard_anon",
+      "question": "那面被犹太教徒视为除圣殿山本身外最神圣的、位于耶路撒冷旧城内圣殿山山下西侧的古城墙残存部分，被阿拉伯人称为什么？",
+      "gold_title": "西墙",
+      "gold_chunk_id": "16161713fae2cb2cc0ef2defd55c9978",
+      "script_cross": false,
+      "leak_ratio": 0.358,
+      "ranks": {
+        "vector": {
+          "strict": 2,
+          "relaxed": 2,
+          "top1_title": "布拉克 (神兽)"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "西墙"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "西墙"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "西墙"
+        }
+      }
+    },
+    {
+      "qid": "v1-822a67",
+      "kind": "hard_anon",
+      "question": "有位在2015年国际足联U-20世界杯决赛加时赛最后阶段打进绝杀球的球员，他当时代表哪个国家参赛？",
+      "gold_title": "內馬尼亞·馬克西莫維奇",
+      "gold_chunk_id": "8a13534762db438191409f370ca5c174",
+      "script_cross": false,
+      "leak_ratio": 0.304,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "內馬尼亞·馬克西莫維奇"
+        },
+        "bm25": {
+          "strict": 3,
+          "relaxed": 3,
+          "top1_title": "基斯坦奴·朗拿度"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "內馬尼亞·馬克西莫維奇"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "內馬尼亞·馬克西莫維奇"
+        }
+      }
+    },
+    {
+      "qid": "v1-8bba55",
+      "kind": "hard_anon",
+      "question": "小学数学教育里最早接触的那种数的排列方式，是针对什么数的？",
+      "gold_title": "序理论",
+      "gold_chunk_id": "f10f488c75a49e5cff58911191d9c23d",
+      "script_cross": false,
+      "leak_ratio": 0.115,
+      "ranks": {
+        "vector": {
+          "strict": null,
+          "relaxed": null,
+          "top1_title": "竖式"
+        },
+        "bm25": {
+          "strict": null,
+          "relaxed": null,
+          "top1_title": "吴正宪"
+        },
+        "hybrid": {
+          "strict": null,
+          "relaxed": null,
+          "top1_title": "竖式"
+        },
+        "hybrid_rerank": {
+          "strict": null,
+          "relaxed": null,
+          "top1_title": "竖式"
+        }
+      }
+    },
+    {
+      "qid": "v1-998ff4",
+      "kind": "hard_anon",
+      "question": "对某个地方的环境要素和整体优劣程度进行定性和定量描述评定的工作，按时间段不同可以分为哪三种类型？",
+      "gold_title": "环境质量评价",
+      "gold_chunk_id": "29798ead248b5a6a6a2ab6f8391c7967",
+      "script_cross": false,
+      "leak_ratio": 0.289,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "环境质量评价"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "环境质量评价"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "环境质量评价"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "环境质量评价"
+        }
+      }
+    },
+    {
+      "qid": "v1-9a5cca",
+      "kind": "hard_anon",
+      "question": "有一位在北魏时期被赐名、后来官至司徒并封为南平公的人物，他十四岁时就接替父亲管理部族事务，这个人最初的名字是什么",
+      "gold_title": "河南长孙氏",
+      "gold_chunk_id": "dc1f36385c72c6655ea49999887d0b37",
+      "script_cross": false,
+      "leak_ratio": 0.019,
+      "ranks": {
+        "vector": {
+          "strict": null,
+          "relaxed": null,
+          "top1_title": "尉詡"
+        },
+        "bm25": {
+          "strict": 12,
+          "relaxed": 12,
+          "top1_title": "楊智積"
+        },
+        "hybrid": {
+          "strict": 24,
+          "relaxed": 24,
+          "top1_title": "高崇文 (南平郡王)"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "河南长孙氏"
+        }
+      }
+    },
+    {
+      "qid": "v1-a1d7bf",
+      "kind": "hard_anon",
+      "question": "在意大利南部阿马尔菲海岸一个小镇的历史中心、主教座堂广场前的那座13世纪始建、19世纪大规模改建的建筑，最初属于哪个家族？",
+      "gold_title": "卢佛罗别墅",
+      "gold_chunk_id": "3c7a9b3f9fbd1a2172acca133a7849d3",
+      "script_cross": false,
+      "leak_ratio": 0.379,
+      "ranks": {
+        "vector": {
+          "strict": null,
+          "relaxed": null,
+          "top1_title": "阿马尔菲主教座堂"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "卢佛罗别墅"
+        },
+        "hybrid": {
+          "strict": 3,
+          "relaxed": 3,
+          "top1_title": "阿马尔菲主教座堂"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "卢佛罗别墅"
+        }
+      }
+    },
+    {
+      "qid": "v1-a492e7",
+      "kind": "hard_anon",
+      "question": "有位在孝昌三年因察觉刺史异常举动而密报朝廷，后来参与平定叛乱并升任相州刺史的将领，他最后战死在哪场战役中？",
+      "gold_title": "裴衍",
+      "gold_chunk_id": "1456312ff19c6cf79a0c590711af68f4",
+      "script_cross": false,
+      "leak_ratio": 0.04,
+      "ranks": {
+        "vector": {
+          "strict": null,
+          "relaxed": null,
+          "top1_title": "魏相 (汉朝)"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "裴衍"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "裴衍"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "裴衍"
+        }
+      }
+    },
+    {
+      "qid": "v1-b6aeea",
+      "kind": "hard_anon",
+      "question": "在一些西方国家，目前所有死亡人数中有多大比例是因为某种严重疾病导致的？",
+      "gold_title": "癌症",
+      "gold_chunk_id": "484fd1aa7a7971f4c92fdead88171bde",
+      "script_cross": true,
+      "leak_ratio": 0.344,
+      "ranks": {
+        "vector": {
+          "strict": null,
+          "relaxed": null,
+          "top1_title": "死亡"
+        },
+        "bm25": {
+          "strict": 8,
+          "relaxed": 8,
+          "top1_title": "致死率"
+        },
+        "hybrid": {
+          "strict": 14,
+          "relaxed": 14,
+          "top1_title": "中國的慢性病"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "癌症"
+        }
+      }
+    },
+    {
+      "qid": "v1-ba4d84",
+      "kind": "hard_anon",
+      "question": "有一条单线铁路，所在地距东京不到一小时车程，沿线经过青春明亮的海滨地区、一座小岛和一座有幕府古风的古都，它因哪部同名漫画改编的动画主题曲场景而让某个平交道成为外国游客打卡地",
+      "gold_title": "江之島電鐵",
+      "gold_chunk_id": "92c66f1da7c62090f40a8c69a10477d5",
+      "script_cross": false,
+      "leak_ratio": 0.241,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "江之島電鐵"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "江之島電鐵"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "江之島電鐵"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "江之島電鐵"
+        }
+      }
+    },
+    {
+      "qid": "v1-c3581d",
+      "kind": "hard_anon",
+      "question": "有一辆以1941年某部动画电影里的同名火车为蓝本的游乐设施，它在加州某乐园开幕当天启用，但第二天就关闭做安全测试，这辆车重新开放的具体日期是哪天",
+      "gold_title": "小凱西馬戲團火車",
+      "gold_chunk_id": "57c1ac5c9cc67b7b5bc4fd4e31667be1",
+      "script_cross": true,
+      "leak_ratio": 0.246,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "小凱西馬戲團火車"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "小凱西馬戲團火車"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "小凱西馬戲團火車"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "小凱西馬戲團火車"
+        }
+      }
+    },
+    {
+      "qid": "v1-d27c79",
+      "kind": "hard_anon",
+      "question": "嘴长得特别直、体型很小的蜂鸟，它的喙宽度和厚度各是多少毫米",
+      "gold_title": "直嘴隐蜂鸟",
+      "gold_chunk_id": "fef18c6b846624ae91faa3ada39c4c66",
+      "script_cross": false,
+      "leak_ratio": 0.0,
+      "ranks": {
+        "vector": {
+          "strict": 3,
+          "relaxed": 3,
+          "top1_title": "紅嘴綬帶蜂鳥"
+        },
+        "bm25": {
+          "strict": 17,
+          "relaxed": 17,
+          "top1_title": "艳蜂鸟"
+        },
+        "hybrid": {
+          "strict": 2,
+          "relaxed": 2,
+          "top1_title": "须蜂鸟"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "直嘴隐蜂鸟"
+        }
+      }
+    },
+    {
+      "qid": "v1-e5aca5",
+      "kind": "hard_anon",
+      "question": "一种体细长侧扁、银色体色带深色纵带、背鳍起于腹鳍起点的鱼，被IUCN列为易危保育类动物，它最长能长到多少厘米",
+      "gold_title": "特拉維夫刺鯿",
+      "gold_chunk_id": "54a6b43262d1f5eeb12b502055b7411f",
+      "script_cross": true,
+      "leak_ratio": 0.353,
+      "ranks": {
+        "vector": {
+          "strict": null,
+          "relaxed": null,
+          "top1_title": "细鳞鲑"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "特拉維夫刺鯿"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "特拉維夫刺鯿"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "特拉維夫刺鯿"
+        }
+      }
+    },
+    {
+      "qid": "v1-e6d5c5",
+      "kind": "hard_anon",
+      "question": "有一栋被指定为古迹的老建筑，原本是银行的总行办公地点，外墙石头多处脱落，走廊花石曾掉落，窗户大多无法推动，它最初是由哪个国家的人设计的",
+      "gold_title": "勸業銀行舊廈",
+      "gold_chunk_id": "6068fdc119a2d55628b3c90a860a18ac",
+      "script_cross": true,
+      "leak_ratio": 0.141,
+      "ranks": {
+        "vector": {
+          "strict": 6,
+          "relaxed": 6,
+          "top1_title": "西交民巷"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "勸業銀行舊廈"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "勸業銀行舊廈"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "勸業銀行舊廈"
+        }
+      }
+    },
+    {
+      "qid": "v1-f124c6",
+      "kind": "hard_anon",
+      "question": "有位在文化大革命时期活跃于德中友好协会、后来成为欧洲议会工业研究与能源委员会成员的政治人物，他出生在哪个城市？",
+      "gold_title": "賴因哈德·比蒂科費爾",
+      "gold_chunk_id": "a022b36e7d6e771f11b30228de71d3e6",
+      "script_cross": true,
+      "leak_ratio": 0.365,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "賴因哈德·比蒂科費爾"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "賴因哈德·比蒂科費爾"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "賴因哈德·比蒂科費爾"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "賴因哈德·比蒂科費爾"
+        }
+      }
+    },
+    {
+      "qid": "v1-f70977",
+      "kind": "hard_anon",
+      "question": "有位官至侍中、尚书的人物，性格奢侈傲慢，最终被东海王司马越诛杀，他祖父曾预言子孙会遭遇乱世，这个人死时他哥哥感叹祖父真是大圣人，这个人是谁",
+      "gold_title": "何绥",
+      "gold_chunk_id": "302e490ccaa35a813a3d017dce575491",
+      "script_cross": false,
+      "leak_ratio": 0.197,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "何绥"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "何绥"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "何绥"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "何绥"
+        }
+      }
+    },
+    {
+      "qid": "v1-017dc8",
+      "kind": "hard_para",
+      "question": "石以定的老家大概在现在的哪个地方？",
+      "gold_title": "石以定",
+      "gold_chunk_id": "6f860dd476bef0e4da1cd747264034ff",
+      "script_cross": false,
+      "leak_ratio": 0.0,
+      "ranks": {
+        "vector": {
+          "strict": 8,
+          "relaxed": 8,
+          "top1_title": "有子山城"
+        },
+        "bm25": {
+          "strict": null,
+          "relaxed": null,
+          "top1_title": "紅男綠女"
+        },
+        "hybrid": {
+          "strict": 15,
+          "relaxed": 15,
+          "top1_title": "紅男綠女"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "石以定"
+        }
+      }
+    },
+    {
+      "qid": "v1-03ef27",
+      "kind": "hard_para",
+      "question": "心理学里说的‘坚持’在TCI量表里属于哪种类型的心理特征？",
+      "gold_title": "持之以恆",
+      "gold_chunk_id": "e98ec03ff6c810264c13e2a9439eb84d",
+      "script_cross": true,
+      "leak_ratio": 0.0,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "持之以恆"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "持之以恆"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "持之以恆"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "持之以恆"
+        }
+      }
+    },
+    {
+      "qid": "v1-04e95e",
+      "kind": "hard_para",
+      "question": "治疗痔疮的经文里提到哪些类型的痔疮？",
+      "gold_title": "療痔病經",
+      "gold_chunk_id": "966b6ebafe7ff088917fc22bbeb1a948",
+      "script_cross": true,
+      "leak_ratio": 0.0,
+      "ranks": {
+        "vector": {
+          "strict": 5,
+          "relaxed": 1,
+          "top1_title": "療痔病經"
+        },
+        "bm25": {
+          "strict": null,
+          "relaxed": null,
+          "top1_title": "人類肛門"
+        },
+        "hybrid": {
+          "strict": 17,
+          "relaxed": 8,
+          "top1_title": "痔疮"
+        },
+        "hybrid_rerank": {
+          "strict": 3,
+          "relaxed": 1,
+          "top1_title": "療痔病經"
+        }
+      }
+    },
+    {
+      "qid": "v1-07585c",
+      "kind": "hard_para",
+      "question": "马丁贝克公司最早是从哪一年开始研究弹射座椅的？",
+      "gold_title": "馬丁貝克",
+      "gold_chunk_id": "8455e538784b7c7ec7919229ecc2052e",
+      "script_cross": true,
+      "leak_ratio": 0.25,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "馬丁貝克"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "馬丁貝克"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "馬丁貝克"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "馬丁貝克"
+        }
+      }
+    },
+    {
+      "qid": "v1-373590",
+      "kind": "hard_para",
+      "question": "辛雄是在哪一年被高欢杀掉的？",
+      "gold_title": "辛雄",
+      "gold_chunk_id": "118bfa196cccffe8d72192b12c61c3d5",
+      "script_cross": false,
+      "leak_ratio": 0.0,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "辛雄"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "辛雄"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "辛雄"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "辛雄"
+        }
+      }
+    },
+    {
+      "qid": "v1-42b55f",
+      "kind": "hard_para",
+      "question": "张嘉源第一次在中职一军上场是哪天？",
+      "gold_title": "張家源",
+      "gold_chunk_id": "a72cdda370a26a16d1adb1c6315ab479",
+      "script_cross": true,
+      "leak_ratio": 0.143,
+      "ranks": {
+        "vector": {
+          "strict": 21,
+          "relaxed": 2,
+          "top1_title": "紀榮家"
+        },
+        "bm25": {
+          "strict": 66,
+          "relaxed": 66,
+          "top1_title": "曾家賢"
+        },
+        "hybrid": {
+          "strict": 28,
+          "relaxed": 7,
+          "top1_title": "賴泊凱"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "張家源"
+        }
+      }
+    },
+    {
+      "qid": "v1-4b5cb2",
+      "kind": "hard_para",
+      "question": "新海诚最早讲完整故事的作品是什么？",
+      "gold_title": "新海誠作品列表",
+      "gold_chunk_id": "186fd373a642eeb3bfd7b337f8235274",
+      "script_cross": true,
+      "leak_ratio": 0.0,
+      "ranks": {
+        "vector": {
+          "strict": 2,
+          "relaxed": 2,
+          "top1_title": "新海誠"
+        },
+        "bm25": {
+          "strict": 3,
+          "relaxed": 3,
+          "top1_title": "追逐繁星的孩子"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "新海誠作品列表"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "新海誠作品列表"
+        }
+      }
+    },
+    {
+      "qid": "v1-5bbba3",
+      "kind": "hard_para",
+      "question": "澳大利亚最早用透明窗口加库克船长全息图的纸币是哪一年发行的",
+      "gold_title": "澳大利亚元纸币",
+      "gold_chunk_id": "448034610362e22a828f65e25ad72677",
+      "script_cross": false,
+      "leak_ratio": 0.077,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "澳大利亚元纸币"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "澳大利亚元纸币"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "澳大利亚元纸币"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "澳大利亚元纸币"
+        }
+      }
+    },
+    {
+      "qid": "v1-7f7ff2",
+      "kind": "hard_para",
+      "question": "大眼鳜的野生种群为啥在减少？",
+      "gold_title": "大眼鳜",
+      "gold_chunk_id": "508cbff896d621ca91d46925ca7f4807",
+      "script_cross": false,
+      "leak_ratio": 0.091,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "大眼鳜"
+        },
+        "bm25": {
+          "strict": 3,
+          "relaxed": 3,
+          "top1_title": "大眼裸颌鲈"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "大眼鳜"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "大眼鳜"
+        }
+      }
+    },
+    {
+      "qid": "v1-881821",
+      "kind": "hard_para",
+      "question": "胡格诺派－瓦隆人三百周年纪念币是在哪两个时间点由费城铸币局生产的？",
+      "gold_title": "胡格诺派-瓦隆人三百周年半美元",
+      "gold_chunk_id": "34dd9d6c5c871f21791fd8116e084003",
+      "script_cross": false,
+      "leak_ratio": 0.367,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "胡格诺派-瓦隆人三百周年半美元"
+        },
+        "bm25": {
+          "strict": 4,
+          "relaxed": 1,
+          "top1_title": "胡格诺派-瓦隆人三百周年半美元"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "胡格诺派-瓦隆人三百周年半美元"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "胡格诺派-瓦隆人三百周年半美元"
+        }
+      }
+    },
+    {
+      "qid": "v1-c57ba9",
+      "kind": "hard_para",
+      "question": "最早用上两个浴室加可隔出主人套房这种设计的出租公屋大厦是哪一栋？",
+      "gold_title": "非標準設計大廈",
+      "gold_chunk_id": "395f534a68c62cfcbea8415461c55e7b",
+      "script_cross": true,
+      "leak_ratio": 0.276,
+      "ranks": {
+        "vector": {
+          "strict": 12,
+          "relaxed": 12,
+          "top1_title": "工字型大廈"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "非標準設計大廈"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "非標準設計大廈"
+        },
+        "hybrid_rerank": {
+          "strict": 2,
+          "relaxed": 2,
+          "top1_title": "石硤尾邨"
+        }
+      }
+    },
+    {
+      "qid": "v1-ed9e54",
+      "kind": "hard_para",
+      "question": "玛哈拉贾在哪家理发店做过什么工作？",
+      "gold_title": "誰偷了垃圾桶？",
+      "gold_chunk_id": "cd88d3687bb89038d181c43afe4ad02d",
+      "script_cross": true,
+      "leak_ratio": 0.143,
+      "ranks": {
+        "vector": {
+          "strict": null,
+          "relaxed": null,
+          "top1_title": "哈萨玛·伊本·阿彦"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "誰偷了垃圾桶？"
+        },
+        "hybrid": {
+          "strict": 2,
+          "relaxed": 2,
+          "top1_title": "哈萨玛·伊本·阿彦"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "誰偷了垃圾桶？"
+        }
+      }
+    },
+    {
+      "qid": "v1-f23a18",
+      "kind": "hard_para",
+      "question": "芬兰拉普兰区的凯米-托尔尼奥次区在欧盟旧版NUTS 4统计区里的编号是多少？",
+      "gold_title": "凱米-托爾尼奧次區",
+      "gold_chunk_id": "945fa0de7c5a08c6444d2b0ef5f34d2e",
+      "script_cross": true,
+      "leak_ratio": 0.371,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "凱米-托爾尼奧次區"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "凱米-托爾尼奧次區"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "凱米-托爾尼奧次區"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "凱米-托爾尼奧次區"
+        }
+      }
+    },
+    {
+      "qid": "v1-f4e8ca",
+      "kind": "hard_para",
+      "question": "这张标志性的大屠杀照片是在什么时候拍的",
+      "gold_title": "文尼察最后的犹太人",
+      "gold_chunk_id": "4e7e381e8f6db81a881bb7bd4b621e13",
+      "script_cross": false,
+      "leak_ratio": 0.0,
+      "ranks": {
+        "vector": {
+          "strict": 3,
+          "relaxed": 3,
+          "top1_title": "英勇的游擊隊員"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "文尼察最后的犹太人"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "文尼察最后的犹太人"
+        },
+        "hybrid_rerank": {
+          "strict": 7,
+          "relaxed": 7,
+          "top1_title": "華沙隔都的猶太男孩"
+        }
+      }
+    },
+    {
+      "qid": "v1-54b0cd",
+      "kind": "t2s",
+      "question": "土龍木市社是哪一年改制為土龍木市的？",
+      "gold_title": "土龍木市",
+      "gold_chunk_id": "6a74a81c9367f4b511ce086acbaf8747",
+      "script_cross": true,
+      "leak_ratio": 0.467,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "土龍木市"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "土龍木市"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "土龍木市"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "土龍木市"
+        }
+      }
+    },
+    {
+      "qid": "v1-713aff",
+      "kind": "t2s",
+      "question": "九獅橋現在位於哪個城市的哪個區？",
+      "gold_title": "九狮桥",
+      "gold_chunk_id": "1c265956bc1edce64b2b102afdafa179",
+      "script_cross": true,
+      "leak_ratio": 0.0,
+      "ranks": {
+        "vector": {
+          "strict": 4,
+          "relaxed": 4,
+          "top1_title": "黄古林古建筑群"
+        },
+        "bm25": {
+          "strict": null,
+          "relaxed": null,
+          "top1_title": "日本友好城市或姊妹城市列表"
+        },
+        "hybrid": {
+          "strict": 7,
+          "relaxed": 7,
+          "top1_title": "黄古林古建筑群"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "九狮桥"
+        }
+      }
+    },
+    {
+      "qid": "v1-73ac56",
+      "kind": "t2s",
+      "question": "代守侖出生在哪個縣？",
+      "gold_title": "代守仑",
+      "gold_chunk_id": "1288cd44955338b7f40dd6c40948a6df",
+      "script_cross": true,
+      "leak_ratio": 0.429,
+      "ranks": {
+        "vector": {
+          "strict": null,
+          "relaxed": null,
+          "top1_title": "巴代"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "代守仑"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "代守仑"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "代守仑"
+        }
+      }
+    },
+    {
+      "qid": "v1-ab1c0c",
+      "kind": "t2s",
+      "question": "異抗壞血酸促進鐵吸收的能力是維生素C的幾倍？",
+      "gold_title": "异抗坏血酸",
+      "gold_chunk_id": "7f68b2fc0a7904d8cb3ead12caf6f24c",
+      "script_cross": true,
+      "leak_ratio": 0.842,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "异抗坏血酸"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "异抗坏血酸"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "异抗坏血酸"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "异抗坏血酸"
+        }
+      }
+    },
+    {
+      "qid": "v1-b71162",
+      "kind": "t2s",
+      "question": "白沙江的源頭叫什麼名字？",
+      "gold_title": "白沙江",
+      "gold_chunk_id": "bb566e11e172379b849435871341b932",
+      "script_cross": true,
+      "leak_ratio": 0.0,
+      "ranks": {
+        "vector": {
+          "strict": 2,
+          "relaxed": 2,
+          "top1_title": "白沙河 (富川江)"
+        },
+        "bm25": {
+          "strict": 3,
+          "relaxed": 3,
+          "top1_title": "立霧溪"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "白沙江"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "白沙江"
+        }
+      }
+    },
+    {
+      "qid": "v1-c612da",
+      "kind": "t2s",
+      "question": "君臨天下這棟大樓在天津哪個區？",
+      "gold_title": "君临天下 (天津)",
+      "gold_chunk_id": "5e45ab47b57a9c31d6b73bb4dd99707e",
+      "script_cross": true,
+      "leak_ratio": 0.083,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "君临天下 (天津)"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "君临天下 (天津)"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "君临天下 (天津)"
+        },
+        "hybrid_rerank": {
+          "strict": 2,
+          "relaxed": 1,
+          "top1_title": "君临天下 (天津)"
+        }
+      }
+    },
+    {
+      "qid": "v1-13374a",
+      "kind": "s2t",
+      "question": "剑角龙的头颅骨有多厚",
+      "gold_title": "劍角龍屬",
+      "gold_chunk_id": "351cda52f656df715749d5c7bef5d3a3",
+      "script_cross": true,
+      "leak_ratio": 0.571,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "劍角龍屬"
+        },
+        "bm25": {
+          "strict": 4,
+          "relaxed": 1,
+          "top1_title": "劍角龍屬"
+        },
+        "hybrid": {
+          "strict": 2,
+          "relaxed": 1,
+          "top1_title": "劍角龍屬"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "劍角龍屬"
+        }
+      }
+    },
+    {
+      "qid": "v1-4c776f",
+      "kind": "s2t",
+      "question": "2010年在台北举办的西藏文物特展叫什么名字",
+      "gold_title": "跋熱·達瓦才仁",
+      "gold_chunk_id": "d060a0fd9e977e16049528beaa9e455b",
+      "script_cross": true,
+      "leak_ratio": 0.263,
+      "ranks": {
+        "vector": {
+          "strict": 4,
+          "relaxed": 4,
+          "top1_title": "2010年臺北國際花卉博覽會"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "跋熱·達瓦才仁"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "跋熱·達瓦才仁"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "跋熱·達瓦才仁"
+        }
+      }
+    },
+    {
+      "qid": "v1-70b8b7",
+      "kind": "s2t",
+      "question": "陆师道中进士是哪一年？",
+      "gold_title": "陸師道",
+      "gold_chunk_id": "28b5641daee95d680ecef8289b933ab0",
+      "script_cross": true,
+      "leak_ratio": 0.0,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "陸師道"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "陸師道"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "陸師道"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "陸師道"
+        }
+      }
+    },
+    {
+      "qid": "v1-9589f1",
+      "kind": "s2t",
+      "question": "张居敬是哪一年中的进士？",
+      "gold_title": "張居敬",
+      "gold_chunk_id": "d3ddfa1566e1a115651a2a82f7a9b903",
+      "script_cross": true,
+      "leak_ratio": 0.0,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "張居敬"
+        },
+        "bm25": {
+          "strict": null,
+          "relaxed": null,
+          "top1_title": "奧林匹克國家公園"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "張居敬"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "張居敬"
+        }
+      }
+    },
+    {
+      "qid": "v1-a4e938",
+      "kind": "s2t",
+      "question": "2017年7月1日法务省一般职在职人数是多少？",
+      "gold_title": "法務省",
+      "gold_chunk_id": "29391b9a6837ec28704deb40771c0a0e",
+      "script_cross": true,
+      "leak_ratio": 0.65,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "法務省"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "法務省"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "法務省"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "法務省"
+        }
+      }
+    },
+    {
+      "qid": "v1-ef3d05",
+      "kind": "s2t",
+      "question": "瓦赫兰在1708年被哪个帝国占领？",
+      "gold_title": "瓦赫蘭",
+      "gold_chunk_id": "f3cc9e83dca3e94843a00868fef4740a",
+      "script_cross": true,
+      "leak_ratio": 0.143,
+      "ranks": {
+        "vector": {
+          "strict": 2,
+          "relaxed": 2,
+          "top1_title": "1708年"
+        },
+        "bm25": {
+          "strict": 63,
+          "relaxed": 2,
+          "top1_title": "阿尼战役 (1042年)"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "瓦赫蘭"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "瓦赫蘭"
+        }
+      }
+    },
+    {
+      "qid": "v1-f9c146",
+      "kind": "s2t",
+      "question": "稳发161号渔船被劫持后，是什么时候回到高雄港的？",
+      "gold_title": "穩發161號",
+      "gold_chunk_id": "42cadb6abfd51ebc4d525b143d348d2f",
+      "script_cross": true,
+      "leak_ratio": 0.227,
+      "ranks": {
+        "vector": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "穩發161號"
+        },
+        "bm25": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "穩發161號"
+        },
+        "hybrid": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "穩發161號"
+        },
+        "hybrid_rerank": {
+          "strict": 1,
+          "relaxed": 1,
+          "top1_title": "穩發161號"
+        }
+      }
+    }
+  ]
+}

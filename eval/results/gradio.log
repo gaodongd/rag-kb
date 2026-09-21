@@ -1,0 +1,27 @@
+============================================================================
+第 9 步 · RAG 演示界面
+============================================================================
+============================================================================
+第 8 步 · 混合检索（BM25 + 向量 · RRF）
+============================================================================
+向量索引  : 3,316,395 × 1024  float16（memmap，0.4 秒）
+BM25 索引 : 1,919,820 词 / 190,919,844 postings（memmap，0.4 秒）
+faiss 索引: 3,316,395 条，nprobe=512（整体读入（IVF 不支持 mmap），5.9 秒，约 13.63 GB 常驻）
+行号表    : 3,316,395 行（全局契约）
+[就绪] 云端后端：qwen-plus
+
+打开浏览器：http://127.0.0.1:7860
+
+* Running on local URL:  http://127.0.0.1:7860
+* To create a public link, set `share=True` in `launch()`.
+W0920 13:54:11.639000 3320 site-packages\torch\utils\flop_counter.py:113] triton not found; flop counting will not work for triton kernels
+Loading weights:   0%|          | 0/391 [00:00<?, ?it/s]Loading weights:   7%|▋         | 28/391 [00:00<00:01, 277.62it/s]Loading weights:  14%|█▍        | 56/391 [00:00<00:01, 264.51it/s]Loading weights:  21%|██        | 83/391 [00:00<00:01, 241.90it/s]Loading weights:  29%|██▊       | 112/391 [00:00<00:01, 242.68it/s]Loading weights:  35%|███▌      | 137/391 [00:00<00:01, 238.07it/s]Loading weights:  42%|████▏     | 165/391 [00:00<00:00, 246.00it/s]Loading weights:  49%|████▉     | 193/391 [00:00<00:00, 247.08it/s]Loading weights:  57%|█████▋    | 223/391 [00:00<00:00, 248.39it/s]Loading weights:  65%|██████▍   | 253/391 [00:01<00:00, 263.09it/s]Loading weights:  72%|███████▏  | 280/391 [00:01<00:00, 264.29it/s]Loading weights:  79%|███████▊  | 307/391 [00:01<00:00, 253.58it/s]Loading weights:  85%|████████▌ | 333/391 [00:01<00:00, 249.10it/s]Loading weights:  93%|█████████▎| 365/391 [00:01<00:00, 254.13it/s]Loading weights: 100%|██████████| 391/391 [00:01<00:00, 258.37it/s]
+[模型加载] FlagModel bge-large-zh，33.0 秒
+Building prefix dict from the default dictionary ...
+Loading model from cache C:\Users\搞懂\AppData\Local\Temp\jieba.cache
+Loading model cost 0.385 seconds.
+Prefix dict has been built successfully.
+[取原文] 按行号定位分片：00000:829,100 / 00001:829,099 / 00002:829,098 / 00003:829,098（共 3,316,395 行，只需扫 1/4）
+[本地] 首次使用，加载 Qwen2.5-1.5B-Instruct（4bit，约 30 秒）…
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]Loading weights:   0%|          | 1/338 [00:00<03:51,  1.45it/s]Loading weights:   1%|          | 4/338 [00:00<00:54,  6.17it/s]Loading weights:   5%|▍         | 16/338 [00:00<00:11, 27.96it/s]Loading weights:   8%|▊         | 28/338 [00:01<00:06, 46.78it/s]Loading weights:  12%|█▏        | 40/338 [00:01<00:04, 61.67it/s]Loading weights:  15%|█▌        | 52/338 [00:01<00:03, 73.46it/s]Loading weights:  19%|█▉        | 64/338 [00:01<00:03, 84.07it/s]Loading weights:  22%|██▏       | 76/338 [00:01<00:02, 90.34it/s]Loading weights:  26%|██▌       | 88/338 [00:01<00:02, 95.11it/s]Loading weights:  30%|██▉       | 100/338 [00:01<00:02, 98.81it/s]Loading weights:  33%|███▎      | 112/338 [00:01<00:02, 100.24it/s]Loading weights:  37%|███▋      | 124/338 [00:01<00:02, 101.97it/s]Loading weights:  40%|████      | 136/338 [00:02<00:02, 100.19it/s]Loading weights:  44%|████▍     | 148/338 [00:02<00:01, 99.38it/s] Loading weights:  47%|████▋     | 160/338 [00:02<00:01, 103.54it/s]Loading weights:  51%|█████     | 172/338 [00:02<00:01, 106.03it/s]Loading weights:  54%|█████▍    | 184/338 [00:02<00:01, 106.74it/s]Loading weights:  58%|█████▊    | 196/338 [00:02<00:01, 106.45it/s]Loading weights:  62%|██████▏   | 208/338 [00:02<00:01, 105.24it/s]Loading weights:  65%|██████▌   | 220/338 [00:02<00:01, 105.63it/s]Loading weights:  69%|██████▊   | 232/338 [00:02<00:00, 107.03it/s]Loading weights:  72%|███████▏  | 244/338 [00:03<00:00, 107.07it/s]Loading weights:  76%|███████▌  | 256/338 [00:03<00:00, 106.86it/s]Loading weights:  79%|███████▉  | 268/338 [00:03<00:00, 104.76it/s]Loading weights:  83%|████████▎ | 280/338 [00:03<00:00, 102.76it/s]Loading weights:  86%|████████▋ | 292/338 [00:03<00:00, 100.58it/s]Loading weights:  90%|████████▉ | 304/338 [00:03<00:00, 100.30it/s]Loading weights:  93%|█████████▎| 316/338 [00:03<00:00, 100.30it/s]Loading weights:  97%|█████████▋| 328/338 [00:03<00:00, 100.83it/s]Loading weights: 100%|██████████| 338/338 [00:03<00:00, 85.94it/s] 
+[本地模型] 加载完成 4.4 秒  显存占用 1.69 GB

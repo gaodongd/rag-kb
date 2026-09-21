@@ -1,0 +1,71 @@
+============================================================================
+第 8 步 · 建 BM25 倒排索引
+============================================================================
+输入     : E:\AI-learning\projects\rag-kb\data\processed\chunks.parquet
+输出     : eval\results\bm25_smoke
+块数     : 20,000（--limit 限制）
+进程数   : 4（CPU 24 核）
+BM25 参数: k1=1.5  b=0.75   min_df=2
+
+----------------------------------------------------------------------------
+第一趟 · 统计 df（token 出现在多少块里）  进程数 = 4
+----------------------------------------------------------------------------
+Building prefix dict from the default dictionary ...
+Loading model from cache C:\Users\搞懂\AppData\Local\Temp\jieba.cache
+Building prefix dict from the default dictionary ...
+Loading model from cache C:\Users\搞懂\AppData\Local\Temp\jieba.cache
+Building prefix dict from the default dictionary ...
+Loading model from cache C:\Users\搞懂\AppData\Local\Temp\jieba.cache
+Building prefix dict from the default dictionary ...
+Loading model from cache C:\Users\搞懂\AppData\Local\Temp\jieba.cache
+Loading model cost 0.409 seconds.
+Prefix dict has been built successfully.
+Loading model cost 0.403 seconds.
+Prefix dict has been built successfully.
+Loading model cost 0.450 seconds.
+Prefix dict has been built successfully.
+Loading model cost 0.463 seconds.
+Prefix dict has been built successfully.
+第一趟完成：20,000 块，278,901 个不同词，0.2 分钟
+doc_len 落盘：eval\results\bm25_smoke\doc_len.npy（0 MB，均值 78.3 词/块）
+df 落盘：eval\results\bm25_smoke\_df.tsv（3 MB）
+
+----------------------------------------------------------------------------
+构建词表（min_df=2）
+----------------------------------------------------------------------------
+词表规模：86,456（过滤掉 192,445 个 df<2 的词，0.1 秒）
+vocab.txt：1 MB
+
+----------------------------------------------------------------------------
+第二趟 · 写 postings  进程数 = 4
+----------------------------------------------------------------------------
+df 表载入：86,456 个词有值
+postings 总数：998,347（0.01 亿）
+Building prefix dict from the default dictionary ...
+Loading model from cache C:\Users\搞懂\AppData\Local\Temp\jieba.cache
+Building prefix dict from the default dictionary ...
+Loading model from cache C:\Users\搞懂\AppData\Local\Temp\jieba.cache
+Building prefix dict from the default dictionary ...
+Loading model from cache C:\Users\搞懂\AppData\Local\Temp\jieba.cache
+Building prefix dict from the default dictionary ...
+Loading model from cache C:\Users\搞懂\AppData\Local\Temp\jieba.cache
+Loading model cost 0.395 seconds.
+Prefix dict has been built successfully.
+Loading model cost 0.398 seconds.
+Prefix dict has been built successfully.
+Loading model cost 0.398 seconds.
+Prefix dict has been built successfully.
+Loading model cost 0.396 seconds.
+Prefix dict has been built successfully.
+第二趟完成：20,000 块，0.2 分钟
+✅ 自检通过：每个词的 postings 条数 == df（998,347 条）
+落盘：indptr 1 MB / doc_ids 4 MB / tf_norm 2 MB
+
+============================================================================
+BUILD_BM25_OK
+  词表      : 86,456
+  postings  : 998,347（0.01 亿）
+  索引体积  : 8 MB
+  平均块长  : 78.26 词
+  总耗时    : 0.4 分钟
+============================================================================

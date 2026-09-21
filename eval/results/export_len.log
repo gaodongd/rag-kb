@@ -1,0 +1,11 @@
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+26/09/17 12:53:54 WARN SparkConf: Note that spark.local.dir will be overridden by the value set by the cluster manager (via SPARK_LOCAL_DIRS in mesos/standalone/kubernetes and LOCAL_DIRS in YARN).
+[Stage 0:>                                                          (0 + 1) / 1][Stage 0:===========================================================(1 + 0) / 1]                                                                                [Stage 1:>                                                          (0 + 1) / 1]                                                                                EXPORT_CHAR_LEN_OK
+  rows        : 3,316,395
+  files       : 1 Д╦╙ -> E:\AI-learning\projects\rag-kb\eval\results\char_len_parts
+  size        : 12.0 MB
+  elapsed     : 6.6 s
+Ёи╧╕: ряжуж╧ PID 3188 (йТсз PID 22644 вс╫ЬЁл)╣д╫ЬЁл║ё
+Ёи╧╕: ряжуж╧ PID 22644 (йТсз PID 27600 вс╫ЬЁл)╣д╫ЬЁл║ё
+Ёи╧╕: ряжуж╧ PID 27600 (йТсз PID 34992 вс╫ЬЁл)╣д╫ЬЁл║ё

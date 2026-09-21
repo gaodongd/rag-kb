@@ -1,0 +1,699 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+第 9 步 · 生成与引用（M3）
+==========================
+
+第 8 步结束时，系统已经能"找到"正确的原文片段（top-5 命中）。
+但那还不是 RAG —— 用户拿到的是一堆 chunk，不是答案。
+
+这一步补上链路的最后一段：**把检索到的 chunk 变成带引用的答案**。
+
+三件事决定这一步的质量（都是设计问题，不是调参）
+--------------------------------------------------
+1. **上下文编号 [1] [2] ...**
+   每个 chunk 前面挂编号，并要求模型在答案里回标。
+   没有编号，模型只能说"根据资料"——你无法验证它到底用了哪条，
+   而"每个事实可追溯到原文"恰恰是 RAG 相对纯 LLM 唯一的硬优势。
+   编号让"解释性"从一句口号变成可以自动打分的东西（M4 的引用准确率就靠它）。
+
+2. **拒答条款（最关键的一条）**
+   LLM 的默认行为是**尽力回答**。不给拒答指令，库外问题会被自信地胡说，
+   而且胡说的内容外面包着一层"参考资料里说"的皮，比纯幻觉更危险。
+   明确写"找不到依据时必须回答「根据已有资料无法回答」"，
+   是幻觉率的最大单点改进 —— 成本一行 prompt，收益贯穿整个 M4。
+
+3. **先结论后依据**
+   让输出结构可预测，M4 做自动评测时才好抽取（不然每条答案格式都不一样）。
+
+为什么是双路 LLM（云端 + 本地）
+---------------------------------
+技术方案定的：A 路 dashscope（质量基线）、B 路本地 Qwen2.5-1.5B-Instruct（零成本）。
+两路对比本身就是 M4 的一个消融维度（Faithfulness / 引用准确率差多少）。
+另外本地路还能证明一件事：**整条 RAG 链路可以完全离线运行**——
+这点在面试里很好用（"数据不出内网"是企业真实诉求）。
+
+还有第三路 `echo`：不调任何模型，只把组装好的 prompt 打印出来。
+别小看它 —— prompt 里的问题（编号错位、上下文被截断、section 混进去一坨噪声）
+在 echo 下一眼就能看出来，而调 LLM 时你只会看到"答案好像不太对"，很难定位。
+
+用法
+----
+    :: 看 prompt 长什么样，零成本（强烈建议第一次先跑这个）
+    "...python313\\python.exe" src\\generator.py --backend echo --limit 1
+
+    :: 云端一路，3 条内置问题
+    "...python313\\python.exe" src\\generator.py
+
+    :: 指定问题 + 看完整上下文
+    "...python313\\python.exe" src\\generator.py --query "蘇花古道全長多少公里" --show-context
+
+    :: 本地一路（需先下好 Qwen2.5-1.5B-Instruct）
+    "...python313\\python.exe" src\\generator.py --backend local
+
+    :: 批量跑文件里的问题（每行一条，# 开头是注释）
+    "...python313\\python.exe" src\\generator.py --file eval\\m3_in_kb.txt
+
+    :: 换云端模型
+    "...python313\\python.exe" src\\generator.py --cloud-model qwen-max
+
+    :: 不加载 13.6GB 的 faiss，改用暴力精确扫（慢但省内存）
+    "...python313\\python.exe" src\\generator.py --vec-backend scan
+"""
+
+import argparse
+import json
+import os
+import re
+import sys
+import time
+from pathlib import Path
+from types import SimpleNamespace
+
+try:
+    # line_buffering：第 8 步踩过的坑 —— 重定向到日志时 stdout 是块缓冲，
+    # 脚本跑了半天日志还是 0 字节，看起来像卡死。逐行刷 + 命令行 -u 双保险。
+    sys.stdout.reconfigure(encoding="utf-8", line_buffering=True)
+except Exception:
+    pass
+
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))
+
+from search_hybrid import HybridSearcher, PARQUET          # noqa: E402
+from search_vector import fetch_texts                      # noqa: E402
+
+PROJECT = HERE.parent
+RESULTS = PROJECT / "eval" / "results"
+
+DEFAULT_QUERIES = [
+    "台灣東部開發於古時的人行道路",
+    "中國的化學工程學家",
+    "這個地方氣候怎麼樣",
+]
+
+
+# ==================================================================== Prompt
+#
+# 这三段是整个 M3 最值钱的部分，逐条说明为什么这么写。
+#
+# 【为什么要给编号，而不是让模型自己去认】
+#   模型无法稳定地"引用一段它自己都分不清边界的文本"。编号把引用变成
+#   一个**离散符号选择**任务，模型的错误率立刻降一个数量级。
+#
+# 【为什么拒答要说"必须直接回答这句话"，而不是"如果不知道就说不知道"】
+#   后者给了模型自由裁量空间，实测它会把"知道一点点"也算作"知道"。
+#   给一句**逐字的规定话术**，判定才能自动化（M4 的拒答准确率靠关键词匹配就行）。
+#
+# 【为什么禁止"根据参考资料"这类开头】
+#   套话会挤掉真正有信息量的第一句话，而且让"先结论后依据"的格式失效。
+#   顺带一个小收益：省 token。
+
+SYSTEM_PROMPT = """你是一个严谨的中文知识库问答助手。你**只能**依据用户提供的【参考资料】回答问题。
+
+必须遵守以下规则：
+1. 答案中的每一个事实，都要在该事实后面标注来源编号，格式如 [1] 或 [2][3]。
+2. 编号只能是【参考资料】中真实出现过的编号，禁止编造。
+3. 如果【参考资料】中没有足够信息回答问题，你必须直接回答「根据已有资料无法回答」，
+   不要使用你自己的知识补充，不要猜测，不要勉强作答。
+4. 先给结论（一到两句话），再给依据。
+5. 不要以「根据参考资料」「参考资料中提到」之类的话开头。
+6. 用中文回答，简洁、直接。"""
+
+USER_TEMPLATE = """【参考资料】
+{context}
+
+【问题】
+{query}"""
+
+# 拒答的标准话术 —— 也是 M4 判定"是否拒答"的匹配串
+REFUSAL_TEXT = "根据已有资料无法回答"
+
+# ⚠️ 判定拒答时必须同时列繁简两种写法。
+# 语料是**繁体**中文维基，模型跟着语料的语体会用繁体回答 ——
+# 第一版只写了简体「无法回答」，结果 Q3 明明拒答了，判定却是「拒答 0 条」。
+# 这类错误的隐蔽性在于：程序不报错、指标也「正常」，只是数字是错的。
+REFUSAL_MARKERS = [
+    # 简体
+    "无法回答", "没有任何相关", "资料中没有", "参考资料中没有",
+    "未提供相关信息", "无法从参考资料", "没有足够信息",
+    # 繁体
+    "無法回答", "沒有任何相關", "資料中沒有", "參考資料中沒有",
+    "未提供相關信息", "無法從參考資料", "沒有足夠信息",
+    # 中英混排（模型偶尔夹英文）
+    "无法确定", "無法確定",
+]
+
+CITE_RE = re.compile(r"\[(\d{1,3})\]")
+
+
+def build_context(hits):
+    """
+    hits: [{"title","section","chunk_text","row","chunk_id","vrank","brank","score"}, ...]
+    返回拼好的上下文字符串。
+
+    拼接格式延续第 6 步定的契约：`{title}｜{section}` 做头（全角竖线），
+    section 为空时不留空段 —— 这和第 6 步切块时拼 chunk 的规则是同一条，
+    不要在这里另起一套，否则检索时学到的语义和喂给 LLM 的文本会对不上。
+    """
+    blocks = []
+    for i, h in enumerate(hits, 1):
+        head = f"[{i}] {h['title']}"
+        sec = (h.get("section") or "").strip()
+        if sec:
+            head += f"｜{sec}"
+        body = (h.get("chunk_text") or "").strip()
+        blocks.append(f"{head}\n{body}")
+    return "\n\n".join(blocks)
+
+
+def build_messages(query, hits):
+    return [
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "user", "content": USER_TEMPLATE.format(
+            context=build_context(hits), query=query)},
+    ]
+
+
+# ==================================================================== 后端
+
+MS_CACHE = Path(r"E:\AI-learning\ms-cache\models")
+
+
+def find_local_model(name_substr: str):
+    """
+    在 ModelScope 缓存里按「名字片段」找模型目录。
+
+    为什么不复用 `vectorize.find_model`：那个函数的模式串是**硬编码的**
+    `bge-{kind}-zh`，只认 bge 系列（它的参数取值就只有 large / small）。
+    传 "qwen-instruct" 进去会拼成 `bge-qwen-instruct-zh` —— 永远找不到，
+    而且报错信息会误导你以为"模型没下载"。
+    这里按名字片段 glob，通用于任何模型。
+    """
+    if not MS_CACHE.exists():
+        return None
+    for p in MS_CACHE.glob(f"*{name_substr}*"):
+        for cand in (p / "snapshots" / "master", p):
+            if (cand / "config.json").exists():
+                return cand
+    return None
+
+
+class EchoBackend:
+    """不调模型，只回显 prompt。用来审查上下文组装是否正确。"""
+
+    name = "echo"
+    is_model = False          # 见 run_one：echo 的"答案"其实是 prompt 本身，不能拿去做核查
+
+    def generate(self, messages, max_new_tokens):
+        return ("（echo 模式：未调用任何模型，下面是即将送进 LLM 的原文）\n\n"
+                + "=" * 30 + " SYSTEM " + "=" * 30 + "\n"
+                + messages[0]["content"] + "\n\n"
+                + "=" * 30 + " USER " + "=" * 30 + "\n"
+                + messages[1]["content"]), {}
+
+
+class CloudBackend:
+    """
+    A 路：dashscope（阿里百炼），走 OpenAI 兼容端点。
+
+    为什么用 openai SDK 而不是 dashscope SDK：兼容端点是标准协议，
+    以后换任何一家（DeepSeek / 智谱 / vLLM 本地服务）都只改 base_url，
+    业务代码一行不动。这是"可替换"的写法。
+    """
+
+    name = "dashscope"
+    is_model = True
+
+    def __init__(self, model="qwen-plus", temperature=0.0, timeout=60):
+        from openai import OpenAI
+        key = os.environ.get("DASHSCOPE_API_KEY")
+        if not key:
+            raise SystemExit("[错误] 环境变量 DASHSCOPE_API_KEY 未设置")
+        self.model = model
+        self.temperature = temperature
+        self.client = OpenAI(
+            api_key=key,
+            base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
+            timeout=timeout,
+        )
+
+    def generate(self, messages, max_new_tokens):
+        t = time.time()
+        resp = self.client.chat.completions.create(
+            model=self.model,
+            messages=messages,
+            temperature=self.temperature,
+            max_tokens=max_new_tokens,
+        )
+        usage = {
+            "prompt_tokens": resp.usage.prompt_tokens if resp.usage else None,
+            "completion_tokens": resp.usage.completion_tokens if resp.usage else None,
+            "latency": time.time() - t,
+        }
+        return resp.choices[0].message.content, usage
+
+
+class LocalBackend:
+    """
+    B 路：本地 Qwen2.5-1.5B-Instruct，4bit 量化。
+
+    ⚠️ transformers 5.x 的两个坑（本机 5.17.0 实测）：
+      - `from_pretrained` 的 `torch_dtype=` 已被 `dtype=` 取代（旧名会告警）
+      - 4bit 加载本身不需要传 dtype，量化配置由 BitsAndBytesConfig 全权决定
+    另外必须用 Instruct 版权重：base 版没有 chat template，
+    `apply_chat_template` 会直接抛错，而且它也不会遵循引用/拒答这类指令。
+    """
+
+    name = "local"
+    is_model = True
+
+    def __init__(self, model_dir, quant="4bit", max_new_tokens=512):
+        import torch
+        from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+
+        self.torch = torch
+        self.max_new_tokens = max_new_tokens
+        t = time.time()
+        self.tok = AutoTokenizer.from_pretrained(str(model_dir))
+        kwargs = {"device_map": "auto"}
+        if quant == "4bit":
+            kwargs["quantization_config"] = BitsAndBytesConfig(
+                load_in_4bit=True,
+                bnb_4bit_quant_type="nf4",          # nf4 比 fp4 在权重分布上更稳
+                bnb_4bit_compute_dtype=torch.float16,
+                bnb_4bit_use_double_quant=True,     # 二次量化，再省 ~0.4GB 显存
+            )
+        else:
+            # transformers 5.x：dtype 取代 torch_dtype
+            kwargs["dtype"] = torch.float16
+        self.model = AutoModelForCausalLM.from_pretrained(str(model_dir), **kwargs)
+        self.model.eval()
+        print(f"[本地模型] 加载完成 {time.time() - t:.1f} 秒  "
+              f"显存占用 {torch.cuda.memory_allocated() / 1024 ** 3:.2f} GB"
+              if torch.cuda.is_available() else f"[本地模型] 加载完成 {time.time() - t:.1f} 秒（CPU）")
+
+    def generate(self, messages, max_new_tokens):
+        torch = self.torch
+        text = self.tok.apply_chat_template(messages, tokenize=False,
+                                            add_generation_prompt=True)
+        inputs = self.tok(text, return_tensors="pt").to(self.model.device)
+        n_in = inputs["input_ids"].shape[1]
+        t = time.time()
+        with torch.no_grad():
+            out = self.model.generate(
+                **inputs,
+                max_new_tokens=max_new_tokens or self.max_new_tokens,
+                do_sample=False,                       # 贪心解码：评测要可复现
+                pad_token_id=self.tok.pad_token_id or self.tok.eos_token_id,
+            )
+        gen_ids = out[0][n_in:]
+        answer = self.tok.decode(gen_ids, skip_special_tokens=True).strip()
+        return answer, {"prompt_tokens": n_in, "completion_tokens": int(gen_ids.shape[0]),
+                        "latency": time.time() - t}
+
+
+# ==================================================================== 核查
+
+
+def parse_citations(answer, k):
+    """
+    从答案里抽出 [n] 引用，返回 (用到的编号去重升序, 非法编号)。
+
+    为什么要检查"非法编号"：模型偶尔会写 [7]，而上下文只有 5 条 ——
+    这是**最难发现的一类幻觉**，因为答案读起来完全合理，编号看起来也很专业。
+    不做这个检查，你会以为引用机制在工作，实际上它在编。
+    """
+    nums = [int(x) for x in CITE_RE.findall(answer or "")]
+    used = sorted(set(nums))
+    bad = [n for n in used if n < 1 or n > k]
+    return used, bad
+
+
+def is_refusal(answer):
+    a = answer or ""
+    return any(m in a for m in REFUSAL_MARKERS)
+
+
+# ==================================================================== 取原文
+
+
+class RowTextFetcher:
+    """
+    按**行号**回查原文 —— 比按 chunk_id 查快约 4 倍。
+
+    为什么能快：parquet 的 4 个分片是按行序**连续切分**的
+    （2026-09-19 实测：829,100 / 829,099 / 829,098 / 829,098，区间首尾相接），
+    所以给定全局行号就能唯一定位分片，只需扫 1/4 数据。
+
+    为什么原来的写法慢：`fetch_texts` 用 `chunk_id.isin(...)` 过滤，
+    而 chunk_id 是随机哈希 —— 任何分片的 min/max 统计都剪不掉枝，
+    只能把 2.17 GB 的 4 个分片全扫一遍（实测 1.2~2.9 s，**比向量检索还慢**）。
+
+    ⚠️ 这个优化建立在「分片按行序连续」这个**假设**上。假设一旦不成立
+       （比如换了数据集、重切了分片），结果会**静默错位**。
+       所以每批取回后都断言 chunk_id 与行号对得上 ——
+       断言的成本是几微秒，换来的是"错了会响"（第 8 步 `_assert_rows` 的同一条纪律）。
+    """
+
+    def __init__(self, parquet: Path, id_list):
+        import pyarrow.dataset as ds_mod
+        import pyarrow.parquet as pq
+
+        self.id_list = id_list
+        self.parts = []
+        cum = 0
+        for f in sorted(ds_mod.dataset(str(parquet), format="parquet").files):
+            n = pq.ParquetFile(f).metadata.num_rows
+            self.parts.append((Path(f), cum, cum + n))
+            cum += n
+        self.total = cum
+        if cum != len(id_list):
+            raise SystemExit(
+                f"[错误] parquet 共 {cum:,} 行，但 ids.txt 有 {len(id_list):,} 行 —— "
+                f"行号契约已破，不能按行号回查（退回 chunk_id 查询或重建索引）")
+
+    def _locate(self, row: int) -> Path:
+        for f, lo, hi in self.parts:
+            if lo <= row < hi:
+                return f
+        raise IndexError(f"行号 {row:,} 超出 [0, {self.total:,})")
+
+    def summary(self) -> str:
+        return " / ".join(f"{f.name[5:10]}:{hi - lo:,}" for f, lo, hi in self.parts)
+
+    def fetch(self, rows):
+        by_part = {}
+        for r in rows:
+            by_part.setdefault(self._locate(int(r)), []).append(int(r))
+
+        out = {}
+        for f, rs in by_part.items():
+            cids = [self.id_list[r] for r in rs]
+            got = fetch_texts(f, cids)
+            for r in rs:                        # ← 错位断言，见类文档
+                cid = self.id_list[r]
+                rec = got.get(cid)
+                if rec is not None and rec["chunk_id"] != cid:
+                    raise AssertionError(
+                        f"按行号回查错位：row={r:,} 期望 chunk_id={cid}，"
+                        f"实际拿到 {rec['chunk_id']} —— 分片不是按行序连续切分的？")
+            out.update(got)
+        return out
+
+
+_FETCHER = None
+
+
+def get_fetcher(id_list):
+    """全局缓存一个 RowTextFetcher（分片行数只需算一次）。"""
+    global _FETCHER
+    if _FETCHER is None:
+        _FETCHER = RowTextFetcher(PARQUET, id_list)
+        print(f"[取原文] 按行号定位分片：{_FETCHER.summary()}"
+              f"（共 {_FETCHER.total:,} 行，只需扫 1/{len(_FETCHER.parts)}）")
+    return _FETCHER
+
+
+# ==================================================================== 检索
+
+
+def make_searcher(args):
+    """
+    复用第 8 步的 HybridSearcher。
+
+    注意它 __init__ 里会读 args.mode / args.vec_backend / args.nprobe / args.fuse，
+    而 argparse 的 Namespace 恰好全都有这些字段 —— 但 fuse 在 generator 里
+    不暴露给用户（gate 策略样本不足，默认关闭，第 8 步就说清楚了）。
+    所以显式构造一个 SimpleNamespace，避免"命令行能传但没人验证过"的开关。
+    """
+    ns = SimpleNamespace(
+        mode="hybrid",
+        vec_backend=args.vec_backend,
+        nprobe=args.nprobe,
+        fuse="rrf",            # gate 策略在 3 条样本上拟合，不进生成链路
+        gate_margin=0.10,
+        gate_weak_w=0.3,
+    )
+    return HybridSearcher(ns)
+
+
+def retrieve(searcher, query, args, qv):
+    """返回 (hits, timing)。hits 按融合排名，带原文与两路排名。"""
+    t0 = time.time()
+    rows, scores, per_path, _, (t_vec, t_bm, t_fuse) = searcher.search(
+        query, qv, "hybrid", args.topk, args.topn, args.w_vec, args.w_bm25, args.rrf_k)
+
+    pos_v = {int(r): i + 1 for i, r in enumerate(per_path.get("vector", []))}
+    pos_b = {int(r): i + 1 for i, r in enumerate(per_path.get("bm25", []))}
+    # 按行号回查（快约 4 倍）—— rows 本来就是行号，
+    # 没必要先换成随机哈希 chunk_id 再去 isin 全扫 4 个分片。
+    got = get_fetcher(searcher.ids).fetch(rows)
+
+    hits = []
+    for rank, r in enumerate(rows, 1):
+        r = int(r)
+        rec = got.get(searcher.ids[r])
+        if rec is None:
+            continue
+        hits.append({
+            "rank": rank,
+            "row": r,
+            "chunk_id": rec["chunk_id"],
+            "title": rec["title"],
+            "section": rec["section"] or "",
+            "chunk_text": rec["chunk_text"] or "",
+            "score": float(scores[rank - 1]) if scores is not None else None,
+            "vrank": pos_v.get(r),
+            "brank": pos_b.get(r),
+        })
+    timing = {"vector": t_vec, "bm25": t_bm, "fuse": t_fuse, "retrieve_total": time.time() - t0}
+    return hits, timing
+
+
+# ==================================================================== 主流程
+
+
+def run_one(searcher, backend, query, args, idx):
+    t_all = time.time()
+    qv = searcher._encode([query])[0]
+    hits, timing = retrieve(searcher, query, args, qv)
+
+    if not hits:
+        print("\n[警告] 检索无结果，跳过生成")
+        return None
+
+    messages = build_messages(query, hits)
+    answer, usage = backend.generate(messages, args.max_new_tokens)
+    total = time.time() - t_all
+
+    if backend.is_model:
+        used, bad = parse_citations(answer, len(hits))
+        refused = is_refusal(answer)
+    else:
+        # echo 的"答案"就是 prompt 本身 —— 里面天然带 [1]...[k] 和那句拒答话术，
+        # 拿它做核查会得到「引用了全部编号 + 判定拒答」的假结果。
+        # 这个假结果的害处不小：它看起来像核查逻辑坏了，实际是喂错了输入。
+        used, bad, refused = [], [], False
+
+    # ---------------- 打印 ----------------
+    print()
+    print("=" * 76)
+    print(f"[{idx}] Q: {query}")
+    print("=" * 76)
+    lat = (f"检索 {timing['retrieve_total'] * 1000:.0f} ms"
+           f"（向量 {timing['vector'] * 1000:.0f} + BM25 {timing['bm25'] * 1000:.0f}"
+           f" + 融合 {timing['fuse'] * 1000:.1f}）")
+    print(f"【检索】{len(hits)} 条命中 · {lat}")
+    for h in hits:
+        sec = h["section"] or "—"
+        text = h["chunk_text"].replace("\n", " ")[:60]
+        score = f"{h['score']:.5f}" if h["score"] is not None else "—"
+        print(f"   [{h['rank']}] {score}  (向量#{h['vrank'] or '—'} BM25#{h['brank'] or '—'})"
+              f"  {h['title']} · {sec}")
+        print(f"       {text}")
+
+    if args.show_context:
+        print("\n────── 送进模型的完整上下文 ──────")
+        print(build_context(hits))
+        print("────── 上下文结束 ──────")
+
+    print(f"\n【答案】({usage.get('latency', 0):.2f}s"
+          + (f" · 输入 {usage.get('prompt_tokens')} tok / 输出 {usage.get('completion_tokens')} tok"
+             if usage.get("prompt_tokens") else "")
+          + ")")
+    for line in (answer or "").splitlines():
+        print(f"   {line}")
+
+    # ---------------- 自查 ----------------
+    flags = []
+    if refused:
+        flags.append("拒答")
+    if bad:
+        flags.append(f"⚠️ 非法编号 {bad}（上下文只有 {len(hits)} 条）")
+    if not used and not refused:
+        flags.append("⚠️ 无任何引用标注")
+    if backend.is_model:
+        print(f"\n【核查】引用 {used if used else '无'} · "
+              f"合法编号 {[n for n in used if n not in bad]} · "
+              f"总耗时 {total:.2f}s"
+              + ("   → " + " · ".join(flags) if flags else ""))
+    else:
+        print(f"\n【核查】echo 模式 —— 上面是 prompt 原文而非模型答案，不做引用/拒答判定")
+
+    return {
+        "idx": idx,
+        "query": query,
+        "backend": backend.name,
+        "hits": [{k: h[k] for k in ("rank", "chunk_id", "title", "section", "score",
+                                    "vrank", "brank")} for h in hits],
+        "context_chars": len(build_context(hits)),
+        "answer": answer,
+        "cited": used,
+        "bad_citations": bad,
+        "refused": refused,
+        "timing": timing,
+        "usage": usage,
+        "total_seconds": total,
+    }
+
+
+def load_queries(args):
+    qs = list(args.query or [])
+    for f in (args.file or []):
+        p = Path(f)
+        if not p.is_absolute():
+            p = PROJECT / f
+        if not p.exists():
+            raise SystemExit(f"[错误] 问题文件不存在：{p}")
+        for line in p.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if line and not line.startswith("#"):
+                qs.append(line)
+    return qs or DEFAULT_QUERIES
+
+
+def build_backend(args):
+    if args.backend == "echo":
+        return EchoBackend()
+    if args.backend == "dashscope":
+        b = CloudBackend(model=args.cloud_model, temperature=args.temperature)
+        print(f"[云端模型] {args.cloud_model} @ dashscope 兼容端点（temperature={args.temperature}）")
+        return b
+    if args.backend == "local":
+        d = Path(args.local_model) if args.local_model else find_local_model("Qwen2.5-1.5B-Instruct")
+        if d is None or not Path(d).exists():
+            raise SystemExit(
+                "[错误] 找不到本地 Qwen2.5-1.5B-Instruct。先跑：\n"
+                '  "...python313\\python.exe" src\\download_models.py --only qwen2.5-1.5b-instruct\n'
+                "或用 --local-model 指定目录")
+        print(f"[本地模型] {d}")
+        return LocalBackend(d, quant=args.quant, max_new_tokens=args.max_new_tokens)
+    raise SystemExit(f"[错误] 未知 backend: {args.backend}")
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--backend", default="dashscope",
+                    choices=["echo", "dashscope", "local"],
+                    help="echo=只回显 prompt（零成本，先跑这个验证上下文组装）")
+    ap.add_argument("--cloud-model", default="qwen-plus",
+                    help="dashscope 模型名：qwen-turbo / qwen-plus / qwen-max")
+    ap.add_argument("--local-model", default=None, help="本地模型目录（默认自动找）")
+    ap.add_argument("--quant", default="4bit", choices=["4bit", "fp16"])
+    ap.add_argument("--temperature", type=float, default=0.0,
+                    help="默认 0，评测要可复现")
+    ap.add_argument("--max-new-tokens", type=int, default=512)
+    ap.add_argument("--query", action="append", default=None)
+    ap.add_argument("--file", action="append", default=None,
+                    help="问题文件，每行一条（# 注释）。**可多次传入**，按顺序拼接 —— "
+                         "复测时要跑多组问题，一次加载索引比跑三次省 3 分钟")
+    ap.add_argument("--limit", type=int, default=0, help="只跑前 N 条（0=全部）")
+    ap.add_argument("--topk", type=int, default=5)
+    ap.add_argument("--topn", type=int, default=100)
+    ap.add_argument("--rrf-k", type=int, default=10)
+    ap.add_argument("--w-vec", type=float, default=1.0)
+    ap.add_argument("--w-bm25", type=float, default=1.0)
+    ap.add_argument("--vec-backend", default="faiss", choices=["faiss", "scan"],
+                    help="faiss=249ms（13.6GB 常驻）；scan=暴力精确 8.2s（省内存）")
+    ap.add_argument("--nprobe", type=int, default=512,
+                    help="默认 512 —— 第 8 步实测此档 recall=1.000 且只用 249ms")
+    ap.add_argument("--show-context", action="store_true", help="打印送进模型的完整上下文")
+    ap.add_argument("--tag", default="", help="结果文件名后缀，如 in_kb / out_kb")
+    args = ap.parse_args()
+
+    # echo 的唯一用途就是审 prompt，自动打开全文 —— 否则回显的上下文被截成 60 字，
+    # 等于白跑一趟（这个坑我第一版就踩了）。
+    if args.backend == "echo":
+        args.show_context = True
+
+    queries = load_queries(args)
+    if args.limit:
+        queries = queries[:args.limit]
+
+    print("=" * 76)
+    print("第 9 步 · 生成与引用（M3）")
+    print("=" * 76)
+    print(f"后端      : {args.backend}")
+    print(f"问题数    : {len(queries)}")
+    print(f"检索      : hybrid topk={args.topk} topn={args.topn} RRF k={args.rrf_k}")
+    print(f"向量后端  : {args.vec_backend}"
+          + (f" nprobe={args.nprobe}" if args.vec_backend == "faiss" else "（暴力精确）"))
+    print()
+
+    searcher = make_searcher(args)
+    backend = build_backend(args)
+
+    records = []
+    t0 = time.time()
+    for i, q in enumerate(queries, 1):
+        try:
+            rec = run_one(searcher, backend, q, args, i)
+        except Exception as e:
+            print(f"\n[错误] 第 {i} 条失败：{type(e).__name__}: {e}")
+            rec = None
+        if rec:
+            records.append(rec)
+
+    # ---------------- 汇总 ----------------
+    n = len(records)
+    refused = sum(1 for r in records if r["refused"])
+    bad = sum(1 for r in records if r["bad_citations"])
+    nocite = sum(1 for r in records if not r["cited"] and not r["refused"])
+    ret = [r["timing"]["retrieve_total"] for r in records]
+    gen = [r["usage"].get("latency", 0) for r in records]
+
+    print()
+    print("=" * 76)
+    print("GENERATOR_OK")
+    print(f"  后端        : {args.backend}")
+    print(f"  成功条数    : {n} / {len(queries)}")
+    print(f"  拒答        : {refused} 条")
+    print(f"  非法编号    : {bad} 条")
+    print(f"  无引用无拒答: {nocite} 条")
+    if ret:
+        print(f"  检索耗时    : 中位 {sorted(ret)[len(ret) // 2] * 1000:.0f} ms")
+    if gen:
+        print(f"  生成耗时    : 中位 {sorted(gen)[len(gen) // 2]:.2f} s")
+    print(f"  端到端耗时  : 中位 {sorted(r['total_seconds'] for r in records)[n // 2]:.2f} s")
+    print(f"  总墙钟      : {time.time() - t0:.1f} s")
+    print("=" * 76)
+
+    if records:
+        RESULTS.mkdir(parents=True, exist_ok=True)
+        tag = f"_{args.tag}" if args.tag else ""
+        out = RESULTS / f"gen_{args.backend}{tag}.jsonl"
+        with out.open("w", encoding="utf-8") as f:
+            for r in records:
+                f.write(json.dumps(r, ensure_ascii=False) + "\n")
+        print(f"结果已存：{out}")
+
+    print("\n怎么读结果：")
+    print("  · 「拒答」应只出现在库外问题上；库里问题被拒答 = 误拒（M4 要量化的指标）")
+    print("  · 「非法编号」必须为 0 —— 非 0 说明模型在编引用，这是最难肉眼发现的幻觉")
+    print("  · 想看每条用了哪几号、对不对，翻上面的「【核查】」行")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

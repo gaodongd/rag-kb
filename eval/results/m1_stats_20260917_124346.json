@@ -1,0 +1,12 @@
+{
+  "raw_docs": 1507969,
+  "clean_docs": 866112,
+  "dedup_docs": 866103,
+  "chunks_before_filter": 3709162,
+  "chunks_final": 3316395,
+  "avg_chunks_per_doc": 3.83,
+  "doc_dedup_rate": 0.0,
+  "chunk_filter_rate": 0.1059,
+  "elapsed_sec": 371.6,
+  "throughput_docs_per_sec": 4058.4
+}

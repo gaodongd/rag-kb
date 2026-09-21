@@ -1,0 +1,37 @@
+样本 20,000 篇（E:\AI-learning\projects\rag-kb\data\raw\wiki.jsonl 前 20000 行）
+====================================================================
+
+[一 · 空壳] 删过头留下的
+  项                   清洗前        清洗后   判定
+  PAREN_PUNCT          49      2,326   !! 未改善
+  EMPTYPAREN          849          0   OK 归零
+  EMPTYBOOK             5          0   OK 归零
+  EMPTYQUOTE           14          0   OK 归零
+  DUP_PUNCT           301          0   OK 归零
+
+[二 · 命名空间] [[Category:X]] 被当正文留下的
+  项                   清洗前        清洗后   判定
+  CATEGORY        111,201          5   ↓ 下降
+  PURE_CAT              0          0   OK 归零
+  FILEXT           12,644         19   ↓ 下降
+
+[三 · 回归检查] 残留标记 —— 只许变好，不许变差
+  含 [[     的文档 : 23
+  含 {{     的文档 : 44
+  含 <ref   的文档 : 0
+  含 -{     的文档 : 22
+  含 <div   的文档 : 0
+  含 {|     的文档 : 19
+
+[文档级]
+  清洗后仍含问题的文档   : 2,175 / 20,000 (10.88%)
+  问题被修掉（前有后无） : 17,182
+
+[修复样例]  —— 清洗前长这样，现在没了
+  ...{{数学主要领域}} {{STEM}} {{Authority control}}  [[Category:数学| ]] [[Category:形式科學]] [[Category:主要话题条目]]
+  ...vigation}} {{人文学科}} {{Authority control}}  [[Category:哲学| ]]<!--leave the empty space as standard--
+  ...col end}}  {{人文学科}} {{Authority control}}  [[Category:作家|作家列表]] [[Category:文学| ]] [[Category:人文學科]]
+  ...iography}} {{社会哲学}} {{Authority control}}  [[Category:历史| ]] [[Category:人文學科]] [[Category:主要话题条目]]
+  ...ificial Intelligence)。  === 期刊 === {{further|Category:计算机科学期刊}} {{Expand section|date=2013年1月}}  ==
+====================================================================
+VERDICT: 还有未归零项，看上面哪一行标了 !!

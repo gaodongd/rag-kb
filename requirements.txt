@@ -1,0 +1,33 @@
+# RAG 知识库项目依赖
+# 安装方式（本机专用，别直接用 pip install -r）：
+#   PY="C:/Users/搞懂/AppData/Local/Programs/Python/Python313/python.exe"
+#   TGT="C:/Users/搞懂/AppData/Local/Programs/Python/Python313/Lib/site-packages"
+#   "$PY" -m pip install --target="$TGT" -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
+#
+# 为什么必须用 --target：本机 pip install --user 会把 user base 解析到
+# 不存在的路径 C:\Users\搞懂\Python\Python313，报成功但包没装上。
+
+# ---- 数据管道（M1）----
+pyspark==3.5.8          # 必须 3.5.x：本机 Java 只有 1.8，Spark 4.x 要 Java 17+
+jieba                   # 中文分词，BM25 用
+pypdf                   # PDF 解析
+python-docx             # Word 解析
+
+# ---- 向量化与检索（M2）----
+FlagEmbedding           # bge 系列模型加载
+faiss-cpu               # IVF 索引（第 8 步实测：nprobe=512 时 recall=1.000 / 249ms）
+chromadb                # 实际没用上 —— 自己实现了 CSR 倒排 + faiss，留作对照
+rank_bm25               # 实际没用上 —— 它要求语料能整份进内存算词频矩阵，331.6 万块不满足
+
+# ---- 生成与引用（M3）----
+openai                  # 走 dashscope 的 OpenAI 兼容端点：换供应商只改 base_url，业务代码不动
+zhconv                  # 繁简归一化。⚠️ 不是可选：语料繁简混排，
+                        #   繁体 query 会在检索前就被 jieba 切成单字然后被过滤掉（见 src/zh.py）
+
+# ---- 服务化（M5）----
+# fastapi / uvicorn 本机已装，不重复列
+
+# 已在本机环境中，无需再装：
+#   torch 2.14.0+cu126 / transformers 5.17.0 / datasets 5.0.1
+#   gradio 6.27.0 / peft 0.20.0 / scikit-learn / pandas / modelscope
+#   bitsandbytes 0.50.2（本地 Qwen2.5-1.5B 4bit 加载，实测显存仅 1.07 GB）

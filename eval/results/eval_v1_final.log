@@ -1,0 +1,400 @@
+==============================================================================
+M4 检索评测 · qa_testset_v1.jsonl · tag=v1_final
+==============================================================================
+库内题 104 条（另有 25 条库外题，检索指标不适用，已排除）
+召回池 100 · faiss nprobe=512 · RRF k=10 · 重排 开
+============================================================================
+第 8 步 · 混合检索（BM25 + 向量 · RRF）
+============================================================================
+向量索引  : 3,316,395 × 1024  float16（memmap，0.4 秒）
+BM25 索引 : 1,919,820 词 / 190,919,844 postings（memmap，0.4 秒）
+faiss 索引: 3,316,395 条，nprobe=512（整体读入（IVF 不支持 mmap），6.8 秒，约 13.63 GB 常驻）
+行号表    : 3,316,395 行（全局契约）
+[取原文] 按行号定位分片：00000:829,100 / 00001:829,099 / 00002:829,098 / 00003:829,098（共 3,316,395 行，只需扫 1/4）
+W0920 22:16:55.653000 9500 site-packages\torch\utils\flop_counter.py:113] triton not found; flop counting will not work for triton kernels
+Loading weights:   0%|          | 0/391 [00:00<?, ?it/s]Loading weights:   7%|▋         | 28/391 [00:00<00:01, 259.08it/s]Loading weights:  14%|█▍        | 54/391 [00:00<00:01, 223.65it/s]Loading weights:  21%|██        | 81/391 [00:00<00:01, 223.40it/s]Loading weights:  28%|██▊       | 109/391 [00:00<00:01, 233.17it/s]Loading weights:  34%|███▍      | 133/391 [00:00<00:01, 227.38it/s]Loading weights:  40%|███▉      | 156/391 [00:00<00:01, 224.61it/s]Loading weights:  47%|████▋     | 182/391 [00:00<00:00, 232.44it/s]Loading weights:  53%|█████▎    | 206/391 [00:00<00:00, 231.94it/s]Loading weights:  59%|█████▉    | 230/391 [00:01<00:00, 228.82it/s]Loading weights:  65%|██████▌   | 255/391 [00:01<00:00, 223.57it/s]Loading weights:  73%|███████▎  | 284/391 [00:01<00:00, 236.38it/s]Loading weights:  80%|███████▉  | 311/391 [00:01<00:00, 243.33it/s]Loading weights:  86%|████████▌ | 336/391 [00:01<00:00, 245.11it/s]Loading weights:  92%|█████████▏| 361/391 [00:01<00:00, 241.01it/s]Loading weights:  99%|█████████▊| 386/391 [00:01<00:00, 232.79it/s]Loading weights: 100%|██████████| 391/391 [00:01<00:00, 235.93it/s]
+[模型加载] FlagModel bge-large-zh，19.7 秒
+Building prefix dict from the default dictionary ...
+Loading model from cache C:\Users\搞懂\AppData\Local\Temp\jieba.cache
+Loading model cost 0.642 seconds.
+Prefix dict has been built successfully.
+[reranker] 加载 master（fp16=True）…
+Loading weights:   0%|          | 0/393 [00:00<?, ?it/s]Loading weights:   6%|▋         | 25/393 [00:00<00:01, 188.08it/s]Loading weights:  11%|█         | 44/393 [00:00<00:02, 147.98it/s]Loading weights:  15%|█▌        | 60/393 [00:00<00:02, 126.12it/s]Loading weights:  19%|█▊        | 73/393 [00:00<00:02, 123.68it/s]Loading weights:  22%|██▏       | 86/393 [00:00<00:02, 123.17it/s]Loading weights:  25%|██▌       | 99/393 [00:00<00:02, 106.60it/s]Loading weights:  28%|██▊       | 110/393 [00:00<00:02, 97.98it/s]Loading weights:  34%|███▍      | 134/393 [00:01<00:01, 133.82it/s]Loading weights:  38%|███▊      | 149/393 [00:01<00:02, 109.84it/s]Loading weights:  44%|████▍     | 174/393 [00:01<00:01, 121.80it/s]Loading weights:  59%|█████▊    | 230/393 [00:01<00:00, 215.00it/s]Loading weights: 100%|██████████| 393/393 [00:01<00:00, 251.72it/s]
+[reranker] 就绪，耗时 6.1 秒
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 54.75it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 65.85it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.01it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.82it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.75it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.85it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 84.56it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 84.60it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.01s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.90it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.98it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.99it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 74.07it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 78.89it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.01s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.68it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.57it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.69it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 70.37it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 74.79it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.02s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.59it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.44it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.58it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 47.34it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 47.36it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.01s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.50it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.22it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.38it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 98.53it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 95.05it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.00it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:00,  2.04it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  4.50it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.18it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 84.92it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 94.76it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.00it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.99it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  4.44it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.14it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 74.95it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 79.05it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.02s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.76it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.63it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.75it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 85.57it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 108.56it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.02it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.96it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  3.03it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.07it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 121.41it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 126.43it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.02it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:00,  2.14it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  4.75it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.32it/s]
+   10/104  已用  68.6s  （预计总 713.2s）
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 92.27it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 103.86it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.01it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.96it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  3.07it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.08it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 81.16it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 84.10it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.02it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.96it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  4.39it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.12it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 72.79it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 77.95it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.01s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.84it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.77it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.86it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 111.40it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 101.95it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.27it/s]Compute Scores:  50%|█████     | 2/4 [00:00<00:00,  2.43it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  5.20it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.78it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 79.63it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 88.35it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.02it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.94it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  3.01it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.04it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 78.35it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 89.47it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.02it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.98it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  4.35it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.11it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 71.76it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 86.84it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.02s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.83it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.82it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.89it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 58.73it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 65.30it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.01s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.68it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.52it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.66it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 76.92it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 72.87it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.01s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.87it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.90it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.96it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 88.20it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 79.30it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.01it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.96it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  3.07it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.07it/s]
+   20/104  已用 106.1s  （预计总 551.5s）
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 84.19it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 96.52it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.01it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.90it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.92it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.98it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 83.70it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 86.18it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.00s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:00,  2.02it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  4.45it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.15it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 60.37it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 56.72it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.02it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.85it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.87it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.93it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 64.43it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 61.96it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.02it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.88it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.84it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.93it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 100.78it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 104.69it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.03it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:00,  2.06it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  4.50it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.21it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 73.60it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 83.99it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.00it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.95it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  4.30it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.07it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 73.80it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 79.52it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.03s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.91it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  3.00it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.98it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 79.85it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 84.35it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.00s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.88it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.95it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.98it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 112.92it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 111.58it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.01it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:00,  2.12it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  4.73it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.30it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 81.08it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 81.18it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.01it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.99it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  3.07it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.07it/s]
+   30/104  已用 143.6s  （预计总 497.7s）
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 72.56it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 70.89it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.02s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.82it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.80it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.87it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 72.82it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 74.24it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.04it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.94it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.99it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.06it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 60.45it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 66.24it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.02it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.83it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.91it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.96it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 93.04it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 96.18it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.05it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:00,  2.09it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  4.65it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.29it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 70.50it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 73.67it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.02it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.82it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.79it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.89it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 61.53it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 57.72it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.05it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.99it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.99it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.08it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 45.40it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 45.95it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.03it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.59it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.22it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.46it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 67.94it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 58.02it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.04it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.90it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.89it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.98it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 83.07it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 85.61it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.04it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.97it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  3.06it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.10it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 65.31it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 73.20it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.03it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.78it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.69it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.83it/s]
+   40/104  已用 180.6s  （预计总 469.4s）
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 69.43it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 71.28it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.03it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.90it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.96it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.02it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 87.30it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 82.64it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.05it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:00,  2.08it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  4.53it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.24it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 64.06it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 62.75it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.03s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.55it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.36it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.51it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 71.81it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 72.53it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.01s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.71it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.61it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.73it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 79.60it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 71.11it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.05s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.87it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.96it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.96it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 51.09it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 50.25it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.07s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.54it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.31it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.47it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 66.99it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 64.18it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.08s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.59it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.34it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.49it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 64.80it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 67.19it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.03s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.81it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.75it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.80it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 80.48it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 82.35it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.08s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.76it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.59it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.69it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 83.19it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 92.98it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.20it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:00,  2.02it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.79it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.04it/s]
+   50/104  已用 218.9s  （预计总 455.3s）
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 44.64it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 46.03it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.04s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.62it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.44it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.58it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 79.10it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 77.51it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.00s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.84it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.85it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.91it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 73.35it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 79.03it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.01s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.93it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  3.05it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.05it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 57.61it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 58.96it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.09s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.67it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.58it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.65it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 54.92it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 58.57it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.02s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.61it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.28it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.48it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 62.72it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 69.29it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.10s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.80it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.85it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.84it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 48.04it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 50.35it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.03s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.41it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.06it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.27it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 63.43it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 65.96it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.11s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.70it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.59it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.65it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 69.18it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 65.60it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.05s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.74it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.53it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.67it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 56.42it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 55.33it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.06s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.70it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.60it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.69it/s]
+   60/104  已用 261.7s  （预计总 453.6s）
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 58.00it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 63.62it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.02s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.72it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.58it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.70it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 64.63it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 65.72it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.00it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.80it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.72it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.82it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 46.87it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 53.10it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.03s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.59it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.34it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.51it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 58.47it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 56.23it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.00s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.76it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.69it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.80it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 55.29it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 61.60it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.03it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.88it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.81it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.92it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 59.58it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 66.30it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.04s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.86it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.90it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.92it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 85.26it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 91.12it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.05s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.82it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.78it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.83it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 61.38it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 64.07it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.01it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.88it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.81it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.91it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 63.61it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 66.31it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.00s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.61it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.36it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.54it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 62.89it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 63.17it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.05s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.62it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.46it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.58it/s]
+   70/104  已用 300.9s  （预计总 447.0s）
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 56.27it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 63.11it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.02it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.80it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.67it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.81it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 52.42it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 52.82it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.04s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.65it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.44it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.59it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 100.72it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 109.31it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:01,  1.73it/s]Compute Scores:  50%|█████     | 2/4 [00:00<00:00,  3.06it/s]Compute Scores:  75%|███████▌  | 3/4 [00:00<00:00,  4.15it/s]Compute Scores: 100%|██████████| 4/4 [00:00<00:00,  4.45it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 90.25it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 91.47it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.19it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:00,  2.11it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  3.12it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.19it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 63.79it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 57.02it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.01s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.72it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.50it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.66it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 78.93it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 82.09it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.04it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.97it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  3.09it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.11it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 77.39it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 76.12it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.04it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.86it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.72it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.87it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 99.95it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 87.02it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.00it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:00,  2.07it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  4.59it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.23it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 64.69it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 67.03it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.05it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.86it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.84it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.95it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 88.36it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 81.55it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.08s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.84it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.89it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.90it/s]
+   80/104  已用 337.9s  （预计总 439.3s）
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 63.71it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 61.46it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.01s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.80it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.80it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.86it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 58.74it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 57.16it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.03it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.56it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.33it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.50it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 73.20it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 82.07it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.02it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  2.00it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  4.40it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.14it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 49.35it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 48.21it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.05s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.47it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.14it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.33it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 52.65it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 53.72it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.02s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.68it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.51it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.65it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 72.32it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 69.14it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.03it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.95it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  3.03it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.06it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize:  75%|███████▌  | 3/4 [00:00<00:00, 26.01it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 33.28it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 38.61it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 38.53it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.00s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.41it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  1.77it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.07it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 61.16it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 58.86it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.05s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.66it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.58it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.67it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 49.10it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 55.00it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.00it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.74it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.68it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.79it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 89.68it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 87.86it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.07it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:00,  2.10it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  3.13it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.18it/s]
+   90/104  已用 377.3s  （预计总 436.0s）
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 64.72it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 65.11it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.00s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.83it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.78it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.87it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 113.09it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 108.18it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.02it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:00,  2.10it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  4.72it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.30it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 107.15it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 109.69it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.02it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:00,  2.10it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  4.69it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.28it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 100.51it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 123.84it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.01s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:00,  2.08it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  4.73it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.27it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 61.02it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 63.96it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.05s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.63it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.47it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.60it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 83.69it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 81.61it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.04s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.77it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.80it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.83it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 94.43it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 99.25it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.10s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.82it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.86it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.85it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 53.85it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 57.18it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.07s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.48it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.10it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.31it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 60.95it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 59.36it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.05s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.64it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.57it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.66it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 84.26it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 85.21it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.06s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.82it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.82it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.85it/s]
+  100/104  已用 415.0s  （预计总 431.6s）
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 92.09it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 89.41it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.04it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:00,  2.02it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  3.13it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.16it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 63.51it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 70.38it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:00<00:02,  1.01it/s]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.78it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.75it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.85it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 69.34it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 71.70it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.00s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.81it/s]Compute Scores:  75%|███████▌  | 3/4 [00:01<00:00,  2.75it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  2.84it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 81.00it/s]
+pre tokenize:   0%|          | 0/4 [00:00<?, ?it/s]pre tokenize: 100%|██████████| 4/4 [00:00<00:00, 88.50it/s]
+Compute Scores:   0%|          | 0/4 [00:00<?, ?it/s]Compute Scores:  25%|██▌       | 1/4 [00:01<00:03,  1.03s/it]Compute Scores:  50%|█████     | 2/4 [00:01<00:01,  1.93it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  4.38it/s]Compute Scores: 100%|██████████| 4/4 [00:01<00:00,  3.07it/s]
+  104/104  已用 429.7s  （预计总 429.7s）
+
+==============================================================================
+总览（strict 口径 = 命中 gold chunk 本身）
+==============================================================================
+链路              Recall@1  Recall@5 Recall@10   MRR@10
+------------------------------------------------------------------------------
+纯向量                0.481     0.683     0.760    0.568
+纯 BM25             0.577     0.788     0.846    0.656
+混合 RRF             0.606     0.875     0.923    0.726
+混合 + 重排            0.885     0.962     0.981    0.924
+
+宽松口径（relaxed = 命中同一条目即可，用于诊断）
+------------------------------------------------------------------------------
+链路              Recall@1  Recall@5 Recall@10   MRR@10
+纯向量                0.587     0.721     0.779    0.650
+纯 BM25             0.683     0.827     0.885    0.740
+混合 RRF             0.721     0.875     0.942    0.792
+混合 + 重排            0.952     0.962     0.990    0.960
+
+==============================================================================
+分题型 · Recall@5（strict）  n=104
+==============================================================================
+题型              n           纯向量        纯 BM25        混合 RRF       混合 + 重排
+------------------------------------------------------------------------------
+基础事实           45         0.822         0.778         0.956         0.978
+实体匿名           32         0.375         0.812         0.781         0.938
+释义改写           14         0.714         0.786         0.786         0.929
+简问繁答            7         1.000         0.714         1.000         1.000
+繁问简答            6         0.833         0.833         0.833         1.000
+
+==============================================================================
+字形分组 · Recall@5（strict）
+==============================================================================
+字形              n           纯向量        纯 BM25        混合 RRF       混合 + 重排
+------------------------------------------------------------------------------
+同字形            54         0.704         0.778         0.870         0.944
+跨字形            50         0.660         0.800         0.880         0.980
+
+⚠️ 跨字形组是**归一化生效后**的结果。要量出归一化的价值，
+   需另跑 --tag no_norm 并对比 —— 见 第10步-任务清单.md
+
+==============================================================================
+延迟（每题，毫秒）
+==============================================================================
+  encode             均值    250.5  中位     50.5
+  vec(searcher内)     均值    221.6  中位    220.5
+  bm25(searcher内)    均值     57.9  中位     46.5
+  fuse               均值      0.2  中位      0.2
+  取原文                均值   1960.8  中位   1912.3
+  重排                 均值   1640.1  中位   1560.8
+  reranker: 加载 6.14s · 10400 对 · 15.81 ms/对
+
+明细已存：E:\AI-learning\projects\rag-kb\eval\results\eval_v1_final.json
+EXIT=0

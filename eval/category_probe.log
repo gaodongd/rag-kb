@@ -1,0 +1,15 @@
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+TOTAL 3926261
+HAS_CATEGORY 492872 12.553 %
+PURE_CATEGORY 143683 3.66 %
+--- 样例 ---
+ TITLE: 小詹姆斯·I·霍普金斯
+    Category:美國空軍軍官 | Category:广岛和长崎原爆人物 | Category:德州農工大學校友
+ TITLE: Top Music
+    Category:法国电台 | Category:阿尔萨斯媒体 | Category:下莱茵省媒体 | Category:上莱茵省媒体 | Category:摩泽尔省媒体 | Category:斯特拉斯堡媒体
+ TITLE: 莱蒂齐娅·帕特诺斯特
+    Category:意大利女子自行车运动员 | Category:意大利奥运自行车运动员 | Category:特伦蒂诺-上阿迪杰大区人 | Category:2020年夏季奧林匹克運動會自由車選手 | Category:2024年夏季奧林匹克運動會自由車選
+�ɹ�: ����ֹ PID 28512 (���� PID 5284 �ӽ���)�Ľ��̡�
+�ɹ�: ����ֹ PID 5284 (���� PID 24268 �ӽ���)�Ľ��̡�
+�ɹ�: ����ֹ PID 24268 (���� PID 27404 �ӽ���)�Ľ��̡�
