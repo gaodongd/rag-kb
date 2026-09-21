@@ -329,6 +329,43 @@ def gen_one(backend, c, kind, retries=2):
 
 # ==================================================================== 预筛
 
+# 「问多个量」的措辞。**只收强标记**（各是／各为／分别…），
+# 不用「和／与／、」—— 实测误报太多：像
+#   「一种体细长侧扁、银色体色带深色纵带…的鱼，它最长能长到多少厘米」
+# 里就有「、」和「多少」，但它只问一个量（11 公分）。
+# 判据宁可窄，也不要制造噪音 —— 见 11.10 的教训。
+MULTI_ASK = re.compile(r"各是|各为|各自|各多少|各有多|分别是|分别多少|分别有多")
+NUM_VAL = re.compile(r"\d+(?:\.\d+)?")
+
+
+def multi_ask_one_answer(question, answer, text):
+    """
+    问题在问「多个量」，答案却只给了一个 —— **字符覆盖率抓不到这类缺陷**。
+
+    2026-09-21 实测例（v1-d27c79）：
+      问「喙宽度和厚度各是多少毫米」→ 答「2.6毫米」
+      原文：「喙宽度约2.6毫米，喙厚度约2.6毫米」—— 两个值**恰好相同**，
+      出题的 LLM 把它们合并成了一个。
+
+    为什么 `answer_coverage` 拦不住：那个判据问的是
+    「答案里的字有多少能在原文找到」，答案是 1.0（「2.6毫米」确实在原文里）。
+    它查的是**每个字有没有出处**，不查**该答的量有没有答全** ——
+    这是判据的**能力边界**，不是阈值调得不对。
+
+    判据设计：题干有强多问标记 + 答案是单个数值 + 原文含 ≥2 个数值。
+    三条同时成立才报，只针对数字型（非数字型的「答漏」见不了底，不硬凑）。
+    """
+    if not MULTI_ASK.search(norm_text(question)):
+        return None
+    nums_a = NUM_VAL.findall(answer)
+    if len(nums_a) != 1:
+        return None                    # 0 个（列表型答案）或多个（已答全）都不报
+    nums_t = NUM_VAL.findall(text)
+    if len(nums_t) < 2:
+        return None                    # 原文只有一个量，那答案给一个是对的
+    return (f"疑似「问多个量、只答一个」：题干问多个量，答案是单个数值 "
+            f"「{answer}」，而原文含 {len(nums_t)} 个数值")
+
 
 def answer_coverage(answer, text):
     """
@@ -394,6 +431,11 @@ def check_item(it, c, kind):
                   if w in qn]
         if leaked:
             problems.append(f"匿名化失败：问题里出现了标题词 {leaked}")
+
+    # 4) 「问多个量、只答一个」—— 字符覆盖率的盲区（见 multi_ask_one_answer）
+    ma = multi_ask_one_answer(q, a, c["chunk_text"])
+    if ma:
+        problems.append(ma)
 
     return (not problems), problems
 
@@ -544,7 +586,13 @@ def write_review(items, path):
             if it.get("answer_coverage") is not None:
                 lines.append(f"- **答案覆盖率**：{it['answer_coverage']}"
                              f"（答案的字有多少能在原文里找到，<0.85 才可疑）")
-            lines.append(f"- **原文**：{(it.get('chunk_text') or '')[:260]}…")
+            # ⚠️ chunk_text 内部含换行（一条 chunk 常是多句话、多段）。
+            #    直接拼进一行 markdown 会**把行拆开**，且 Windows 上
+            #    write_text 会把那些 \n 翻译成 \r\n，在文件里留下游离的 \r
+            #    （2026-09-21 实测：review_v1.md 里积了 110 个，某些查看器
+            #      渲染时会把行首覆盖掉）。换成可见分隔符，一条题就占一行。
+            raw_text = (it.get('chunk_text') or '')[:260].replace("\r", "").replace("\n", " ／ ")
+            lines.append(f"- **原文**：{raw_text}…")
         if it.get("warn"):
             lines.append(f"- ⚠️ **自动预筛提示**：{it['warn']}")
         lines.append("")
@@ -556,7 +604,9 @@ def write_review(items, path):
     lines.append("")
     lines.append("要删除的编号：")
     lines.append("")
-    path.write_text("\n".join(lines), encoding="utf-8")
+    # newline="\n" 必须显式写 —— 否则 Windows 上 write_text 会把每个 \n
+    # 翻译成 \r\n（newline=None 时写 os.linesep），产出的行尾随平台漂移。
+    path.write_text("\n".join(lines), encoding="utf-8", newline="\n")
 
 
 def recheck(src_path, tag="recheck"):
@@ -589,7 +639,7 @@ def recheck(src_path, tag="recheck"):
     n_after = sum(1 for r in rows if r.get("pass_local"))
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     cand = OUT_DIR / f"qa_testset_candidates_{tag}.jsonl"
-    with cand.open("w", encoding="utf-8") as f:
+    with cand.open("w", encoding="utf-8", newline="\n") as f:
         for r in rows:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
     order = {"easy": 0, "hard_anon": 1, "hard_para": 2, "t2s": 3, "s2t": 4, "oob": 5}
@@ -776,7 +826,7 @@ def main() -> int:
     # ---- 落盘 ----
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     cand = OUT_DIR / f"qa_testset_candidates_{args.tag}.jsonl"
-    with cand.open("w", encoding="utf-8") as f:
+    with cand.open("w", encoding="utf-8", newline="\n") as f:
         for it in items:
             f.write(json.dumps(it, ensure_ascii=False) + "\n")
 
