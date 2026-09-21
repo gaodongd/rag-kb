@@ -57,6 +57,12 @@
     :: 换云端模型
     "...python313\\python.exe" src\\generator.py --cloud-model qwen-max
 
+    :: 接上重排（第 11 步 §11.13 的生产配置）—— 端到端要和评测脚本同配置
+    "...python313\\python.exe" src\\generator.py --rerank --testset eval\\qa_testset_v1.jsonl --tag testset_rr
+
+    :: 跑评测集（结果里带 qid / gold_chunk_id / gold_rank，供生成侧指标用）
+    "...python313\\python.exe" src\\generator.py --backend echo --testset eval\\qa_testset_v1.jsonl --limit 2
+
     :: 不加载 13.6GB 的 faiss，改用暴力精确扫（慢但省内存）
     "...python313\\python.exe" src\\generator.py --vec-backend scan
 """
@@ -133,16 +139,29 @@ REFUSAL_TEXT = "根据已有资料无法回答"
 # 语料是**繁体**中文维基，模型跟着语料的语体会用繁体回答 ——
 # 第一版只写了简体「无法回答」，结果 Q3 明明拒答了，判定却是「拒答 0 条」。
 # 这类错误的隐蔽性在于：程序不报错、指标也「正常」，只是数字是错的。
+#
+# ⚠️ 2026-09-21 又补了一次（§11.14）：只认逐字那句「无法回答」不够 ——
+# 模型经常换措辞（"参考资料中没有提及…"）。实测 v1-20f55e 就这样：
+#   「根据现有资料，【参考资料】中没有提及袁說友的朋友对他的评价[2]。」
+# 它守规矩拒答了，却被判成"硬答"（最危险的那一类），只因为
+# ① 标记表里写的是"资料中没有"，而原文多了个 `】`；
+# ② 换措辞的说法没进表。
+# ⇒ 匹配前统一**去掉括号与空白**，并把常见换说法补进表。
 REFUSAL_MARKERS = [
     # 简体
-    "无法回答", "没有任何相关", "资料中没有", "参考资料中没有",
-    "未提供相关信息", "无法从参考资料", "没有足够信息",
+    "无法回答", "没有任何相关", "资料中没有", "资料中未", "资料里没有", "参考资料中没有",
+    "未提供相关信息", "无法从参考资料", "没有足够信息", "没有提及", "未提及",
+    "没有说明", "未说明", "无法得知", "无从得知",
     # 繁体
-    "無法回答", "沒有任何相關", "資料中沒有", "參考資料中沒有",
-    "未提供相關信息", "無法從參考資料", "沒有足夠信息",
+    "無法回答", "沒有任何相關", "資料中沒有", "資料中未", "資料裡沒有", "參考資料中沒有",
+    "未提供相關信息", "無法從參考資料", "沒有足夠信息", "沒有提及", "未提及",
+    "沒有說明", "未說明", "無法得知", "無從得知",
     # 中英混排（模型偶尔夹英文）
     "无法确定", "無法確定",
 ]
+
+# 去括号/空白后再匹配 —— 见上面 v1-20f55e 的教训
+_BRACKET_RE = re.compile(r"[\[\]【】〔〕（）()「」『』\s]")
 
 CITE_RE = re.compile(r"\[(\d{1,3})\]")
 
@@ -274,6 +293,12 @@ class LocalBackend:
 
         self.torch = torch
         self.max_new_tokens = max_new_tokens
+        self.model_dir = Path(model_dir)      # 落进结果文件用（见 run_one 的 gen_config）
+        # 显示名：ModelScope 缓存是 <repo>/snapshots/master，直接用 .name 会只得到 "master"，
+        # 看不出到底用的哪个模型。所以往上找一层。
+        self.model_name = (self.model_dir.parent.parent.name
+                           if self.model_dir.name == "master" else self.model_dir.name)
+        self.quant = quant
         t = time.time()
         self.tok = AutoTokenizer.from_pretrained(str(model_dir))
         kwargs = {"device_map": "auto"}
@@ -331,7 +356,7 @@ def parse_citations(answer, k):
 
 
 def is_refusal(answer):
-    a = answer or ""
+    a = _BRACKET_RE.sub("", answer or "")
     return any(m in a for m in REFUSAL_MARKERS)
 
 
@@ -438,21 +463,64 @@ def make_searcher(args):
     return HybridSearcher(ns)
 
 
-def retrieve(searcher, query, args, qv):
-    """返回 (hits, timing)。hits 按融合排名，带原文与两路排名。"""
+def retrieve(searcher, query, args, qv, reranker=None):
+    """
+    返回 (hits, timing)。hits 按最终排名，带原文、两路排名与 chunk_id。
+
+    重排的顺序很关键（照抄 evaluate.py 的口径，不要"优化"）：
+      search(pool) → 取原文 → 只在池子前 rr_pool 个候选上重排 → 截 topk
+    不能先截 topk 再重排 —— 那样重排只能在 5 个候选里重排，
+    等于把这个模型最大的价值（把 gold 从第 30 名提到第 1 名）扔掉了。
+    """
     t0 = time.time()
+    # ⚠️ 第 4 个参数（search 的 topk）是**融合输出条数** —— `rrf_fuse(..., topn=topk)`
+    #    会把融合结果直接截到这里。所以必须传**池子大小**，不能传最终的 --topk。
+    #    2026-09-21 实测踩到：传了 args.topk=5，融合只剩 5 条，重排就在这 5 条里重排 ——
+    #    等于把这个模型最大的价值（把 gold 从第 30 名提到第 1 名）整个扔掉，
+    #    而指标只表现为 "R@1 涨到 0.808 但 R@5 掉到 0.875"，**不报错、看着还挺合理**。
+    #    抓到它的不是代码，是下面那句"检索侧口径应与评测脚本一致"的交叉核对。
+    #    （评测脚本传的是 args.pool, args.pool —— 两边必须一致。）
     rows, scores, per_path, _, (t_vec, t_bm, t_fuse) = searcher.search(
-        query, qv, "hybrid", args.topk, args.topn, args.w_vec, args.w_bm25, args.rrf_k)
+        query, qv, "hybrid", args.topn, args.topn, args.w_vec, args.w_bm25, args.rrf_k)
+    fused_n = len(rows)
 
     pos_v = {int(r): i + 1 for i, r in enumerate(per_path.get("vector", []))}
     pos_b = {int(r): i + 1 for i, r in enumerate(per_path.get("bm25", []))}
     # 按行号回查（快约 4 倍）—— rows 本来就是行号，
     # 没必要先换成随机哈希 chunk_id 再去 isin 全扫 4 个分片。
+    t_f = time.time()
     got = get_fetcher(searcher.ids).fetch(rows)
+    t_fetch = time.time() - t_f
+
+    rr_scores = {}
+    t_rr = 0.0
+    if reranker is not None:
+        from vectorize import build_text          # 与索引侧/评测侧同一个拼接函数
+        rr_pool = args.rerank_pool or args.topn
+        # 防呆断言：上面那个 topk 参数一旦被误设成最终条数，融合会被提前截断，
+        # 重排池静默缩水而指标只是"看着还行"。这个断言的成本是几微秒。
+        if fused_n < min(rr_pool, args.topn):
+            raise SystemExit(
+                f"[错误] 融合只给出 {fused_n} 条候选，却要重排 {rr_pool} 条 —— "
+                f"search(..., topk=?) 的第 4 个参数必须是池子大小（--pool={args.topn}），"
+                f"不能是最终的 --topk，否则重排池被静默截断（见 retrieve() 注释）")
+        rr_rows = [int(r) for r in rows[:rr_pool]]
+        passages = []
+        for r in rr_rows:
+            rec = got.get(searcher.ids[r])
+            passages.append(build_text(rec["title"], rec["section"] or "", rec["chunk_text"] or "")
+                            if rec else "")
+        r0 = time.time()          # ⚠️ 必须用新变量，不能复用 t0 ——
+        order = reranker.rerank(query, passages, topk=None, batch_size=args.rerank_batch)
+        t_rr = time.time() - r0
+        rows = [rr_rows[j] for j, _ in order]
+        rr_scores = {rr_rows[j]: float(s) for j, s in order}
+
+    # 截到 topk 之后再组装 —— 上面的重排用到了完整池子的分数
+    rows = [int(r) for r in rows[:args.topk]]
 
     hits = []
     for rank, r in enumerate(rows, 1):
-        r = int(r)
         rec = got.get(searcher.ids[r])
         if rec is None:
             continue
@@ -463,21 +531,24 @@ def retrieve(searcher, query, args, qv):
             "title": rec["title"],
             "section": rec["section"] or "",
             "chunk_text": rec["chunk_text"] or "",
-            "score": float(scores[rank - 1]) if scores is not None else None,
+            "score": rr_scores.get(r) if reranker is not None
+                     else (float(scores[rank - 1]) if scores is not None else None),
             "vrank": pos_v.get(r),
             "brank": pos_b.get(r),
         })
-    timing = {"vector": t_vec, "bm25": t_bm, "fuse": t_fuse, "retrieve_total": time.time() - t0}
+    timing = {"vector": t_vec, "bm25": t_bm, "fuse": t_fuse, "fetch": t_fetch,
+              "rerank": t_rr, "fused_n": fused_n, "rr_pool_n": len(rr_rows) if reranker else None,
+              "retrieve_total": time.time() - t0}
     return hits, timing
 
 
 # ==================================================================== 主流程
 
 
-def run_one(searcher, backend, query, args, idx):
+def run_one(searcher, reranker, backend, query, args, idx, meta=None):
     t_all = time.time()
     qv = searcher._encode([query])[0]
-    hits, timing = retrieve(searcher, query, args, qv)
+    hits, timing = retrieve(searcher, query, args, qv, reranker)
 
     if not hits:
         print("\n[警告] 检索无结果，跳过生成")
@@ -496,14 +567,28 @@ def run_one(searcher, backend, query, args, idx):
         # 这个假结果的害处不小：它看起来像核查逻辑坏了，实际是喂错了输入。
         used, bad, refused = [], [], False
 
+    # ---- 引用 → chunk_id 的映射（生成侧指标的核心） ----
+    # 光知道"答案里出现了 [3]"没用，要能回答"第 3 条是不是 gold"。
+    # 重排之后位置全变了，这个映射只能在这里做（hits 是唯一权威顺序）。
+    hit_cids = [h["chunk_id"] for h in hits]
+    cited_cids = [hit_cids[n - 1] for n in used if 1 <= n <= len(hit_cids)]
+
+    meta = meta or {}
+    gold_cid = meta.get("gold_chunk_id")
+    gold_rank = next((i + 1 for i, c in enumerate(hit_cids) if c == gold_cid), None)
+
     # ---------------- 打印 ----------------
     print()
     print("=" * 76)
-    print(f"[{idx}] Q: {query}")
+    print(f"[{idx}] Q: {query}"
+          + (f"   （{meta.get('qid')} · {meta.get('kind')}）" if meta.get("qid") else ""))
     print("=" * 76)
     lat = (f"检索 {timing['retrieve_total'] * 1000:.0f} ms"
            f"（向量 {timing['vector'] * 1000:.0f} + BM25 {timing['bm25'] * 1000:.0f}"
-           f" + 融合 {timing['fuse'] * 1000:.1f}）")
+           f" + 融合 {timing['fuse'] * 1000:.1f}"
+           + (f" + 取原文 {timing['fetch'] * 1000:.0f} + 重排 {timing['rerank'] * 1000:.0f}"
+              if args.rerank else "")
+           + "）")
     print(f"【检索】{len(hits)} 条命中 · {lat}")
     for h in hits:
         sec = h["section"] or "—"
@@ -543,23 +628,64 @@ def run_one(searcher, backend, query, args, idx):
 
     return {
         "idx": idx,
+        "qid": meta.get("qid"),
+        "kind": meta.get("kind"),
         "query": query,
         "backend": backend.name,
         "hits": [{k: h[k] for k in ("rank", "chunk_id", "title", "section", "score",
                                     "vrank", "brank")} for h in hits],
+        # 原文正文必须落盘 —— 只存 title/chunk_id 的话，**离线算不出 faithfulness**：
+        # 判"这句话有没有被它引用的块支撑"必须逐字比对那段文字。
+        # 2026-09-21 实测踩到：拿旧结果文件跑指标脚本，覆盖率全是 0、
+        # 数字违规 12/15 句 —— 判据没坏，是它没拿到要比对的文本。
+        # 顺带一个好处：结果文件成了自证材料，别人拿这一个文件就能复核答案有没有依据。
+        "contexts": [{"rank": h["rank"], "chunk_id": h["chunk_id"], "title": h["title"],
+                      "section": h["section"], "text": h["chunk_text"]} for h in hits],
+        "hit_chunk_ids": hit_cids,
+        "gold_chunk_id": gold_cid,
+        "gold_title": meta.get("gold_title"),
+        "gold_answer": meta.get("answer"),
+        "gold_rank": gold_rank,              # gold 在最终上下文里排第几（None = 没进上下文）
+        "answerable_in_kb": meta.get("answerable_in_kb"),
         "context_chars": len(build_context(hits)),
         "answer": answer,
         "cited": used,
+        "cited_chunk_ids": cited_cids,
         "bad_citations": bad,
         "refused": refused,
+        "gen_config": {
+            "topk": args.topk, "pool": args.topn, "rrf_k": args.rrf_k,
+            "rerank": bool(args.rerank),
+            "rerank_pool": (args.rerank_pool or args.topn) if args.rerank else None,
+            "rerank_max_length": args.rerank_max_length if args.rerank else None,
+            "temperature": getattr(backend, "temperature", None),
+            # ⚠️ 不能直接写 getattr(backend, "model")：CloudBackend 的 .model 是**模型名**
+            #    （字符串），而 LocalBackend 的 .model 是**模型对象** ——
+            #    2026-09-21 实测：本地那次跑完全程 13.6 分钟，写文件时
+            #    `TypeError: Object of type Qwen2ForCausalLM is not JSON serializable`，
+            #    结果文件 0 字节，全部结果丢失。所以这里显式判类型。
+            "cloud_model": (backend.model if isinstance(getattr(backend, "model", None), str)
+                            else None),
+            "local_model": getattr(backend, "model_name", None),
+            "quant": getattr(backend, "quant", None),
+        },
         "timing": timing,
         "usage": usage,
         "total_seconds": total,
     }
 
 
-def load_queries(args):
-    qs = list(args.query or [])
+def load_items(args):
+    """
+    返回 [(question, meta), ...]。meta 空字典表示这条不是来自评测集。
+
+    为什么要单独走 --testset 而不是让用户自己抽问题行：
+    生成侧指标要回答的是「模型引用的那条是不是 gold」，没有 gold 就无从判起。
+    评测集 jsonl 里本来就带 gold_chunk_id / answer / kind，
+    拆成纯文本行再让评测脚本去猜着对齐，是把已有的信息扔掉再靠文件名拼回来。
+    """
+    items = [(q, {}) for q in (args.query or [])]
+
     for f in (args.file or []):
         p = Path(f)
         if not p.is_absolute():
@@ -569,8 +695,25 @@ def load_queries(args):
         for line in p.read_text(encoding="utf-8").splitlines():
             line = line.strip()
             if line and not line.startswith("#"):
-                qs.append(line)
-    return qs or DEFAULT_QUERIES
+                items.append((line, {}))
+
+    if args.testset:
+        p = Path(args.testset)
+        if not p.is_absolute():
+            p = PROJECT / args.testset
+        if not p.exists():
+            raise SystemExit(f"[错误] 评测集不存在：{p}")
+        n = 0
+        for line in p.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            it = json.loads(line)
+            items.append((it["question"], it))
+            n += 1
+        print(f"[评测集] {p.name}：读入 {n} 条（带 qid / gold，可算引用准确率）")
+
+    return items or [(q, {}) for q in DEFAULT_QUERIES]
 
 
 def build_backend(args):
@@ -608,9 +751,31 @@ def main() -> int:
     ap.add_argument("--file", action="append", default=None,
                     help="问题文件，每行一条（# 注释）。**可多次传入**，按顺序拼接 —— "
                          "复测时要跑多组问题，一次加载索引比跑三次省 3 分钟")
+    ap.add_argument("--testset", default=None,
+                    help="评测集 jsonl（如 eval/qa_testset_v1.jsonl）。与 --file 的区别："
+                         "它会**带上 qid / gold_chunk_id / gold_answer / kind** 落进结果文件 —— "
+                         "生成侧指标（引用准确率、拒答归因）全靠这几个字段，"
+                         "只给纯文本问题行的话，评测时无法与 gold 对齐。")
     ap.add_argument("--limit", type=int, default=0, help="只跑前 N 条（0=全部）")
     ap.add_argument("--topk", type=int, default=5)
-    ap.add_argument("--topn", type=int, default=100)
+    ap.add_argument("--topn", "--pool", dest="topn", type=int, default=100,
+                    help="召回池：两路各取 topn 再 RRF 融合（默认 100）。"
+                         "--pool 是同一参数的别名，与评测脚本口径一致")
+
+    # ---------------- 重排（第 11 步 §11.13 的生产配置） ----------------
+    # 加这一段的原因：generator / gradio 一直只跑 RRF 融合，**没接重排** ——
+    # 也就是第 11 步辛苦量出来的 R@1 +0.019 从来没进过生成链路。
+    # "评测脚本用了什么配置，端到端就该用什么配置"，否则测的是另一套系统。
+    ap.add_argument("--rerank", action="store_true",
+                    help="开 cross-encoder 重排（bge-reranker-v2-m3）。生产配置建议开")
+    ap.add_argument("--rerank-pool", type=int, default=50,
+                    help="喂给重排的候选数（在召回池基础上再截）。"
+                         "§11.13 实测 100→50：重排延迟 -27%% 而指标不降；"
+                         "⚠️ 不要用 --pool 去降，它还管 RRF 的融合输入，降了要掉 R@5")
+    ap.add_argument("--rerank-max-length", type=int, default=1024,
+                    help="重排 (query,passage) 对的截断长度。默认 1024 —— "
+                         "512 会**静默**截掉 20.2%% 的 gold 且恰好伤在 R@1 上（§11.13）")
+    ap.add_argument("--rerank-batch", type=int, default=32)
     ap.add_argument("--rrf-k", type=int, default=10)
     ap.add_argument("--w-vec", type=float, default=1.0)
     ap.add_argument("--w-bm25", type=float, default=1.0)
@@ -627,32 +792,60 @@ def main() -> int:
     if args.backend == "echo":
         args.show_context = True
 
-    queries = load_queries(args)
+    items = load_items(args)
     if args.limit:
-        queries = queries[:args.limit]
+        items = items[:args.limit]
 
     print("=" * 76)
     print("第 9 步 · 生成与引用（M3）")
     print("=" * 76)
     print(f"后端      : {args.backend}")
-    print(f"问题数    : {len(queries)}")
-    print(f"检索      : hybrid topk={args.topk} topn={args.topn} RRF k={args.rrf_k}")
+    print(f"问题数    : {len(items)}")
+    print(f"检索      : hybrid topk={args.topk} pool={args.topn} RRF k={args.rrf_k}")
+    print(f"重排      : " + (f"开（候选 {args.rerank_pool or args.topn} · "
+                             f"max_length={args.rerank_max_length} · "
+                             f"batch={args.rerank_batch}）" if args.rerank else "关"))
     print(f"向量后端  : {args.vec_backend}"
           + (f" nprobe={args.nprobe}" if args.vec_backend == "faiss" else "（暴力精确）"))
     print()
 
     searcher = make_searcher(args)
+    reranker = None
+    if args.rerank:
+        from rerank import Reranker
+        reranker = Reranker(verbose=True, max_length=args.rerank_max_length)
     backend = build_backend(args)
+
+    # ---------------- 边跑边写 ----------------
+    # 为什么要这样（2026-09-21 的教训）：原来是跑完全部再一次性落盘，
+    # 结果本地那次跑了 13.6 分钟后写文件时抛 TypeError，**结果文件 0 字节，全丢**。
+    # 逐条写出 + flush 的三个好处：
+    #   ① 崩了只丢一条，不是一整个实验；
+    #   ② 跑批中途就能看进度（本项目第 8 步的纪律：进度看产物文件，别 grep 日志）；
+    #   ③ 中途 Ctrl-C 也能保住已完成的部分（重跑时可用 --limit 接着来）。
+    RESULTS.mkdir(parents=True, exist_ok=True)
+    tag = f"_{args.tag}" if args.tag else ""
+    out = RESULTS / f"gen_{args.backend}{tag}.jsonl"
 
     records = []
     t0 = time.time()
-    for i, q in enumerate(queries, 1):
-        try:
-            rec = run_one(searcher, backend, q, args, i)
-        except Exception as e:
-            print(f"\n[错误] 第 {i} 条失败：{type(e).__name__}: {e}")
-            rec = None
-        if rec:
+    with out.open("w", encoding="utf-8", newline="\n") as fout:
+        for i, (q, meta) in enumerate(items, 1):
+            try:
+                rec = run_one(searcher, reranker, backend, q, args, i, meta)
+            except Exception as e:
+                print(f"\n[错误] 第 {i} 条失败：{type(e).__name__}: {e}")
+                rec = None
+            if not rec:
+                continue
+            try:
+                fout.write(json.dumps(rec, ensure_ascii=False) + "\n")
+                fout.flush()
+            except TypeError as e:
+                # 一条序列化不了不该拖垮整批；但必须**响亮地**报出来
+                print(f"\n[错误] 第 {i} 条结果无法序列化（{e}）—— 该条已跳过，其余继续。"
+                      f"多半是往记录里塞了非 JSON 对象（如模型实例）")
+                continue
             records.append(rec)
 
     # ---------------- 汇总 ----------------
@@ -660,17 +853,29 @@ def main() -> int:
     refused = sum(1 for r in records if r["refused"])
     bad = sum(1 for r in records if r["bad_citations"])
     nocite = sum(1 for r in records if not r["cited"] and not r["refused"])
-    ret = [r["timing"]["retrieve_total"] for r in records]
+    # 检索总耗时按分项相加算 —— 不要用 timing["retrieve_total"]：
+    # 那个字段曾经因为计时变量被复用而只记录了重排那一段（见 retrieve() 注释里的 r0）。
+    ret = [sum(r["timing"][k] or 0 for k in ("vector", "bm25", "fuse", "fetch", "rerank"))
+           for r in records]
+
     gen = [r["usage"].get("latency", 0) for r in records]
 
     print()
     print("=" * 76)
     print("GENERATOR_OK")
     print(f"  后端        : {args.backend}")
-    print(f"  成功条数    : {n} / {len(queries)}")
+    print(f"  成功条数    : {n} / {len(items)}")
     print(f"  拒答        : {refused} 条")
     print(f"  非法编号    : {bad} 条")
     print(f"  无引用无拒答: {nocite} 条")
+    with_gold = [r for r in records if r.get("gold_chunk_id")]
+    if with_gold:
+        in_ctx = sum(1 for r in with_gold if r["gold_rank"])
+        cited_gold = sum(1 for r in with_gold
+                         if r.get("gold_chunk_id") in (r.get("cited_chunk_ids") or []))
+        print(f"  带 gold 条数: {len(with_gold)}")
+        print(f"  其中 gold 进上下文: {in_ctx} 条（检索侧口径，应与评测脚本一致）")
+        print(f"  其中 gold 被引用  : {cited_gold} 条（生成侧口径，M4 的引用准确率）")
     if ret:
         print(f"  检索耗时    : 中位 {sorted(ret)[len(ret) // 2] * 1000:.0f} ms")
     if gen:
@@ -680,13 +885,8 @@ def main() -> int:
     print("=" * 76)
 
     if records:
-        RESULTS.mkdir(parents=True, exist_ok=True)
-        tag = f"_{args.tag}" if args.tag else ""
-        out = RESULTS / f"gen_{args.backend}{tag}.jsonl"
-        with out.open("w", encoding="utf-8") as f:
-            for r in records:
-                f.write(json.dumps(r, ensure_ascii=False) + "\n")
-        print(f"结果已存：{out}")
+        print(f"\n结果已存（边跑边写）：{out}")
+        print(f"  文件行数应等于成功条数，可用：find /c /v \"\" \"{out}\"")
 
     print("\n怎么读结果：")
     print("  · 「拒答」应只出现在库外问题上；库里问题被拒答 = 误拒（M4 要量化的指标）")

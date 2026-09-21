@@ -1,0 +1,141 @@
+[缓存] 已有 25 条答案的判定
+[判官] qwen-plus @ dashscope（temperature=0，json 输出）
+需判 129 条答案，缓存命中 0，本次调用 129
+  [1/129] v1-04806f 1/1 有依据
+  [2/129] v1-09f297 11/12 有依据
+  [3/129] v1-1b9a93 2/2 有依据
+  [4/129] v1-1d42d8 4/6 有依据
+  [5/129] v1-1f1e6e 1/1 有依据
+  [6/129] v1-210c94 2/2 有依据
+  [7/129] v1-24ab0e 1/1 有依据
+  [8/129] v1-25d852 9/9 有依据
+  [9/129] v1-2ab66f 1/1 有依据
+  [10/129] v1-3dccab 1/2 有依据
+  [11/129] v1-401995 1/1 有依据
+  [12/129] v1-45c467 1/1 有依据
+  [13/129] v1-4b3250 1/1 有依据
+  [14/129] v1-50fb85 1/1 有依据
+  [15/129] v1-52aa3b 2/2 有依据
+  [16/129] v1-54fb34 1/1 有依据
+  [17/129] v1-56ff20 1/1 有依据
+  [18/129] v1-5ab67a 1/1 有依据
+  [19/129] v1-5d9bb0 5/5 有依据
+  [20/129] v1-5e6b32 1/2 有依据
+  [21/129] v1-6439f2 3/3 有依据
+  [22/129] v1-65a558 1/1 有依据
+  [23/129] v1-6c689a 2/2 有依据
+  [24/129] v1-79b11b 3/3 有依据
+  [25/129] v1-87119c 1/1 有依据
+  [26/129] v1-88549d 1/1 有依据
+  [27/129] v1-99340c 1/1 有依据
+  [28/129] v1-9d9b7b 1/1 有依据
+  [29/129] v1-acdbcb 2/2 有依据
+  [30/129] v1-adad89 1/1 有依据
+  [31/129] v1-ae8fd7 2/2 有依据
+  [32/129] v1-b250d2 1/1 有依据
+  [33/129] v1-b36dcd 1/1 有依据
+  [34/129] v1-b5a17c 1/1 有依据
+  [35/129] v1-b98811 1/1 有依据
+  [36/129] v1-bb37db 1/1 有依据
+  [37/129] v1-c60af3 4/4 有依据
+  [38/129] v1-c6d12b 2/2 有依据
+  [39/129] v1-c78662 3/4 有依据
+  [40/129] v1-cfe1ef 2/2 有依据
+  [41/129] v1-d3a543 3/3 有依据
+  [42/129] v1-d7fe42 2/2 有依据
+  [43/129] v1-f0d458 1/1 有依据
+  [44/129] v1-f2c036 1/1 有依据
+  [45/129] v1-f40546 4/4 有依据
+  [46/129] v1-0470cb 1/1 有依据
+  [47/129] v1-0ad606 6/6 有依据
+  [48/129] v1-0b16ea 11/11 有依据
+  [49/129] v1-0dd0ad 8/8 有依据
+  [50/129] v1-0fde78 2/2 有依据
+  [51/129] v1-156de3 1/1 有依据
+  [52/129] v1-157e46 9/10 有依据
+  [53/129] v1-169831 1/1 有依据
+  [54/129] v1-171770 9/9 有依据
+  [55/129] v1-28002e 8/8 有依据
+  [56/129] v1-338517 3/3 有依据
+  [57/129] v1-49555c 5/7 有依据
+  [58/129] v1-55fe6f 1/1 有依据
+  [59/129] v1-6e47b3 4/4 有依据
+  [60/129] v1-778faa 3/3 有依据
+  [61/129] v1-7e9162 7/8 有依据
+  [62/129] v1-7ede68 1/1 有依据
+  [63/129] v1-8006ed 1/1 有依据
+  [64/129] v1-822a67 4/4 有依据
+  [65/129] v1-8bba55 4/10 有依据
+  [66/129] v1-998ff4 2/2 有依据
+  [67/129] v1-9a5cca 5/6 有依据
+  [68/129] v1-a1d7bf 1/1 有依据
+  [69/129] v1-a492e7 11/11 有依据
+  [70/129] v1-b6aeea 1/2 有依据
+  [71/129] v1-ba4d84 2/2 有依据
+  [72/129] v1-c3581d 4/4 有依据
+  [73/129] v1-d27c79 3/3 有依据
+  [74/129] v1-e5aca5 7/7 有依据
+  [75/129] v1-e6d5c5 2/2 有依据
+  [76/129] v1-f124c6 1/1 有依据
+  [77/129] v1-f70977 7/7 有依据
+  [78/129] v1-017dc8 4/4 有依据
+  [79/129] v1-03ef27 1/1 有依据
+  [80/129] v1-04e95e 3/3 有依据
+  [81/129] v1-07585c 2/2 有依据
+  [82/129] v1-373590 4/4 有依据
+  [83/129] v1-42b55f 1/1 有依据
+  [84/129] v1-4b5cb2 1/1 有依据
+  [85/129] v1-5bbba3 7/7 有依据
+  [86/129] v1-7f7ff2 1/1 有依据
+  [87/129] v1-881821 1/1 有依据
+  [88/129] v1-c57ba9 6/6 有依据
+  [89/129] v1-ed9e54 2/2 有依据
+  [90/129] v1-f23a18 1/1 有依据
+  [91/129] v1-f4e8ca 1/1 有依据
+  [92/129] v1-54b0cd 2/2 有依据
+  [93/129] v1-713aff 1/1 有依据
+  [94/129] v1-73ac56 1/1 有依据
+  [95/129] v1-ab1c0c 1/1 有依据
+  [96/129] v1-b71162 1/1 有依据
+  [97/129] v1-c612da 1/1 有依据
+  [98/129] v1-13374a 1/1 有依据
+  [99/129] v1-4c776f 1/1 有依据
+  [100/129] v1-70b8b7 1/1 有依据
+  [101/129] v1-9589f1 1/2 有依据
+  [102/129] v1-a4e938 1/2 有依据
+  [103/129] v1-ef3d05 1/1 有依据
+  [104/129] v1-f9c146 1/1 有依据
+  [105/129] v1-04ecc8 2/2 有依据
+  [106/129] v1-0773c1 1/1 有依据
+  [107/129] v1-109a6b 失败：PermissionDeniedError: Error code: 403 - {'error': {'message': 'Free quota exhausted. To continue accessing the model on a paid basis, please add funds or disable the "use free tier only" mode in the management console.', 'type': 'AllocationQuota.FreeTierOnly', 'param': None, 'code': 'AllocationQuota.FreeTierOnly'}, 'id': 'chatcmpl-15061b8d-66c4-9e56-ad27-0280331b4e18', 'request_id': '15061b8d-66c4-9e56-ad27-0280331b4e18'}
+  [108/129] v1-133e5f 失败：PermissionDeniedError: Error code: 403 - {'error': {'message': 'Free quota exhausted. To continue accessing the model on a paid basis, please add funds or disable the "use free tier only" mode in the management console.', 'type': 'AllocationQuota.FreeTierOnly', 'param': None, 'code': 'AllocationQuota.FreeTierOnly'}, 'id': 'chatcmpl-f671bd6e-de9b-9e5e-91f4-15422a4e7be9', 'request_id': 'f671bd6e-de9b-9e5e-91f4-15422a4e7be9'}
+  [109/129] v1-1ceb45 失败：PermissionDeniedError: Error code: 403 - {'error': {'message': 'Free quota exhausted. To continue accessing the model on a paid basis, please add funds or disable the "use free tier only" mode in the management console.', 'type': 'AllocationQuota.FreeTierOnly', 'param': None, 'code': 'AllocationQuota.FreeTierOnly'}, 'id': 'chatcmpl-e04f91da-7bb3-9f06-b56a-648f55009297', 'request_id': 'e04f91da-7bb3-9f06-b56a-648f55009297'}
+  [110/129] v1-20f55e 失败：PermissionDeniedError: Error code: 403 - {'error': {'message': 'Free quota exhausted. To continue accessing the model on a paid basis, please add funds or disable the "use free tier only" mode in the management console.', 'type': 'AllocationQuota.FreeTierOnly', 'param': None, 'code': 'AllocationQuota.FreeTierOnly'}, 'id': 'chatcmpl-d294a5fc-76e5-9168-8fde-5676b90a128a', 'request_id': 'd294a5fc-76e5-9168-8fde-5676b90a128a'}
+  [111/129] v1-240bd9 失败：PermissionDeniedError: Error code: 403 - {'error': {'message': 'Free quota exhausted. To continue accessing the model on a paid basis, please add funds or disable the "use free tier only" mode in the management console.', 'type': 'AllocationQuota.FreeTierOnly', 'param': None, 'code': 'AllocationQuota.FreeTierOnly'}, 'id': 'chatcmpl-5e752538-547f-9c3d-a3c5-b37d43b8132a', 'request_id': '5e752538-547f-9c3d-a3c5-b37d43b8132a'}
+  [112/129] v1-29bbff 失败：PermissionDeniedError: Error code: 403 - {'error': {'message': 'Free quota exhausted. To continue accessing the model on a paid basis, please add funds or disable the "use free tier only" mode in the management console.', 'type': 'AllocationQuota.FreeTierOnly', 'param': None, 'code': 'AllocationQuota.FreeTierOnly'}, 'id': 'chatcmpl-ec1c8565-4e4f-9c3d-b271-84ae5837abf2', 'request_id': 'ec1c8565-4e4f-9c3d-b271-84ae5837abf2'}
+  [113/129] v1-2d272b 失败：PermissionDeniedError: Error code: 403 - {'error': {'message': 'Free quota exhausted. To continue accessing the model on a paid basis, please add funds or disable the "use free tier only" mode in the management console.', 'type': 'AllocationQuota.FreeTierOnly', 'param': None, 'code': 'AllocationQuota.FreeTierOnly'}, 'id': 'chatcmpl-fa368bcc-54ae-9116-b817-e7f641cc8da5', 'request_id': 'fa368bcc-54ae-9116-b817-e7f641cc8da5'}
+  [114/129] v1-36e775 失败：PermissionDeniedError: Error code: 403 - {'error': {'message': 'Free quota exhausted. To continue accessing the model on a paid basis, please add funds or disable the "use free tier only" mode in the management console.', 'type': 'AllocationQuota.FreeTierOnly', 'param': None, 'code': 'AllocationQuota.FreeTierOnly'}, 'id': 'chatcmpl-ebb6bb37-a607-9db8-b2b7-58ea20b3d9a4', 'request_id': 'ebb6bb37-a607-9db8-b2b7-58ea20b3d9a4'}
+  [115/129] v1-4692be 失败：PermissionDeniedError: Error code: 403 - {'error': {'message': 'Free quota exhausted. To continue accessing the model on a paid basis, please add funds or disable the "use free tier only" mode in the management console.', 'type': 'AllocationQuota.FreeTierOnly', 'param': None, 'code': 'AllocationQuota.FreeTierOnly'}, 'id': 'chatcmpl-f5bbc60a-460e-973f-ac13-e50f761b087c', 'request_id': 'f5bbc60a-460e-973f-ac13-e50f761b087c'}
+  [116/129] v1-610b9c 失败：PermissionDeniedError: Error code: 403 - {'error': {'message': 'Free quota exhausted. To continue accessing the model on a paid basis, please add funds or disable the "use free tier only" mode in the management console.', 'type': 'AllocationQuota.FreeTierOnly', 'param': None, 'code': 'AllocationQuota.FreeTierOnly'}, 'id': 'chatcmpl-a5ea308e-dffa-9063-b931-0264c5d5c2da', 'request_id': 'a5ea308e-dffa-9063-b931-0264c5d5c2da'}
+  [117/129] v1-811605 失败：PermissionDeniedError: Error code: 403 - {'error': {'message': 'Free quota exhausted. To continue accessing the model on a paid basis, please add funds or disable the "use free tier only" mode in the management console.', 'type': 'AllocationQuota.FreeTierOnly', 'param': None, 'code': 'AllocationQuota.FreeTierOnly'}, 'id': 'chatcmpl-bada1094-a5b3-9af4-9675-c12513501729', 'request_id': 'bada1094-a5b3-9af4-9675-c12513501729'}
+  [118/129] v1-881bb7 失败：PermissionDeniedError: Error code: 403 - {'error': {'message': 'Free quota exhausted. To continue accessing the model on a paid basis, please add funds or disable the "use free tier only" mode in the management console.', 'type': 'AllocationQuota.FreeTierOnly', 'param': None, 'code': 'AllocationQuota.FreeTierOnly'}, 'id': 'chatcmpl-abf8ca35-7cb8-966f-a0d9-373b2c935462', 'request_id': 'abf8ca35-7cb8-966f-a0d9-373b2c935462'}
+  [119/129] v1-986758 失败：PermissionDeniedError: Error code: 403 - {'error': {'message': 'Free quota exhausted. To continue accessing the model on a paid basis, please add funds or disable the "use free tier only" mode in the management console.', 'type': 'AllocationQuota.FreeTierOnly', 'param': None, 'code': 'AllocationQuota.FreeTierOnly'}, 'id': 'chatcmpl-6b5ea265-2e73-97b3-9bcf-c32e1ee145a1', 'request_id': '6b5ea265-2e73-97b3-9bcf-c32e1ee145a1'}
+  [120/129] v1-9b3a15 失败：PermissionDeniedError: Error code: 403 - {'error': {'message': 'Free quota exhausted. To continue accessing the model on a paid basis, please add funds or disable the "use free tier only" mode in the management console.', 'type': 'AllocationQuota.FreeTierOnly', 'param': None, 'code': 'AllocationQuota.FreeTierOnly'}, 'id': 'chatcmpl-ab8df803-adc4-98b1-b416-4c6c2e373bd3', 'request_id': 'ab8df803-adc4-98b1-b416-4c6c2e373bd3'}
+  [121/129] v1-9b9bce 失败：PermissionDeniedError: Error code: 403 - {'error': {'message': 'Free quota exhausted. To continue accessing the model on a paid basis, please add funds or disable the "use free tier only" mode in the management console.', 'type': 'AllocationQuota.FreeTierOnly', 'param': None, 'code': 'AllocationQuota.FreeTierOnly'}, 'id': 'chatcmpl-af84916c-9d99-94cd-9bdd-5a8c79e8cad0', 'request_id': 'af84916c-9d99-94cd-9bdd-5a8c79e8cad0'}
+  [122/129] v1-9d3f79 失败：PermissionDeniedError: Error code: 403 - {'error': {'message': 'Free quota exhausted. To continue accessing the model on a paid basis, please add funds or disable the "use free tier only" mode in the management console.', 'type': 'AllocationQuota.FreeTierOnly', 'param': None, 'code': 'AllocationQuota.FreeTierOnly'}, 'id': 'chatcmpl-b6060b80-3623-987e-82f5-d90673120d7d', 'request_id': 'b6060b80-3623-987e-82f5-d90673120d7d'}
+  [123/129] v1-b25af4 失败：PermissionDeniedError: Error code: 403 - {'error': {'message': 'Free quota exhausted. To continue accessing the model on a paid basis, please add funds or disable the "use free tier only" mode in the management console.', 'type': 'AllocationQuota.FreeTierOnly', 'param': None, 'code': 'AllocationQuota.FreeTierOnly'}, 'id': 'chatcmpl-37b11993-648e-9ca7-8b35-38951e22d024', 'request_id': '37b11993-648e-9ca7-8b35-38951e22d024'}
+  [124/129] v1-bfce65 失败：PermissionDeniedError: Error code: 403 - {'error': {'message': 'Free quota exhausted. To continue accessing the model on a paid basis, please add funds or disable the "use free tier only" mode in the management console.', 'type': 'AllocationQuota.FreeTierOnly', 'param': None, 'code': 'AllocationQuota.FreeTierOnly'}, 'id': 'chatcmpl-c0c655dc-95b3-9281-916b-034a6cc9c615', 'request_id': 'c0c655dc-95b3-9281-916b-034a6cc9c615'}
+  [125/129] v1-e20001 失败：PermissionDeniedError: Error code: 403 - {'error': {'message': 'Free quota exhausted. To continue accessing the model on a paid basis, please add funds or disable the "use free tier only" mode in the management console.', 'type': 'AllocationQuota.FreeTierOnly', 'param': None, 'code': 'AllocationQuota.FreeTierOnly'}, 'id': 'chatcmpl-13e11ba6-283a-9de8-be95-776bdb4f02e9', 'request_id': '13e11ba6-283a-9de8-be95-776bdb4f02e9'}
+  [126/129] v1-e7aa2e 失败：PermissionDeniedError: Error code: 403 - {'error': {'message': 'Free quota exhausted. To continue accessing the model on a paid basis, please add funds or disable the "use free tier only" mode in the management console.', 'type': 'AllocationQuota.FreeTierOnly', 'param': None, 'code': 'AllocationQuota.FreeTierOnly'}, 'id': 'chatcmpl-843a7aa7-6594-9e23-8fd2-f3b675ea9c49', 'request_id': '843a7aa7-6594-9e23-8fd2-f3b675ea9c49'}
+  [127/129] v1-e914d0 失败：PermissionDeniedError: Error code: 403 - {'error': {'message': 'Free quota exhausted. To continue accessing the model on a paid basis, please add funds or disable the "use free tier only" mode in the management console.', 'type': 'AllocationQuota.FreeTierOnly', 'param': None, 'code': 'AllocationQuota.FreeTierOnly'}, 'id': 'chatcmpl-e180abcc-a580-93cd-98cb-e7909bb6b253', 'request_id': 'e180abcc-a580-93cd-98cb-e7909bb6b253'}
+  [128/129] v1-ebfb5d 失败：PermissionDeniedError: Error code: 403 - {'error': {'message': 'Free quota exhausted. To continue accessing the model on a paid basis, please add funds or disable the "use free tier only" mode in the management console.', 'type': 'AllocationQuota.FreeTierOnly', 'param': None, 'code': 'AllocationQuota.FreeTierOnly'}, 'id': 'chatcmpl-9bf36123-14d9-999b-b619-ef1f890b7db9', 'request_id': '9bf36123-14d9-999b-b619-ef1f890b7db9'}
+  [129/129] v1-febcac 失败：PermissionDeniedError: Error code: 403 - {'error': {'message': 'Free quota exhausted. To continue accessing the model on a paid basis, please add funds or disable the "use free tier only" mode in the management console.', 'type': 'AllocationQuota.FreeTierOnly', 'param': None, 'code': 'AllocationQuota.FreeTierOnly'}, 'id': 'chatcmpl-2196a15c-df96-9ff1-a01e-0f7e13fb9ebd', 'request_id': '2196a15c-df96-9ff1-a01e-0f7e13fb9ebd'}
+
+==============================================================================
+JUDGE_OK
+  答案数      : 129
+  子句数      : 300（判官判为有依据 280 = 93.3%）
+  调用/耗时   : 106 次 · 362 s
+  输入/输出   : 206,323 / 13,351 tok
+  结果        : E:\AI-learning\projects\rag-kb\eval\results\gen_faith_judge_rr.jsonl
+==============================================================================
