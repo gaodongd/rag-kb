@@ -120,11 +120,14 @@ class RAGApp:
             head = "> " + " · ".join(flags) + "\n\n"
 
         # ---- 耗时条 ----
+        # 取原文用 timing['fetch'] 直接取，**不要用减法**：
+        # 减法把"重排"也算了进去，一旦开了重排（--rerank），这一栏显示的就是错的、
+        # 而且看不出错（数字还在合理的量级上）。
         timing_md = (
             f"**检索 {timing['retrieve_total'] * 1000:.0f} ms**"
             f"（向量 {timing['vector'] * 1000:.0f} · BM25 {timing['bm25'] * 1000:.0f}"
             f" · 融合 {timing['fuse'] * 1000:.1f} · "
-            f"取原文 {(timing['retrieve_total'] - timing['vector'] - timing['bm25'] - timing['fuse']) * 1000:.0f}）"
+            f"取原文 {timing['fetch'] * 1000:.0f}）"
             f" ｜ **生成 {usage.get('latency', 0):.2f} s**"
             + (f"（输入 {usage.get('prompt_tokens')} tok / 输出 {usage.get('completion_tokens')} tok"
                if usage.get("prompt_tokens") else "")

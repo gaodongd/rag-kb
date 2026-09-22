@@ -87,7 +87,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 
 from search_hybrid import HybridSearcher, PARQUET          # noqa: E402
-from search_vector import fetch_texts                      # noqa: E402
+from fetch_store import get_fetcher                        # noqa: E402
 
 PROJECT = HERE.parent
 RESULTS = PROJECT / "eval" / "results"
@@ -361,83 +361,18 @@ def is_refusal(answer):
 
 
 # ==================================================================== 取原文
-
-
-class RowTextFetcher:
-    """
-    按**行号**回查原文 —— 比按 chunk_id 查快约 4 倍。
-
-    为什么能快：parquet 的 4 个分片是按行序**连续切分**的
-    （2026-09-19 实测：829,100 / 829,099 / 829,098 / 829,098，区间首尾相接），
-    所以给定全局行号就能唯一定位分片，只需扫 1/4 数据。
-
-    为什么原来的写法慢：`fetch_texts` 用 `chunk_id.isin(...)` 过滤，
-    而 chunk_id 是随机哈希 —— 任何分片的 min/max 统计都剪不掉枝，
-    只能把 2.17 GB 的 4 个分片全扫一遍（实测 1.2~2.9 s，**比向量检索还慢**）。
-
-    ⚠️ 这个优化建立在「分片按行序连续」这个**假设**上。假设一旦不成立
-       （比如换了数据集、重切了分片），结果会**静默错位**。
-       所以每批取回后都断言 chunk_id 与行号对得上 ——
-       断言的成本是几微秒，换来的是"错了会响"（第 8 步 `_assert_rows` 的同一条纪律）。
-    """
-
-    def __init__(self, parquet: Path, id_list):
-        import pyarrow.dataset as ds_mod
-        import pyarrow.parquet as pq
-
-        self.id_list = id_list
-        self.parts = []
-        cum = 0
-        for f in sorted(ds_mod.dataset(str(parquet), format="parquet").files):
-            n = pq.ParquetFile(f).metadata.num_rows
-            self.parts.append((Path(f), cum, cum + n))
-            cum += n
-        self.total = cum
-        if cum != len(id_list):
-            raise SystemExit(
-                f"[错误] parquet 共 {cum:,} 行，但 ids.txt 有 {len(id_list):,} 行 —— "
-                f"行号契约已破，不能按行号回查（退回 chunk_id 查询或重建索引）")
-
-    def _locate(self, row: int) -> Path:
-        for f, lo, hi in self.parts:
-            if lo <= row < hi:
-                return f
-        raise IndexError(f"行号 {row:,} 超出 [0, {self.total:,})")
-
-    def summary(self) -> str:
-        return " / ".join(f"{f.name[5:10]}:{hi - lo:,}" for f, lo, hi in self.parts)
-
-    def fetch(self, rows):
-        by_part = {}
-        for r in rows:
-            by_part.setdefault(self._locate(int(r)), []).append(int(r))
-
-        out = {}
-        for f, rs in by_part.items():
-            cids = [self.id_list[r] for r in rs]
-            got = fetch_texts(f, cids)
-            for r in rs:                        # ← 错位断言，见类文档
-                cid = self.id_list[r]
-                rec = got.get(cid)
-                if rec is not None and rec["chunk_id"] != cid:
-                    raise AssertionError(
-                        f"按行号回查错位：row={r:,} 期望 chunk_id={cid}，"
-                        f"实际拿到 {rec['chunk_id']} —— 分片不是按行序连续切分的？")
-            out.update(got)
-        return out
-
-
-_FETCHER = None
-
-
-def get_fetcher(id_list):
-    """全局缓存一个 RowTextFetcher（分片行数只需算一次）。"""
-    global _FETCHER
-    if _FETCHER is None:
-        _FETCHER = RowTextFetcher(PARQUET, id_list)
-        print(f"[取原文] 按行号定位分片：{_FETCHER.summary()}"
-              f"（共 {_FETCHER.total:,} 行，只需扫 1/{len(_FETCHER.parts)}）")
-    return _FETCHER
+#
+# 取原文层已抽到 `fetch_store.py`。为什么值得单独一个模块：
+#   它只依赖 pyarrow / numpy，**不依赖 faiss / torch** ——
+#   于是 `diagnose_fetch.py` 能在不加载 13.6 GB 索引的情况下量它的耗时（1 分钟出结果）。
+#
+# 两条实现：
+#   RowTextFetcher   按行号定位分片 + isin 过滤。基线，实测仍要 **1.7 s/次** ——
+#                    它只解决了「去哪个分片找」，没解决「进了分片还要全扫 552 MB」。
+#   BlobFetcher      侧车（JSON + int64 偏移数组）+ mmap，O(1) 点查。第 12 步新增。
+#
+# 由 --fetch-store 选择（auto：有侧车就用、没有就显式提示并退回基线 ——
+# 静默退回是最坏的选择，你会以为优化生效了，其实没有）。
 
 
 # ==================================================================== 检索
@@ -489,7 +424,7 @@ def retrieve(searcher, query, args, qv, reranker=None):
     # 按行号回查（快约 4 倍）—— rows 本来就是行号，
     # 没必要先换成随机哈希 chunk_id 再去 isin 全扫 4 个分片。
     t_f = time.time()
-    got = get_fetcher(searcher.ids).fetch(rows)
+    got = get_fetcher(searcher.ids, PARQUET, args.fetch_store).fetch(rows)
     t_fetch = time.time() - t_f
 
     rr_scores = {}
@@ -776,6 +711,15 @@ def main() -> int:
                     help="重排 (query,passage) 对的截断长度。默认 1024 —— "
                          "512 会**静默**截掉 20.2%% 的 gold 且恰好伤在 R@1 上（§11.13）")
     ap.add_argument("--rerank-batch", type=int, default=32)
+
+    # ---------------- 取原文（第 12 步） ----------------
+    # 为什么默认 auto 而不是直接写死侧车：侧车是**派生产物**，
+    # 别人 clone 下来时还没有（2.9 GB，不入库）。写死会导致开箱即失败；
+    # 而静默退回 parquet 又会让"优化生效了"变成错觉 —— 所以 auto 会打印一行提示。
+    ap.add_argument("--fetch-store", default="auto", choices=["auto", "blob", "parquet"],
+                    help="取原文实现：blob=侧车 mmap 随机访问（约 5 ms）；"
+                         "parquet=基线全扫（约 1.7 s）；auto=有侧车就用。"
+                         "建侧车：python src/fetch_store.py --build")
     ap.add_argument("--rrf-k", type=int, default=10)
     ap.add_argument("--w-vec", type=float, default=1.0)
     ap.add_argument("--w-bm25", type=float, default=1.0)

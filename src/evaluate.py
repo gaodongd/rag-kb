@@ -146,6 +146,11 @@ def parse_args():
                     help="BM25 索引目录，默认 data/index/bm25")
     ap.add_argument("--no-norm", action="store_true",
                     help="关掉繁简归一化（对照实验，须配 --bm25-index 指向未归一化的旧索引）")
+    # ---- 取原文实现（第 12 步）----
+    # ⚠️ 换实现会改变「取原文」与「端到端」的延迟数字 —— 侧车比全扫快约 2000×。
+    #    所以跟第 11 步的延迟数字对比时，要先确认两边用的实现一致。
+    ap.add_argument("--fetch-store", default="auto", choices=["auto", "blob", "parquet"],
+                    help="取原文实现：blob=侧车 mmap（约 1 ms）/ parquet=全扫（约 1.7 s）/ auto")
     return ap.parse_args()
 
 
@@ -188,8 +193,8 @@ def load_testset(name: str) -> list[dict]:
 
 def main() -> int:
     args = parse_args()
-    from generator import get_fetcher          # 按行号回查原文（第 9 步的优化）
-    from search_hybrid import HybridSearcher   # 索引只加载一次
+    from fetch_store import get_fetcher       # 取原文层（第 12 步：parquet 全扫 / 侧车 mmap）
+    from search_hybrid import HybridSearcher, PARQUET   # 索引只加载一次
     from vectorize import build_text           # 与索引侧同一个拼接函数
 
     items = load_testset(args.testset)
@@ -225,7 +230,7 @@ def main() -> int:
                          gate_weak_w=args.gate_weak_w, gate_strong_w=args.gate_strong_w,
                          bm25_index=str(bm25_dir), no_norm=args.no_norm, quiet=True)
     searcher = HybridSearcher(ns)
-    fetcher = get_fetcher(searcher.ids)
+    fetcher = get_fetcher(searcher.ids, PARQUET, args.fetch_store)
 
     reranker = None
     if args.rerank:
