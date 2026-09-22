@@ -742,7 +742,8 @@ rag-kb/
 │   ├── judge_faith.py         # ⑪ Faithfulness LLM 判官（--calibrate 先校准；缓存键带模型名+文件标识）
 │   ├── calibrate_faith.py     # ⑪ 判据人工校准（三套词面判据 vs LLM 判官，算一致率）
 │   ├── fetch_store.py         # ⑫ 取原文层：parquet 全扫 vs 侧车 mmap（--build/--verify/--info）
-│   └── diagnose_fetch.py      # ⑫ 取原文延迟诊断（**不加载索引**，1 分钟出结果）
+│   ├── diagnose_fetch.py      # ⑫ 取原文延迟诊断（**不加载索引**，1 分钟出结果）
+│   └── smoke_retrieve.py      # ⑫ 检索链路自检（**不加载索引**，0.6 秒；含对照组）
 ├── app/
 │   └── gradio_app.py          # ⑨ 演示界面（薄层：检索与 prompt 全部复用 src/）
 ├── data/
@@ -844,7 +845,19 @@ REM ⑨ 本地一路（需先下 Qwen2.5-1.5B-Instruct，见 download_models.py 
 
 REM ⑨ 演示界面 → 浏览器打开 http://127.0.0.1:7860
 "C:\...\Python313\python.exe" app\gradio_app.py
+REM 想要生产配置（开重排，R@1 0.613→0.885，每次查询多约 2.8 s）：
+"C:\...\Python313\python.exe" app\gradio_app.py --rerank
+
+REM ⑫ 改完检索参数先跑自检：不加载索引、0.6 秒、四组检查（含"关掉兜底应该崩"的对照组）
+"C:\...\Python313\python.exe" src\smoke_retrieve.py
 ```
+
+> 💡 `smoke_retrieve.py` 是**唯一**能不加载 13.6 GB 索引就验证检索链路的办法：
+> 它只把"要索引/要显卡/要花钱"的三样东西（`HybridSearcher` / `Reranker` / 云端后端）
+> 换成桩，其余全是真的（真的 `retrieve()`、真的取原文、真的界面渲染）。
+> 起因是一次真实事故：界面手抄了一份参数表，`generator` 加了 `--fetch-store` 它没跟上，
+> 于是**用户加载完索引、点了"提问"**才报 `AttributeError`
+> （详见 `第12步-任务清单.md` §12.10 与 `操作手册.md` 坑 BM）。
 
 ### 最省事的启动方式：双击 `启动问答.bat`
 

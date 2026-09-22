@@ -378,6 +378,57 @@ def is_refusal(answer):
 # ==================================================================== 检索
 
 
+# ============================================ 检索链路参数：单一来源
+# 为什么要有这一段（2026-09-22 界面报错后的复盘）：
+# retrieve() 的参数全部来自 args。命令行版用 argparse 定义（自带默认值），
+# 而 Gradio 界面**自己造了一个命名空间**再传给 retrieve() —— 参数清单于是有了两份。
+# 第 12 步新增 args.fetch_store 时，命令行版一切正常，
+# 界面版却是 `AttributeError: 'Namespace' object has no attribute 'fetch_store'`。
+#
+# 真正难受的是它**暴露的时机**：界面要把 13.6 GB 索引加载完、
+# 用户输入问题点"提问"之后才炸 —— 改一行参数，代价是一次完整的启动 + 一次错误演示。
+#
+# 所以参数只在这里定义一次：
+#   · argparse 用 RETRIEVAL_DEFAULTS[...] 当 default=  （不再是字面量）
+#   · 任何自己造命名空间的调用方（界面 / 评测 / 自检）都走 ensure_retrieval_args()
+# 缺哪个补哪个，**并且把补了哪些打印出来**。
+# 不静默是关键：它把"两份清单漂移了"变成一行可见的提示，
+# 而不是一个要等到用户点击才出现的 AttributeError。
+RETRIEVAL_DEFAULTS = {
+    "topk": 5,
+    "topn": 100,
+    "rrf_k": 10,
+    "w_vec": 1.0,
+    "w_bm25": 1.0,
+    "rerank": False,
+    "rerank_pool": 50,
+    "rerank_max_length": 1024,
+    "rerank_batch": 32,
+    "fetch_store": "auto",
+}
+
+_FILLED_WHO: set[str] = set()
+
+
+def ensure_retrieval_args(args, who: str = "调用方"):
+    """
+    给 args 补齐 retrieve() 需要的字段（就地补，并返回它）。
+
+    只补"完全没有这个属性"的：已经传了值（哪怕是 False / 0）一律不动 —— 
+    这里不做任何语义判断，否则会变成"偷偷改掉用户设的参数"。
+    """
+    missing = [k for k in RETRIEVAL_DEFAULTS if not hasattr(args, k)]
+    for k in missing:
+        setattr(args, k, RETRIEVAL_DEFAULTS[k])
+    if missing and who not in _FILLED_WHO:
+        _FILLED_WHO.add(who)
+        print(f"[参数] {who} 的命名空间缺少 {len(missing)} 个检索参数，已按默认值补齐："
+              f"{', '.join(missing)}")
+        print("       （不是报错，但说明参数清单有两份 —— 见 generator.RETRIEVAL_DEFAULTS；"
+              "建议调用方直接用 build_parser() 或显式声明这些字段）")
+    return args
+
+
 def make_searcher(args):
     """
     复用第 8 步的 HybridSearcher。
@@ -406,7 +457,11 @@ def retrieve(searcher, query, args, qv, reranker=None):
       search(pool) → 取原文 → 只在池子前 rr_pool 个候选上重排 → 截 topk
     不能先截 topk 再重排 —— 那样重排只能在 5 个候选里重排，
     等于把这个模型最大的价值（把 gold 从第 30 名提到第 1 名）扔掉了。
+
+    args 先过一遍 ensure_retrieval_args()：界面的命名空间少字段时**补齐**而不是崩
+    （2026-09-22 的实际事故，见 RETRIEVAL_DEFAULTS 上面的注释）。
     """
+    args = ensure_retrieval_args(args, "retrieve()")
     t0 = time.time()
     # ⚠️ 第 4 个参数（search 的 topk）是**融合输出条数** —— `rrf_fuse(..., topn=topk)`
     #    会把融合结果直接截到这里。所以必须传**池子大小**，不能传最终的 --topk。
@@ -670,7 +725,15 @@ def build_backend(args):
     raise SystemExit(f"[错误] 未知 backend: {args.backend}")
 
 
-def main() -> int:
+def build_parser() -> argparse.ArgumentParser:
+    """
+    参数定义只写一遍。
+
+    抽成函数不是为了好看：**别的调用方要能拿到同一份清单**。
+    界面（app/gradio_app.py）原来是手抄一份参数表，第 12 步加了 --fetch-store 之后
+    它没跟上，于是用户点"提问"直接报 AttributeError（2026-09-22）。
+    现在它可以直接 build_parser()，或者至少 ensure_retrieval_args() 兜底。
+    """
     ap = argparse.ArgumentParser()
     ap.add_argument("--backend", default="dashscope",
                     choices=["echo", "dashscope", "local"],
@@ -692,8 +755,10 @@ def main() -> int:
                          "生成侧指标（引用准确率、拒答归因）全靠这几个字段，"
                          "只给纯文本问题行的话，评测时无法与 gold 对齐。")
     ap.add_argument("--limit", type=int, default=0, help="只跑前 N 条（0=全部）")
-    ap.add_argument("--topk", type=int, default=5)
-    ap.add_argument("--topn", "--pool", dest="topn", type=int, default=100,
+    # ⚠️ 以下 4 个默认值都来自 RETRIEVAL_DEFAULTS（单一来源），不要再写字面量
+    ap.add_argument("--topk", type=int, default=RETRIEVAL_DEFAULTS["topk"])
+    ap.add_argument("--topn", "--pool", dest="topn", type=int,
+                    default=RETRIEVAL_DEFAULTS["topn"],
                     help="召回池：两路各取 topn 再 RRF 融合（默认 100）。"
                          "--pool 是同一参数的别名，与评测脚本口径一致")
 
@@ -702,34 +767,41 @@ def main() -> int:
     # 也就是第 11 步辛苦量出来的 R@1 +0.019 从来没进过生成链路。
     # "评测脚本用了什么配置，端到端就该用什么配置"，否则测的是另一套系统。
     ap.add_argument("--rerank", action="store_true",
+                    default=RETRIEVAL_DEFAULTS["rerank"],
                     help="开 cross-encoder 重排（bge-reranker-v2-m3）。生产配置建议开")
-    ap.add_argument("--rerank-pool", type=int, default=50,
+    ap.add_argument("--rerank-pool", type=int, default=RETRIEVAL_DEFAULTS["rerank_pool"],
                     help="喂给重排的候选数（在召回池基础上再截）。"
                          "§11.13 实测 100→50：重排延迟 -27%% 而指标不降；"
                          "⚠️ 不要用 --pool 去降，它还管 RRF 的融合输入，降了要掉 R@5")
-    ap.add_argument("--rerank-max-length", type=int, default=1024,
+    ap.add_argument("--rerank-max-length", type=int,
+                    default=RETRIEVAL_DEFAULTS["rerank_max_length"],
                     help="重排 (query,passage) 对的截断长度。默认 1024 —— "
                          "512 会**静默**截掉 20.2%% 的 gold 且恰好伤在 R@1 上（§11.13）")
-    ap.add_argument("--rerank-batch", type=int, default=32)
+    ap.add_argument("--rerank-batch", type=int, default=RETRIEVAL_DEFAULTS["rerank_batch"])
 
     # ---------------- 取原文（第 12 步） ----------------
     # 为什么默认 auto 而不是直接写死侧车：侧车是**派生产物**，
     # 别人 clone 下来时还没有（2.9 GB，不入库）。写死会导致开箱即失败；
     # 而静默退回 parquet 又会让"优化生效了"变成错觉 —— 所以 auto 会打印一行提示。
-    ap.add_argument("--fetch-store", default="auto", choices=["auto", "blob", "parquet"],
+    ap.add_argument("--fetch-store", default=RETRIEVAL_DEFAULTS["fetch_store"],
+                    choices=["auto", "blob", "parquet"],
                     help="取原文实现：blob=侧车 mmap 随机访问（约 5 ms）；"
                          "parquet=基线全扫（约 1.7 s）；auto=有侧车就用。"
                          "建侧车：python src/fetch_store.py --build")
-    ap.add_argument("--rrf-k", type=int, default=10)
-    ap.add_argument("--w-vec", type=float, default=1.0)
-    ap.add_argument("--w-bm25", type=float, default=1.0)
+    ap.add_argument("--rrf-k", type=int, default=RETRIEVAL_DEFAULTS["rrf_k"])
+    ap.add_argument("--w-vec", type=float, default=RETRIEVAL_DEFAULTS["w_vec"])
+    ap.add_argument("--w-bm25", type=float, default=RETRIEVAL_DEFAULTS["w_bm25"])
     ap.add_argument("--vec-backend", default="faiss", choices=["faiss", "scan"],
                     help="faiss=249ms（13.6GB 常驻）；scan=暴力精确 8.2s（省内存）")
     ap.add_argument("--nprobe", type=int, default=512,
                     help="默认 512 —— 第 8 步实测此档 recall=1.000 且只用 249ms")
     ap.add_argument("--show-context", action="store_true", help="打印送进模型的完整上下文")
     ap.add_argument("--tag", default="", help="结果文件名后缀，如 in_kb / out_kb")
-    args = ap.parse_args()
+    return ap
+
+
+def main() -> int:
+    args = build_parser().parse_args()
 
     # echo 的唯一用途就是审 prompt，自动打开全文 —— 否则回显的上下文被截成 60 字，
     # 等于白跑一趟（这个坑我第一版就踩了）。

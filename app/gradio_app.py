@@ -49,10 +49,12 @@ PROJECT = HERE.parent
 sys.path.insert(0, str(PROJECT / "src"))
 
 from generator import (  # noqa: E402
+    RETRIEVAL_DEFAULTS,
     CloudBackend,
     LocalBackend,
     build_context,
     build_messages,
+    ensure_retrieval_args,
     find_local_model,
     is_refusal,
     make_searcher,
@@ -66,10 +68,29 @@ class RAGApp:
 
     def __init__(self, args):
         self.args = args
+        # 兜底：万一 args 是别处手造的（少字段），在这里补齐而不是等 retrieve() 崩。
+        # 2026-09-22 的教训：界面自己抄了一份参数表，generator 加了 --fetch-store
+        # 它没跟上，于是**索引加载完、用户点了"提问"之后**才抛 AttributeError。
+        ensure_retrieval_args(args, "gradio RAGApp")
         self.searcher = make_searcher(args)
         self.cloud = CloudBackend(model=args.cloud_model)
         self._local = None                      # 懒加载：不选本地就不占显存
+        self._rr = None                         # 重排器也懒加载：不 --rerank 就不占内存
         print(f"[就绪] 云端后端：{args.cloud_model}")
+
+    def reranker(self):
+        """
+        懒加载 cross-encoder（bge-reranker-v2-m3）。
+
+        为什么懒加载：它要额外吃 2 GB 上下内存 + 几十秒加载，
+        而**大部分提问根本不需要它**（比如第一次跑通验证）。
+        只在 args.rerank 为真、且第一次真正要检索时才加载。
+        """
+        if self._rr is None:
+            from rerank import Reranker
+            print("[重排] 首次使用，加载 bge-reranker-v2-m3 …")
+            self._rr = Reranker(verbose=True, max_length=self.args.rerank_max_length)
+        return self._rr
 
     def local(self):
         if self._local is None:
@@ -91,7 +112,9 @@ class RAGApp:
         qv = self.searcher._encode([query])[0]
 
         # ---- 检索（复用第 8 步的混合检索，参数与命令行版完全一致）----
-        hits, timing = retrieve(self.searcher, query, self.args, qv)
+        # 重排器只在 --rerank 时懒加载一次；没开就传 None，与命令行版同一分支
+        hits, timing = retrieve(self.searcher, query, self.args, qv,
+                                self.reranker() if self.args.rerank else None)
         if not hits:
             return "检索无结果。", "", ""
 
@@ -123,11 +146,15 @@ class RAGApp:
         # 取原文用 timing['fetch'] 直接取，**不要用减法**：
         # 减法把"重排"也算了进去，一旦开了重排（--rerank），这一栏显示的就是错的、
         # 而且看不出错（数字还在合理的量级上）。
+        parts = [f"向量 {timing['vector'] * 1000:.0f}",
+                 f"BM25 {timing['bm25'] * 1000:.0f}",
+                 f"融合 {timing['fuse'] * 1000:.1f}",
+                 f"取原文 {timing['fetch'] * 1000:.0f}"]
+        if timing.get("rerank"):
+            parts.append(f"重排 {timing['rerank'] * 1000:.0f}")
         timing_md = (
             f"**检索 {timing['retrieve_total'] * 1000:.0f} ms**"
-            f"（向量 {timing['vector'] * 1000:.0f} · BM25 {timing['bm25'] * 1000:.0f}"
-            f" · 融合 {timing['fuse'] * 1000:.1f} · "
-            f"取原文 {timing['fetch'] * 1000:.0f}）"
+            f"（{' · '.join(parts)}）"
             f" ｜ **生成 {usage.get('latency', 0):.2f} s**"
             + (f"（输入 {usage.get('prompt_tokens')} tok / 输出 {usage.get('completion_tokens')} tok"
                if usage.get("prompt_tokens") else "")
@@ -208,29 +235,65 @@ def build_ui(app: RAGApp):
     return demo
 
 
-def main() -> int:
+def build_parser() -> argparse.ArgumentParser:
+    """
+    界面自己的参数表。
+
+    ⚠️ 检索相关的参数一律从 generator.RETRIEVAL_DEFAULTS 取默认值，
+    **不要再写字面量** —— 写死就又会变成"两份清单"，
+    而这里的漏项在上一次（--fetch-store）表现为：索引加载完、点了"提问"才报 AttributeError。
+    自检脚本 src/smoke_retrieve.py 会拿这个 parser 和 retrieve() 对一遍。
+    """
     ap = argparse.ArgumentParser()
     ap.add_argument("--host", default="127.0.0.1", help="绑 127.0.0.1，不要绑 0.0.0.0")
     ap.add_argument("--port", type=int, default=7860)
     ap.add_argument("--no-browser", action="store_true")
     ap.add_argument("--cloud-model", default="qwen-plus")
-    ap.add_argument("--topk", type=int, default=5)
-    ap.add_argument("--topn", type=int, default=100)
-    ap.add_argument("--rrf-k", type=int, default=10)
-    ap.add_argument("--w-vec", type=float, default=1.0)
-    ap.add_argument("--w-bm25", type=float, default=1.0)
+    ap.add_argument("--max-new-tokens", type=int, default=512)
     ap.add_argument("--vec-backend", default="faiss", choices=["faiss", "scan"])
     ap.add_argument("--nprobe", type=int, default=512)
-    ap.add_argument("--max-new-tokens", type=int, default=512)
-    args = ap.parse_args()
+
+    # ---------------- 检索链路（与命令行版同一份默认值） ----------------
+    ap.add_argument("--topk", type=int, default=RETRIEVAL_DEFAULTS["topk"])
+    ap.add_argument("--topn", "--pool", dest="topn", type=int,
+                    default=RETRIEVAL_DEFAULTS["topn"])
+    ap.add_argument("--rrf-k", type=int, default=RETRIEVAL_DEFAULTS["rrf_k"])
+    ap.add_argument("--w-vec", type=float, default=RETRIEVAL_DEFAULTS["w_vec"])
+    ap.add_argument("--w-bm25", type=float, default=RETRIEVAL_DEFAULTS["w_bm25"])
+    ap.add_argument("--fetch-store", default=RETRIEVAL_DEFAULTS["fetch_store"],
+                    choices=["auto", "blob", "parquet"],
+                    help="取原文实现：auto=有侧车就用（默认）/ blob / parquet")
+
+    # 重排：界面默认**关**（省内存、启动快），但生产配置是开 ——
+    # 加了它，界面才能和评测脚本跑同一套配置（否则演示的是另一套系统）。
+    ap.add_argument("--rerank", action="store_true",
+                    default=RETRIEVAL_DEFAULTS["rerank"],
+                    help="开 cross-encoder 重排（bge-reranker-v2-m3）。"
+                         "§11.13 实测 R@1 0.613→0.885，代价是每次查询多约 2.8 s")
+    ap.add_argument("--rerank-pool", type=int, default=RETRIEVAL_DEFAULTS["rerank_pool"])
+    ap.add_argument("--rerank-max-length", type=int,
+                    default=RETRIEVAL_DEFAULTS["rerank_max_length"])
+    ap.add_argument("--rerank-batch", type=int, default=RETRIEVAL_DEFAULTS["rerank_batch"])
+    return ap
+
+
+def main() -> int:
+    args = build_parser().parse_args()
 
     # make_searcher() 读 vec_backend / nprobe，其余字段它也用（mode/fuse 等），
     # 这里补齐成 SimpleNamespace 兼容的形状。
     args.mode = "hybrid"
     args.fuse = "rrf"
+    ensure_retrieval_args(args, "gradio main()")
 
     print("=" * 76)
     print("第 9 步 · RAG 演示界面")
+    print(f"检索      : hybrid topk={args.topk} pool={args.topn} RRF k={args.rrf_k}")
+    print(f"取原文    : {args.fetch_store}（auto = 有侧车就用侧车；没侧车会打印一行退回 parquet）")
+    print("重排      : " + (f"开（候选 {args.rerank_pool or args.topn} · "
+                             f"max_length={args.rerank_max_length}）"
+                             if args.rerank else
+                             "关 —— 生产配置是开（加 --rerank：R@1 0.613→0.885，每次查询多约 2.8 s）"))
     print("=" * 76)
     app = RAGApp(args)
     demo = build_ui(app)
