@@ -61,6 +61,7 @@ sys.path.insert(0, str(HERE))
 
 from evaluate_gen import (CITE_RE, context_texts, faithfulness,  # noqa: E402
                           is_struct_clause, norm_verdict)
+from cloud_models import DEFAULT_CLOUD_MODEL                      # noqa: E402
 from zh import norm_text                                          # noqa: E402
 
 RESULTS = PROJECT / "eval" / "results"
@@ -233,7 +234,12 @@ def main() -> int:
     ap.add_argument("--calibrate", action="store_true", help="先跑校准（约 20 次调用）")
     ap.add_argument("--input", default=None, help="结果 jsonl（全量判定时用）")
     ap.add_argument("--tag", default="", help="输出文件名后缀")
-    ap.add_argument("--model", default="qwen-plus")
+    # ⚠️ 换模型必须**重过校准**（`--calibrate`）：判官是这套指标的量具，
+    #    量具换了不重新标定，前后的数就不可比。2026-09-21 实测 qwen-plus 与
+    #    qwen-turbo 在同一批 104 条上差 0.4 pp（结论不敏感），但这是**那次**测出来的，
+    #    不代表下次也一样。
+    ap.add_argument("--model", default=DEFAULT_CLOUD_MODEL,
+                    help=f"判官模型，默认 {DEFAULT_CLOUD_MODEL}（与生成侧同一个常量）")
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--force", action="store_true", help="忽略缓存重判")
     args = ap.parse_args()

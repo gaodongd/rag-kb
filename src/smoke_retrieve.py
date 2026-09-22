@@ -63,6 +63,7 @@ PROJECT = HERE.parent
 sys.path.insert(0, str(HERE))
 
 from generator import (  # noqa: E402
+    DEFAULT_CLOUD_MODEL,
     RETRIEVAL_DEFAULTS,
     ensure_retrieval_args,
     retrieve,
@@ -112,8 +113,11 @@ class _FakeCloud:
 
     name = "fake"
     is_model = True
+    fail_msg: str | None = None      # 设为字符串则 generate() 抛错（测界面报错路径用）
 
     def generate(self, messages, max_new_tokens):
+        if self.fail_msg:
+            raise RuntimeError(self.fail_msg)
         return ("张伯苓创办了南开大学 [1]。", 
                 {"latency": 0.01, "prompt_tokens": 100, "completion_tokens": 12})
 
@@ -283,6 +287,55 @@ def check_ui_layer(base_args, stub: StubSearcher) -> list[str]:
             else:
                 seg = timing_md.split("｜")[0].strip()
                 print(f"  ✅ 界面层（{label}）：{seg}")
+
+        # ---- ⑤b 报错路径：2026-09-22 用户截图走的就是这条 ----
+        # 桩后端抛一个**真实的 dashscope 报错原文**（截图里那条），
+        # 检查界面返回的是"人话 + 下一步动作"，而不是 SDK 那一坨原始 JSON。
+        #
+        # 为什么这条值得单独测：它**只有出错时才执行**，用手点很难覆盖 ——
+        # 要开界面、等 13.6 GB 索引加载、再恰好撞上一次额度耗尽。
+        # 而它恰恰是"用户唯一会看到的那条路径"（正常情况下没人看得到错误处理代码）。
+        for msg, want in [
+            ("Error code: 403 - {'error': {'message': 'Free quota exhausted. To continue "
+             "accessing the model on a paid basis, please add funds or disable the "
+             '"use free tier only" mode...\', \'type\': \'AllocationQuota.FreeTierOnly\', '
+             "'param': None, 'code': 'AllocationQuota.FreeTierOnly'}}", "免费额度已用尽"),
+            ("Error code: 429 - Request rate increased too quickly.", "限流"),
+        ]:
+            ns = copy.copy(base_args)
+            ns.mode, ns.fuse = "hybrid", "rrf"
+            ensure_retrieval_args(ns, "smoke-ui-err")
+            ns.topk = 1
+            _FakeCloud.fail_msg = msg
+            try:
+                app = ga.RAGApp(ns)
+                ans, _, _ = app.answer("张伯苓是谁", "云端 qwen-plus", ns.topk)
+            finally:
+                _FakeCloud.fail_msg = None
+            bad_err = []
+            if want not in ans:
+                bad_err.append(f"没翻译成「{want}」：{ans[:100]}")
+            if "AllocationQuota" in ans or "Error code" in ans:
+                bad_err.append("把 SDK 原始报错糊给用户了（这类必须挡在界面之外）")
+            if "→" not in ans and "换" not in ans and "重试" not in ans:
+                bad_err.append("没给出下一步动作")
+            if bad_err:
+                fails += [f"界面报错路径: {b}" for b in bad_err]
+                print(f"  ❌ 界面报错路径（{want}）")
+                for b in bad_err:
+                    print(f"       · {b}")
+            else:
+                print(f"  ✅ 界面报错路径（{want}）：{ans.splitlines()[0][:52]}")
+
+        # ---- ⑤c 标签 → 模型名的映射（下拉改了文案就会崩的那条） ----
+        for label, want in [("云端 qwen-turbo", "qwen-turbo"),
+                            ("云端 qwen3-max", "qwen3-max"),
+                            ("云端 " + ga.DEFAULT_CLOUD_MODEL, ga.DEFAULT_CLOUD_MODEL)]:
+            got = ga.model_of_backend_label(label)
+            if got != want:
+                fails.append(f"model_of_backend_label({label!r}) = {got!r}，期望 {want!r}")
+        if not fails or all("model_of_backend_label" not in f for f in fails):
+            print(f"  ✅ 下拉标签 → 模型名映射正确（含默认 {ga.DEFAULT_CLOUD_MODEL}）")
     except Exception as e:
         fails.append(f"界面层: {type(e).__name__}: {e}")
         print(f"  ❌ 界面层抛错 → {type(e).__name__}: {e}")
@@ -338,6 +391,19 @@ def main() -> int:
     except Exception as e:
         print(f"  ❌ generator parser 取不到 → {type(e).__name__}: {e}")
         problems.append(f"generator parser: {e}")
+
+    # ---------------- ①b 模型名的默认值（同一类风险） ----------------
+    # 模型名同样有两个 parser 各写一遍 —— 与 RETRIEVAL_DEFAULTS 是**同一类**问题。
+    # 漂移的后果更阴：界面告诉你"正在用 A"，命令行实际跑的是 B，
+    # 于是"界面上看着好、评测数据对不上"，排查会绕很久。
+    # 2026-09-22 就是因为界面的默认值停在 qwen-plus（额度已耗尽）才吃的 403。
+    if gradio_args is not None and gen_args is not None:
+        vals = (gradio_args.cloud_model, gen_args.cloud_model, DEFAULT_CLOUD_MODEL)
+        same = vals[0] == vals[1] == vals[2]
+        print(f"  {'✅' if same else '❌'} 云端模型默认值三处一致："
+              f"界面={vals[0]} / 命令行={vals[1]} / 常量={vals[2]}")
+        if not same:
+            problems.append(f"云端模型默认值不一致：界面={vals[0]} 命令行={vals[1]} 常量={vals[2]}")
 
     # ---------------- ② 兜底能力（人工构造的账本） ----------------
     # 这两个样本缺字段是**预期**的，不计入 problems —— 它们是用来验证
@@ -397,11 +463,15 @@ def main() -> int:
         for p in problems:
             print(f"   · {p}")
         return 1
-    print("✅ 四件事都成立：")
+    print("✅ 七件事都成立：")
     print("   ① 界面 / 命令行的参数表与 RETRIEVAL_DEFAULTS 完全对齐（没有漂移）")
+    print("   ①b 云端模型默认值三处一致（界面 / 命令行 / 常量，同类的漂移风险）")
     print("   ② 对照组确认：关掉兜底，旧版字段**确实**崩在 fetch_store（bug 真实存在）")
     print("   ③ 开着兜底，四种命名空间都能跑通取原文（含空命名空间）")
     print("   ④ 界面层 answer() 两条分支（重排开/关）都渲染正常，含耗时条")
+    print("   ⑤b 界面**报错路径**给人话而不是 SDK 原始 JSON"
+          "（额度用尽 / 限流两种，各带「有没有下一步动作」的断言）")
+    print("   ⑤c 下拉标签 → 模型名映射正确（改显示文案不会连累调用）")
     print("   改完 retrieve() 的参数就跑一次 —— 本脚本 0.6 秒（冷盘也就 1~3 秒），"
           "代价远低于「等到点了提问才发现」")
     return 0

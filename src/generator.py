@@ -99,6 +99,21 @@ DEFAULT_QUERIES = [
 ]
 
 
+# 云端模型的常量与错误翻译放在 src/cloud_models.py（**零依赖模块**）。
+# 这里 import 进来，于是 `from generator import classify_api_error` 依然可用；
+# 而只想调一次 API 的工具（check_backends / judge_faith）直接从 cloud_models 取 ——
+# **不必为了一个常量把 faiss 拖进来**（判断模块边界的标准不是代码长不长，
+# 而是谁该为谁的依赖买单）。
+from cloud_models import (  # noqa: E402,F401
+    BASE_URL,
+    CLOUD_MODELS,
+    DEFAULT_CLOUD_MODEL,
+    api_error_kind,
+    api_key_or_exit,
+    classify_api_error,
+    is_fatal_api_error,
+)
+
 # ==================================================================== Prompt
 #
 # 这三段是整个 M3 最值钱的部分，逐条说明为什么这么写。
@@ -244,17 +259,21 @@ class CloudBackend:
     name = "dashscope"
     is_model = True
 
-    def __init__(self, model="qwen-plus", temperature=0.0, timeout=60):
+    def __init__(self, model=None, temperature=0.0, timeout=60, max_retries=2):
         from openai import OpenAI
-        key = os.environ.get("DASHSCOPE_API_KEY")
-        if not key:
-            raise SystemExit("[错误] 环境变量 DASHSCOPE_API_KEY 未设置")
-        self.model = model
+        key = api_key_or_exit()          # 没设 key 就带着可执行提示退出
+        self.model = model or DEFAULT_CLOUD_MODEL
         self.temperature = temperature
+        # ⚠️ 不要自己写 for 循环重试 —— SDK 已经内置，而且做得比手写更对：
+        #    它只重试**可重试**的类别（429 / 5xx / 连接错误），并尊重服务端的
+        #    Retry-After 头；对 400/401/403 这类"重试一万次也一样"的错误不会浪费你时间。
+        #    这里显式写出来，是为了让"我们考虑过重试"这件事留在代码里，
+        #    而不是靠一个看不见的默认值（它默认就是 2，改掉默认没人会发现）。
         self.client = OpenAI(
             api_key=key,
-            base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
+            base_url=BASE_URL,           # 端点只写一处（cloud_models），体检脚本共用
             timeout=timeout,
+            max_retries=max_retries,
         )
 
     def generate(self, messages, max_new_tokens):
@@ -738,8 +757,10 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--backend", default="dashscope",
                     choices=["echo", "dashscope", "local"],
                     help="echo=只回显 prompt（零成本，先跑这个验证上下文组装）")
-    ap.add_argument("--cloud-model", default="qwen-plus",
-                    help="dashscope 模型名：qwen-turbo / qwen-plus / qwen-max")
+    ap.add_argument("--cloud-model", default=DEFAULT_CLOUD_MODEL,
+                    help=f"dashscope 模型名，默认 {DEFAULT_CLOUD_MODEL}（单一来源常量）。"
+                         f"可选：{' / '.join(CLOUD_MODELS)}。"
+                         "⚠️ qwen-plus 的免费额度已耗尽，要用得先在百炼控制台充值")
     ap.add_argument("--local-model", default=None, help="本地模型目录（默认自动找）")
     ap.add_argument("--quant", default="4bit", choices=["4bit", "fp16"])
     ap.add_argument("--temperature", type=float, default=0.0,
@@ -850,10 +871,20 @@ def main() -> int:
             try:
                 rec = run_one(searcher, reranker, backend, q, args, i, meta)
             except Exception as e:
-                print(f"\n[错误] 第 {i} 条失败：{type(e).__name__}: {e}")
-                rec = None
-            if not rec:
+                # 单条失败不该毁掉整批：跑到第 100 条才 403，前 99 条的价值不该丢。
+                # 但「要不要继续」取决于错误性质 ——
+                # 额度用尽 / Key 无效 / 模型名错，重试一万次也是同样的结果，
+                # 继续跑只会白等 129 次，还把日志刷成 129 行一模一样的报错。
+                reason, hint = classify_api_error(e)
+                print(f"\n[错误] 第 {i}/{len(items)} 条失败：{reason}")
+                if is_fatal_api_error(e):
+                    print(f"\n[中止] {hint}")
+                    print(f"       已跑完的 {len(records)} 条已落盘（逐条 flush）：{out}")
+                    break
+                print(f"       {hint}（跳过该条，继续）")
                 continue
+            if not rec:
+                continue        # run_one 在「检索无结果」时返回 None
             try:
                 fout.write(json.dumps(rec, ensure_ascii=False) + "\n")
                 fout.flush()

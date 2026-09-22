@@ -1,0 +1,9 @@
+【自检】错误归类（不需要网络）
+  ✅ quota      fatal=True  云端模型的免费额度已用尽（阿里百炼 FreeTierOnly）
+  ✅ auth       fatal=True  API Key 无效或未设置
+  ✅ ratelimit  fatal=False 请求被限流（429）
+  ✅ timeout    fatal=False 请求超时
+  ✅ model      fatal=True  模型名不存在，或该账号无权访问这个模型
+  ✅ unknown    fatal=False 调用云端模型失败（_FakeError）
+
+  6/6 通过（全绿）

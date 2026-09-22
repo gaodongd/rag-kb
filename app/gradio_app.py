@@ -49,18 +49,33 @@ PROJECT = HERE.parent
 sys.path.insert(0, str(PROJECT / "src"))
 
 from generator import (  # noqa: E402
+    CLOUD_MODELS,
+    DEFAULT_CLOUD_MODEL,
     RETRIEVAL_DEFAULTS,
     CloudBackend,
     LocalBackend,
     build_context,
     build_messages,
+    classify_api_error,
     ensure_retrieval_args,
     find_local_model,
+    is_fatal_api_error,
     is_refusal,
     make_searcher,
     parse_citations,
     retrieve,
 )
+
+
+def model_of_backend_label(label: str) -> str:
+    """
+    下拉标签 → 后端要用的模型名。
+
+    标签是写给人看的（"云端 qwen-turbo"），模型名是给 API 的。
+    中间这层映射必须有且只有一处 —— 否则改个显示文案就会连带崩掉调用
+    （同 BM 坑：同一条信息在两处定义，就一定会漂移）。
+    """
+    return label.split(" ", 1)[1].strip() if " " in label else label
 
 
 class RAGApp:
@@ -73,10 +88,28 @@ class RAGApp:
         # 它没跟上，于是**索引加载完、用户点了"提问"之后**才抛 AttributeError。
         ensure_retrieval_args(args, "gradio RAGApp")
         self.searcher = make_searcher(args)
-        self.cloud = CloudBackend(model=args.cloud_model)
+        self._clouds: dict[str, CloudBackend] = {}
+        # 启动即建一个（构造时会检查 DASHSCOPE_API_KEY，把"key 没设"提前暴露，
+        # 而不是等用户点完"提问"才报）。构造本身不产生 API 调用、不花钱。
+        self.cloud(args.cloud_model)
         self._local = None                      # 懒加载：不选本地就不占显存
         self._rr = None                         # 重排器也懒加载：不 --rerank 就不占内存
-        print(f"[就绪] 云端后端：{args.cloud_model}")
+        print(f"[就绪] 云端模型：{args.cloud_model}（下拉可切换 · 默认再启动一次仍用它）")
+
+    def cloud(self, model: str) -> CloudBackend:
+        """
+        按模型名缓存云端后端 —— 界面下拉可以切模型（2026-09-22 加）。
+
+        为什么缓存而不是每次 new：OpenAI 客户端内部维护连接池，
+        每次重建等于每次重新握手；而下拉里切来切去是常态。
+
+        为什么默认值是 qwen-turbo：qwen-plus 免费额度已耗尽（2026-09-22 实测 403），
+        能用什么见 generator.CLOUD_MODELS 与 `src/check_backends.py`。
+        """
+        if model not in self._clouds:
+            self._clouds[model] = CloudBackend(model=model)
+            print(f"[云端] 新建后端：{model}")
+        return self._clouds[model]
 
     def reranker(self):
         """
@@ -120,11 +153,23 @@ class RAGApp:
 
         # ---- 生成 ----
         messages = build_messages(query, hits)
-        backend = self.local() if backend_name.startswith("本地") else self.cloud
+        backend = (self.local() if backend_name.startswith("本地")
+                   else self.cloud(model_of_backend_label(backend_name)))
         try:
             answer, usage = backend.generate(messages, self.args.max_new_tokens)
         except Exception as e:
-            return f"**生成失败**：`{type(e).__name__}: {e}`", "", ""
+            # ⚠️ 别把 SDK 的原始 JSON 糊给用户 —— 2026-09-22 的截图就是那样：
+            # 满屏 `{'error': {'message': 'Free quota exhausted...', 'type':
+            # 'AllocationQuota.FreeTierOnly', 'param': None, 'code': ...}}`，
+            # 用户看完只知道"坏了"，不知道"换个模型就行"。
+            # classify_api_error 把常见错误翻成「原因 + 一条能照着做的动作」。
+            reason, hint = classify_api_error(e)
+            if is_fatal_api_error(e):
+                extra = ("\n\n> 换个模型重试最快：上面「生成模型」下拉里选别的"
+                         "（qwen-turbo 通常还有免费额度）。")
+            else:
+                extra = "\n\n> 这类是临时故障，直接再点一次「提问」通常就行。"
+            return f"### ❌ {reason}\n\n{hint}{extra}", "", ""
 
         total = time.time() - t0
         used, bad = parse_citations(answer, len(hits))
@@ -206,8 +251,15 @@ def build_ui(app: RAGApp):
         with gr.Row():
             q = gr.Textbox(label="问题", placeholder="例如：台灣東部開發於古時的人行道路",
                            lines=1, scale=5, autofocus=True)
-            backend = gr.Dropdown(["云端 qwen-plus", "本地 Qwen2.5-1.5B"],
-                                  value="云端 qwen-plus", label="生成模型", scale=2)
+            # 下拉内容从 generator.CLOUD_MODELS 生成（单一来源，别再硬编码）。
+            # 原来这里写死了 "云端 qwen-plus" —— 而它的免费额度已耗尽，
+            # 用户点"提问"直接吃 403（2026-09-22 的截图）。
+            cloud_choices = list(CLOUD_MODELS)
+            if app.args.cloud_model not in cloud_choices:      # --cloud-model 传了自定义的
+                cloud_choices.insert(0, app.args.cloud_model)
+            choices = [f"云端 {m}" for m in cloud_choices] + ["本地 Qwen2.5-1.5B"]
+            backend = gr.Dropdown(choices, value=f"云端 {app.args.cloud_model}",
+                                  label="生成模型", scale=2)
             topk = gr.Slider(3, 10, value=5, step=1, label="返回条数", scale=2)
         with gr.Row():
             btn = gr.Button("提问", variant="primary", scale=1)
@@ -230,7 +282,10 @@ def build_ui(app: RAGApp):
             "> 提示：模型是**基于检索到的原文**作答的。答案里的 `[n]` 对应下方引用的编号，"
             "展开即可核对 —— 如果某条 `[n]` 的内容和答案对不上，那就是检索错了或模型编了。\n>\n"
             "> 拒答是**设计行为**：上下文里没有依据时，模型会回答「根据已有资料无法回答」，"
-            "而不是用自己的知识编一个。"
+            "而不是用自己的知识编一个。\n>\n"
+            "> ⚠️ **模型额度**：`qwen-plus` 的免费额度已耗尽（选了会报 403），"
+            "换 `qwen-turbo`（默认）或 `qwen-max` 即可。"
+            "跑 `src\\check_backends.py` 可以列出当前哪些模型可用。"
         )
     return demo
 
@@ -248,7 +303,9 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--host", default="127.0.0.1", help="绑 127.0.0.1，不要绑 0.0.0.0")
     ap.add_argument("--port", type=int, default=7860)
     ap.add_argument("--no-browser", action="store_true")
-    ap.add_argument("--cloud-model", default="qwen-plus")
+    ap.add_argument("--cloud-model", default=DEFAULT_CLOUD_MODEL,
+                    help=f"云端模型名，默认 {DEFAULT_CLOUD_MODEL}（与命令行版同一个常量）。"
+                         f"可选：{' / '.join(CLOUD_MODELS)}")
     ap.add_argument("--max-new-tokens", type=int, default=512)
     ap.add_argument("--vec-backend", default="faiss", choices=["faiss", "scan"])
     ap.add_argument("--nprobe", type=int, default=512)

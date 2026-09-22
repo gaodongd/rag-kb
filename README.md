@@ -303,6 +303,12 @@ z-score 又因向量分布太窄而放大噪声。
 | 非法编号（编造引用） | 1 条 | **0 条** | |
 | 生成中位 | 1.23 s | 1.73 s | 0 / **1.07 GB** |
 
+> ⚠️ **复现提示（2026-09-22）**：`qwen-plus` 的免费额度已耗尽，照抄命令会吃 403。
+> 换 `--cloud-model qwen-turbo`（现在的默认值）或 `qwen-max` 能跑通 —— 但
+> **上表数字是在 qwen-plus 上测的**，换模型后数值会变：生成侧没做过跨模型敏感性实验，
+> 判官侧做过（同一批 104 条上 qwen-plus 93.6% vs qwen-turbo 93.9%，Δ 0.4 pp）。
+> 先跑 `src\check_backends.py` 看看现在能用哪些。
+
 **三条读法：**
 
 1. **本地路最大的短板不是"答得不对"，是"不守指令"** —— 66.9% 的答案完全不给引用编号。
@@ -743,7 +749,9 @@ rag-kb/
 │   ├── calibrate_faith.py     # ⑪ 判据人工校准（三套词面判据 vs LLM 判官，算一致率）
 │   ├── fetch_store.py         # ⑫ 取原文层：parquet 全扫 vs 侧车 mmap（--build/--verify/--info）
 │   ├── diagnose_fetch.py      # ⑫ 取原文延迟诊断（**不加载索引**，1 分钟出结果）
-│   └── smoke_retrieve.py      # ⑫ 检索链路自检（**不加载索引**，0.6 秒；含对照组）
+│   ├── smoke_retrieve.py      # ⑫ 检索链路自检（**不加载索引**，0.6 秒；含对照组）
+│   ├── cloud_models.py        # ⑫ 云端常量与错误翻译（**零依赖**：只有标准库，见下方说明）
+│   └── check_backends.py      # ⑫ 云端模型体检（**不加载索引**，4 秒；--selftest 不发请求）
 ├── app/
 │   └── gradio_app.py          # ⑨ 演示界面（薄层：检索与 prompt 全部复用 src/）
 ├── data/
@@ -837,6 +845,8 @@ REM ⑨ 先看 prompt 长什么样（echo 模式，不调模型、零成本）
 "C:\...\Python313\python.exe" src\generator.py --backend echo --limit 1
 
 REM ⑨ 云端一路：库内 10 条 + 库外 3 条
+REM    ⚠️ 先花 4 秒体检一下额度，省得跑到一半吃 403
+"C:\...\Python313\python.exe" src\check_backends.py
 "C:\...\Python313\python.exe" src\generator.py --backend dashscope --file eval\m3_in_kb.txt  --tag in_kb
 "C:\...\Python313\python.exe" src\generator.py --backend dashscope --file eval\m3_out_kb.txt --tag out_kb
 
@@ -848,7 +858,7 @@ REM ⑨ 演示界面 → 浏览器打开 http://127.0.0.1:7860
 REM 想要生产配置（开重排，R@1 0.613→0.885，每次查询多约 2.8 s）：
 "C:\...\Python313\python.exe" app\gradio_app.py --rerank
 
-REM ⑫ 改完检索参数先跑自检：不加载索引、0.6 秒、四组检查（含"关掉兜底应该崩"的对照组）
+REM ⑫ 改完检索参数先跑自检：不加载索引、0.6 秒、七项检查（含"关掉兜底应该崩"的对照组）
 "C:\...\Python313\python.exe" src\smoke_retrieve.py
 ```
 
@@ -858,6 +868,32 @@ REM ⑫ 改完检索参数先跑自检：不加载索引、0.6 秒、四组检�
 > 起因是一次真实事故：界面手抄了一份参数表，`generator` 加了 `--fetch-store` 它没跟上，
 > 于是**用户加载完索引、点了"提问"**才报 `AttributeError`
 > （详见 `第12步-任务清单.md` §12.10 与 `操作手册.md` 坑 BM）。
+
+### 云端模型的额度会变 —— 先体检，别猜
+
+2026-09-22 实测：**`qwen-plus` 的免费额度耗尽**，接口返回 403
+`AllocationQuota.FreeTierOnly`。此前 §11.14 的评测正是用 qwen-plus 跑的 ——
+那是**跑在额度还没用完的时候**，结论没问题，但默认值不能停在"已经不能用的模型"上。
+
+```bat
+REM 4 秒列出「现在哪些模型能用」（每个模型只花 1 个输出 token）
+"C:\...\Python313\python.exe" src\check_backends.py
+REM 只验证错误归类逻辑，不发任何网络请求
+"C:\...\Python313\python.exe" src\check_backends.py --selftest
+```
+
+排查这一类问题时，两件事比"换个模型"更值得记：
+
+1. **默认值依赖外部状态（配额/速率/模型上下架）→ 必须能被一行命令验证。**
+   额度是外部的，代码不会自己知道它变了；默认值收成单一常量
+   （`cloud_models.DEFAULT_CLOUD_MODEL`），四处（命令行 / 界面 / 体检 / 判官）共用。
+2. **错误提示必须给出下一步动作。** 原来报错直接把 SDK 的原始 JSON 抛到界面上
+   （满屏 `{'error': {'message': 'Free quota exhausted...', 'type': 'AllocationQuota.FreeTierOnly'}}`），
+   用户只知道"坏了"，不知道"换个模型就行"。现在 `classify_api_error()` 翻成
+   「原因 + 照着做的动作」，并区分**可重试**（限流/超时/连接）与
+   **致命**（额度/鉴权/模型名）—— 后者立即中止整批，不白跑 129 条。
+
+---
 
 ### 最省事的启动方式：双击 `启动问答.bat`
 
